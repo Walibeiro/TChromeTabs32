@@ -55,21 +55,19 @@ function SingleBetween(const SingA, SingB: Single; const Percent: Integer): Sing
 procedure PaintControlToCanvas(SrcControl: TControl; TargetCanvas: TCanvas);
 procedure CopyControlToBitmap(AWinControl: TWinControl; Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap; X, Y: Integer);
 function ImageListToBitmap32(ImageList: TCustomImageList; ImageIndex: Integer): TBitmap32;
-function ChromeTabs32tatesToString(States: TChromeTabs32tates): String;
+function ChromeTabs32StatesToString(States: TChromeTabs32States): String;
 function RectToFloatRect(ARect: TRect): TFloatRect;
 function RectToFixedRect(ARect: TRect): TFixedRect;
 function PointToFloatPoint(Pt: TPoint): TFloatPoint;
 function IconToGPImage(Icon: TIcon): TBitmap32;
-//function BitmapToBitmap32(Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap): TBitmap32;
 function GeneratePolygon(ControlRect: TRect; const PolygonPoints: Array of TPoint; Orientation: TTabOrientation): TPolygon;
 function CreateAlphaBlendForm(AOwner: TComponent; Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap; Alpha: Byte): TForm;
 //procedure SetTabClipRegionFromPolygon(GPGraphics: TGPGraphics; Polygon: TPolygon; CombineMode: TCombineMode);
 procedure ClearBitmap(Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap);
-procedure ScaleImage(Bitmap, ScaledBitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap; ScaleFactor: Real);
+procedure ScaleImage(Bitmap, ScaledBitmap: TBitmap32; ScaleFactor: Single);
 procedure EnableControlAndChildren(Control: TWinControl; DoEnable: Boolean);
 procedure SaveComponentToStream(AComponent: TComponent; AStream: TStream);
 procedure ReadComponentFromStream(AComponent: TComponent; AStream: TStream);
-function ContrastingColor(Color: TColor): TColor;
 function ComponentToCode(AComponent: TComponent; const ComponentName: String): String;
 function HorzFlipRect(ParentRect, ChildRect: TRect): TRect;
 function HorzFlipPolygon(ParentRect: TRect; Polygon: TPolygon): TPolygon;
@@ -77,173 +75,148 @@ function RectHeight(Rect: TRect): Integer;
 function RectWidth(Rect: TRect): Integer;
 function RectInflate(ARect: TRect; Value: Integer): TRect;
 //procedure BitmapTo32BitBitmap(Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap);
-procedure SetColorAlpha(Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap; AColor: TColor; NewAlpha: Byte);
+procedure SetColorAlpha(Bitmap: TBitmap32; AColor: TColor; NewAlpha: Byte);
 function TransformRect(StartRect, EndRect: TRect; CurrentTicks, EndTicks: Cardinal; EaseType: TChromeTabs32EaseType): TRect;
-function CalculateEase(CurrentTime, StartValue, ChangeInValue, Duration: Real; EaseType: TChromeTabs32EaseType): Real; overload;
-function CalculateEase(StartPos, EndPos, PositionPct: Real; EaseType: TChromeTabs32EaseType): Real; overload;
+function CalculateEase(CurrentTime, StartValue, ChangeInValue, Duration: Double; EaseType: TChromeTabs32EaseType): Double; overload;
+function CalculateEase(StartPos, EndPos, PositionPct: Double; EaseType: TChromeTabs32EaseType): Double; overload;
 
 implementation
 
-function CalculateEase(CurrentTime, StartValue, ChangeInValue, Duration: Real; EaseType: TChromeTabs32EaseType): Real;
+uses
+  GR32_Resamplers;
+
+function CalculateEase(CurrentTime, StartValue, ChangeInValue, Duration: Double; EaseType: TChromeTabs32EaseType): Double;
 begin
   case EaseType of
     ttNone:
-      begin
-        Result := 0;
-      end;
-
+      Result := 0;
     ttLinearTween:
-      begin
-        Result := ChangeInValue * CurrentTime / Duration + StartValue;
-      end;
-
+      Result := ChangeInValue * CurrentTime / Duration + StartValue;
     ttEaseInQuad:
       begin
         CurrentTime := CurrentTime / Duration;
 
 	      Result := ChangeInValue * CurrentTime * CurrentTime + StartValue;
       end;
-
     ttEaseOutQuad:
       begin
         CurrentTime := CurrentTime / Duration;
 
 	      Result := -ChangeInValue * CurrentTime * (CurrentTime-2) + StartValue;
       end;
-
     ttEaseInOutQuad:
       begin
-        CurrentTime := CurrentTime / (Duration / 2);
+        CurrentTime := CurrentTime / (Duration * 0.5);
 
         if CurrentTime < 1 then
-          Result := ChangeInValue / 2 * CurrentTime * CurrentTime + StartValue
+          Result := ChangeInValue * 0.5 * CurrentTime * CurrentTime + StartValue
         else
         begin
           CurrentTime := CurrentTime - 1;
-          Result := -ChangeInValue / 2 * (CurrentTime * (CurrentTime - 2) - 1) + StartValue;
+          Result := -ChangeInValue * 0.5 * (CurrentTime * (CurrentTime - 2) - 1) + StartValue;
         end;
       end;
-
     ttEaseInCubic:
       begin
         CurrentTime := CurrentTime / Duration;
 
         Result := ChangeInValue * CurrentTime * CurrentTime * CurrentTime + StartValue;
       end;
-
     ttEaseOutCubic:
       begin
         CurrentTime := (CurrentTime / Duration) - 1;
 
         Result := ChangeInValue * ( CurrentTime * CurrentTime * CurrentTime + 1) + StartValue;
       end;
-
     ttEaseInOutCubic:
       begin
-        CurrentTime := CurrentTime / (Duration / 2);
+        CurrentTime := CurrentTime / (Duration * 0.5);
 
         if CurrentTime < 1 then
-          Result := ChangeInValue / 2 * CurrentTime * CurrentTime * CurrentTime + StartValue
+          Result := ChangeInValue * 0.5 * CurrentTime * CurrentTime * CurrentTime + StartValue
         else
         begin
           CurrentTime := CurrentTime - 2;
 
-          Result := ChangeInValue / 2 * (CurrentTime * CurrentTime * CurrentTime + 2) + StartValue;
+          Result := ChangeInValue * 0.5 * (CurrentTime * CurrentTime * CurrentTime + 2) + StartValue;
         end;
       end;
-
     ttEaseInQuart:
       begin
         CurrentTime := CurrentTime / Duration;
 
         Result := ChangeInValue * CurrentTime * CurrentTime * CurrentTime * CurrentTime + StartValue;
       end;
-
     ttEaseOutQuart:
       begin
         CurrentTime := (CurrentTime / Duration) - 1;
 
         Result := -ChangeInValue * (CurrentTime * CurrentTime * CurrentTime * CurrentTime - 1) + StartValue;
       end;
-
     ttEaseInOutQuart:
       begin
-	      CurrentTime := CurrentTime / (Duration / 2);
+	      CurrentTime := CurrentTime / (Duration * 0.5);
 
         if CurrentTime < 1 then
-          Result := ChangeInValue / 2 * CurrentTime * CurrentTime * CurrentTime * CurrentTime + StartValue
+          Result := ChangeInValue * 0.5 * CurrentTime * CurrentTime * CurrentTime * CurrentTime + StartValue
         else
         begin
           CurrentTime := CurrentTime - 2;
 
-          Result := -ChangeInValue / 2 * (CurrentTime * CurrentTime * CurrentTime * CurrentTime - 2) + StartValue;
+          Result := -ChangeInValue * 0.5 * (CurrentTime * CurrentTime * CurrentTime * CurrentTime - 2) + StartValue;
         end;
       end;
-
     ttEaseInQuint:
       begin
         CurrentTime := CurrentTime / Duration;
 
         Result := ChangeInValue * CurrentTime * CurrentTime * CurrentTime * CurrentTime * CurrentTime + StartValue;
       end;
-
     ttEaseOutQuint:
       begin
         CurrentTime := (CurrentTime / Duration) - 1;
 
 	      Result := ChangeInValue * (CurrentTime * CurrentTime * CurrentTime * CurrentTime * CurrentTime + 1) + StartValue;
       end;
-
     ttEaseInOutQuint:
       begin
-      	CurrentTime := CurrentTime / (Duration / 2);
+      	CurrentTime := CurrentTime / (Duration * 0.5);
 
         if CurrentTime < 1 then
-          Result := ChangeInValue / 2 * CurrentTime * CurrentTime * CurrentTime * CurrentTime * CurrentTime + StartValue
+          Result := ChangeInValue * 0.5 * CurrentTime * CurrentTime * CurrentTime * CurrentTime * CurrentTime + StartValue
         else
         begin
           CurrentTime := CurrentTime - 2;
 
-          Result := ChangeInValue / 2 * (CurrentTime * CurrentTime * CurrentTime * CurrentTime * CurrentTime + 2) + StartValue;
+          Result := ChangeInValue * 0.5 * (CurrentTime * CurrentTime * CurrentTime * CurrentTime * CurrentTime + 2) + StartValue;
         end;
       end;
-
     ttEaseInSine:
-      begin
-	      Result := -ChangeInValue * Cos(CurrentTime / Duration * (PI / 2)) + ChangeInValue + StartValue;
-      end;
+	    Result := -ChangeInValue * Cos(CurrentTime / Duration * (PI * 0.5)) + ChangeInValue + StartValue;
 
     ttEaseOutSine:
-      begin
-	      Result := ChangeInValue * Sin(CurrentTime / Duration * (PI / 2)) + StartValue;
-      end;
+      Result := ChangeInValue * Sin(CurrentTime / Duration * (PI * 0.5)) + StartValue;
 
     ttEaseInOutSine:
-      begin
-        Result := -ChangeInValue / 2 * (Cos(PI * CurrentTime / Duration) - 1) + StartValue;
-      end;
+      Result := -ChangeInValue * 0.5 * (Cos(PI * CurrentTime / Duration) - 1) + StartValue;
 
     ttEaseInExpo:
-      begin
-        Result := ChangeInValue * Power(2, 10 * (CurrentTime / Duration - 1) ) + StartValue;
-      end;
+      Result := ChangeInValue * Power(2, 10 * (CurrentTime / Duration - 1) ) + StartValue;
 
     ttEaseOutExpo:
-      begin
-        Result := ChangeInValue * (-Power(2, -10 * CurrentTime / Duration ) + 1 ) + StartValue;
-      end;
+      Result := ChangeInValue * (-Power(2, -10 * CurrentTime / Duration ) + 1 ) + StartValue;
 
     ttEaseInOutExpo:
       begin
         CurrentTime := CurrentTime / (Duration/2);
 
 	      if CurrentTime < 1 then
-          Result := ChangeInValue / 2 * Power(2, 10 * (CurrentTime - 1) ) + StartValue
+          Result := ChangeInValue * 0.5 * Power(2, 10 * (CurrentTime - 1) ) + StartValue
         else
          begin
            CurrentTime := CurrentTime - 1;
 
-	         Result := ChangeInValue / 2 * (-Power(2, -10 * CurrentTime) + 2 ) + StartValue;
+	         Result := ChangeInValue * 0.5 * (-Power(2, -10 * CurrentTime) + 2 ) + StartValue;
          end;
       end;
 
@@ -263,15 +236,15 @@ begin
 
     ttEaseInOutCirc:
       begin
-        CurrentTime := CurrentTime / (Duration / 2);
+        CurrentTime := CurrentTime / (Duration * 0.5);
 
         if CurrentTime < 1 then
-          Result := -ChangeInValue / 2 * (Sqrt(1 - CurrentTime * CurrentTime) - 1) + StartValue
+          Result := -ChangeInValue * 0.5 * (Sqrt(1 - CurrentTime * CurrentTime) - 1) + StartValue
         else
         begin
         	CurrentTime := CurrentTime - 2;
 
-	        Result := ChangeInValue / 2 * (Sqrt(1 - CurrentTime * CurrentTime) + 1) + StartValue;
+	        Result := ChangeInValue * 0.5 * (Sqrt(1 - CurrentTime * CurrentTime) + 1) + StartValue;
         end;
       end;
 
@@ -279,14 +252,14 @@ begin
     begin
       Result := 0;
 
-      Assert(FALSE, 'Invalid Ease Type');
+      Assert(False, 'Invalid Ease Type');
     end;
   end;
 end;
 
-function CalculateEase(StartPos, EndPos, PositionPct: Real; EaseType: TChromeTabs32EaseType): Real;
+function CalculateEase(StartPos, EndPos, PositionPct: Double; EaseType: TChromeTabs32EaseType): Double;
 var
-  t, b, c, d: Real;
+  t, b, c, d: Double;
 begin
   c := EndPos - StartPos;
   d := 100;
@@ -326,15 +299,6 @@ begin
 
   for i := Low(Polygon) to High(Polygon) do
     Polygon[i].X := ParentRect.Left + ParentRect.Right - Polygon[i].X;
-end;
-
-function ContrastingColor(Color: TColor): TColor;
-begin
-  Color := ColorToRGB(Color);
-
-  Result := (Color+$000080) and $0000FF +
-            (Color+$008000) and $00FF00 +
-            (Color+$800000) and $FF0000;
 end;
 
 procedure SaveComponentToStream(AComponent: TComponent; AStream: TStream);
@@ -436,23 +400,10 @@ begin
 *)
 end;
 
-procedure ScaleImage(Bitmap, ScaledBitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap; ScaleFactor: Real);
-{$IF CompilerVersion < 18.0}
-var
-  NewHeight, NewWidth: Integer;
-{$IFEND}
+procedure ScaleImage(Bitmap, ScaledBitmap: TBitmap32; ScaleFactor: Single);
 begin
-  {$IF CompilerVersion >= 18.0} //{$IFDEF DELPHI2006_UP}
-    {$IF CompilerVersion >= 23.0}Vcl.{$IFEND}GraphUtil.ScaleImage(Bitmap, ScaledBitmap, ScaleFactor);
-  {$ELSE}
-    NewWidth := Round(Bitmap.Width * ScaleFactor);
-    NewHeight := Round(Bitmap.Height * ScaleFactor);
-
-    ScaledBitmap.Width := NewWidth;
-    ScaledBitmap.Height := NewHeight;
-
-    ScaledBitmap.Canvas.StretchDraw(Rect(0, 0, NewWidth, NewHeight), Bitmap);
-  {$IFEND}
+  ScaledBitmap.SetSize(Round(Bitmap.Width * ScaleFactor), Round(Bitmap.Height * ScaleFactor));
+  Bitmap.DrawTo(ScaledBitmap, ScaledBitmap.BoundsRect);
 end;
 
 (*
@@ -536,19 +487,19 @@ begin
       EnableControlAndChildren(Control.Controls[i] as TWinControl, DoEnable);
 end;
 
-function ChromeTabs32tatesToString(States: TChromeTabs32tates): String;
+function ChromeTabs32StatesToString(States: TChromeTabs32States): String;
 var
-  s: TChromeTabs32tate;
+  s: TChromeTabs32State;
 begin
   Result := '';
 
-  for s := Low(TChromeTabs32tate) to High(TChromeTabs32tate) do
+  for s := Low(TChromeTabs32State) to High(TChromeTabs32State) do
     if s in States then
     begin
       if Result <> '' then
         Result := Result + ',';
 
-      Result := Result + ChromeTabs32tateDescriptions[s];
+      Result := Result + ChromeTabs32StateDescriptions[s];
     end;
 end;
 
@@ -559,24 +510,6 @@ begin
   MemStream := TMemoryStream.Create;
   try
     Icon.SaveToStream(MemStream);
-
-    MemStream.Position := 0;
-  except
-    FreeAndNil(MemStream);
-
-    raise;
-  end;
-
-// TODO  Result := TBitmap32.Create(TStreamAdapter.Create(MemStream, soOwned));
-end;
-
-function BitmapToBitmap32(Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap): TBitmap32;
-var
-  MemStream: TMemoryStream;
-begin
-  MemStream := TMemoryStream.Create;
-  try
-    Bitmap.SaveToStream(MemStream);
 
     MemStream.Position := 0;
   except
@@ -716,7 +649,7 @@ function PointInPolygon(Polygon: TPolygon; X, Y: Integer): Boolean;
 var
   Count, i, n: Integer;
 begin
-  Result := FALSE;
+  Result := False;
 
   Count := Length(Polygon);
 
@@ -739,45 +672,10 @@ begin
   end;
 end;
 
-(*
-procedure BitmapTo32BitBitmap(Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap);
-var
-  PNGBitmap: TGPBitmap;
-  BitmapHandle: HBITMAP;
-  Stream: TMemoryStream;
-  StreamAdapter: IStream;
-begin
-  Stream := TMemoryStream.Create;
-  try
-    Bitmap.SaveToStream(Stream);
-
-    // Wrap the VCL stream in a COM IStream
-    StreamAdapter := TStreamAdapter.Create(Stream);
-    try
-      // Create and load a GDI+ bitmap from the stream
-      PNGBitmap := TGPBitmap.Create(StreamAdapter);
-      try
-        // Convert the PNG to a 32 bit bitmap
-        PNGBitmap.GetHBITMAP(MakeColor(0,0,0,0), BitmapHandle);
-
-        // Wrap the bitmap in a VCL TBitmap
-        Bitmap.Handle := BitmapHandle;
-      finally
-        FreeAndNil(PNGBitmap);
-      end;
-    finally
-      StreamAdapter := nil;
-    end;
-  finally
-    FreeAndNil(Stream);
-  end;
-end;
-*)
-
-procedure SetColorAlpha(Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap; AColor: TColor; NewAlpha: Byte);
+procedure SetColorAlpha(Bitmap: TBitmap32; AColor: TColor; NewAlpha: Byte);
 var
   Row, Col: integer;
-  p: PRGBQuad;
+  p: PColor32Array;
   PreMult: array[byte, byte] of byte;
 begin
   // precalculate all possible values of a*b
@@ -790,7 +688,6 @@ begin
         PreMult[Col, Row] := PreMult[Row, Col]; // a*b = b*a
     end;
 
-(* TODO
   for Row := 0 to pred(Bitmap.Height) do
   begin
     Col := Bitmap.Width;
@@ -799,6 +696,7 @@ begin
 
     while (Col > 0) do
     begin
+(*
       if (GetRed(AColor) = p.rgbRed) and
          (GetBlue(AColor) = p.rgbBlue) and
          (GetGreen(AColor) = p.rgbGreen) then
@@ -809,12 +707,12 @@ begin
         p.rgbGreen := PreMult[p.rgbReserved, p.rgbGreen];
         p.rgbRed := PreMult[p.rgbReserved, p.rgbRed];
       end;
+*)
 
       inc(p);
       dec(Col);
     end;
   end;
-*)
 end;
 
 // Thanks to Anders Melander for the transparent form tutorial

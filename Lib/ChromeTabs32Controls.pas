@@ -90,7 +90,7 @@ type
     property StartRect: TRect read FStartRect;
     property EndRect: TRect read FEndRect;
 
-    procedure SetDrawState(const Value: TDrawState; AnimationTimeMS: Integer; EaseType: TChromeTabs32EaseType; ForceUpdate: Boolean = FALSE); virtual;
+    procedure SetDrawState(const Value: TDrawState; AnimationTimeMS: Integer; EaseType: TChromeTabs32EaseType; ForceUpdate: Boolean = False); virtual;
     procedure SetPosition(ARect: TRect; AnimationTime: Cardinal; EaseType: TChromeTabs32EaseType); virtual;
     procedure SetHeight(const Value: Integer; AnimationTime: Cardinal; EaseType: TChromeTabs32EaseType); virtual;
     procedure SetWidth(const Value: Integer; AnimationTime: Cardinal; EaseType: TChromeTabs32EaseType); virtual;
@@ -143,7 +143,7 @@ type
   TChromeTabControl = class(TBaseChromeTabs32Control)
   private
     FChromeTab: IChromeTab;
-    FBmp: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap;
+    FBmp: TBitmap32;
     FCloseButtonState: TDrawState;
     FChromeTabControlPropertyItems: TChromeTabControlPropertyItems;
     FTabProperties: TChromeTabs32LookAndFeelStyleProperties;
@@ -183,7 +183,7 @@ type
     function GetHitTestArea(MouseX, MouseY: Integer): THitTestArea;
     function GetCloseButonRect: TRect;
     function GetCloseButtonCrossRect: TRect;
-    procedure SetDrawState(const Value: TDrawState; AnimationTimeMS: Integer; EaseType: TChromeTabs32EaseType; ForceUpdate: Boolean = FALSE); override;
+    procedure SetDrawState(const Value: TDrawState; AnimationTimeMS: Integer; EaseType: TChromeTabs32EaseType; ForceUpdate: Boolean = False); override;
     function GetTabWidthByContent: Integer;
 
     property CloseButtonState: TDrawState read FCloseButtonState write SetCloseButtonState;
@@ -219,7 +219,7 @@ type
 
     procedure Invalidate; override;
 
-    procedure SetDrawState(const Value: TDrawState; AnimationTimeMS: Integer; EaseType: TChromeTabs32EaseType; ForceUpdate: Boolean = FALSE); override;
+    procedure SetDrawState(const Value: TDrawState; AnimationTimeMS: Integer; EaseType: TChromeTabs32EaseType; ForceUpdate: Boolean = False); override;
   end;
 
   TAddButtonControl = class(TBaseChromeButtonControl)
@@ -314,7 +314,7 @@ end;
 
 function TBaseChromeTabs32Control.AnimateStyle: Boolean;
 begin
-  Result := FALSE;
+  Result := False;
 end;
 
 function TBaseChromeTabs32Control.ContainsPoint(Pt: TPoint): Boolean;
@@ -322,14 +322,14 @@ var
   i: Integer;
   ChromeTabPolygons: IChromeTabPolygons;
 begin
-  Result := FALSE;
+  Result := False;
 
   ChromeTabPolygons := GetPolygons;
 
   for i := 0 to pred(ChromeTabPolygons.PolygonCount) do
     if PointInPolygon(ChromeTabPolygons.Polygons[i].Polygon, Pt.X, Pt.Y) then
     begin
-      Result := TRUE;
+      Result := True;
 
       Break;
     end;
@@ -345,8 +345,8 @@ constructor TBaseChromeTabs32Control.Create(
 begin
   FChromeTabs32 := ChromeTabs32;
 
-  FPositionInitialised := FALSE;
-  FScrollableControl := FALSE;
+  FPositionInitialised := False;
+  FScrollableControl := False;
 end;
 
 procedure TBaseChromeTabs32Control.DoChanged;
@@ -390,7 +390,7 @@ end;
 
 procedure TBaseChromeTabs32Control.Invalidate;
 begin
-  FInvalidated := TRUE;
+  FInvalidated := True;
 end;
 
 procedure TBaseChromeTabs32Control.SetDrawState(const Value: TDrawState; AnimationTimeMS: Integer; EaseType: TChromeTabs32EaseType; ForceUpdate: Boolean);
@@ -466,7 +466,7 @@ begin
   else
   begin
     // Set the flag to indicate that we're set the initial position
-    FPositionInitialised := TRUE;
+    FPositionInitialised := True;
 
     EndAnimation;
 
@@ -481,7 +481,7 @@ begin
 end;
 
 
-{ TrkAddButton }
+{ TAddButtonControl }
 
 function TAddButtonControl.GetPolygons: IChromeTabPolygons;
 var
@@ -493,45 +493,48 @@ begin
   begin
     Result := TChromeTabPolygons.Create;
 
-    Result.AddPolygon(BidiPolygon(
-                      NewPolygon(BidiControlRect, [GR32.Point(7, RectHeight(BidiControlRect)),
-                                 GR32.Point(4, RectHeight(BidiControlRect) - 2),
-                                 GR32.Point(0, 2),
-                                 GR32.Point(1, 0),
-                                 GR32.Point(RectWidth(BidiControlRect) - 7, 0),
-                                 GR32.Point(RectWidth(BidiControlRect) - 4, 2),
-                                 GR32.Point(RectWidth(BidiControlRect), RectHeight(BidiControlRect) - 2),
-                                 GR32.Point(RectWidth(BidiControlRect), RectHeight(BidiControlRect))],
-                      ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
-                      GetButtonBrush,
-                      GetButtonPen);
+    Result.AddPolygon(BidiPolygon(NewPolygon(BidiControlRect,
+      [
+        GR32.Point(7, RectHeight(BidiControlRect)),
+        GR32.Point(4, RectHeight(BidiControlRect) - 2),
+        GR32.Point(0, 2),
+        GR32.Point(1, 0),
+        GR32.Point(RectWidth(BidiControlRect) - 7, 0),
+        GR32.Point(RectWidth(BidiControlRect) - 4, 2),
+        GR32.Point(RectWidth(BidiControlRect), RectHeight(BidiControlRect) - 2),
+        GR32.Point(RectWidth(BidiControlRect), RectHeight(BidiControlRect))
+      ],
+      ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
+      GetButtonBrush, GetButtonPen);
 
     if ChromeTabs32.GetOptions.Display.AddButton.ShowPlusSign then
     begin
       LeftOffset := (ChromeTabs32.GetOptions.Display.AddButton.Width div 2) - 4;
       TopOffset := (ChromeTabs32.GetOptions.Display.AddButton.Height div 2) - 4;
 
-      Result.AddPolygon(BidiPolygon(
-                        NewPolygon(Rect(BidiControlRect.Left + LeftOffset,
-                                   BidiControlRect.Top + TopOffset,
-                                   BidiControlRect.Right - LeftOffset,
-                                   BidiControlRect.Bottom - TopOffset),
-                                  [GR32.Point(0, 3),
-                                   GR32.Point(3, 3),
-                                   GR32.Point(3, 0),
-                                   GR32.Point(6, 0),
-                                   GR32.Point(6, 3),
-                                   GR32.Point(9, 3),
-                                   GR32.Point(9, 6),
-                                   GR32.Point(6, 6),
-                                   GR32.Point(6, 9),
-                                   GR32.Point(3, 9),
-                                   GR32.Point(3, 6),
-                                   GR32.Point(0, 6),
-                                   GR32.Point(0, 3)],
-                               ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
-                               GetSymbolBrush,
-                               GetSymbolPen);
+      Result.AddPolygon(BidiPolygon(NewPolygon(
+        Rect(BidiControlRect.Left + LeftOffset,
+          BidiControlRect.Top + TopOffset,
+          BidiControlRect.Right - LeftOffset,
+          BidiControlRect.Bottom - TopOffset),
+      [
+        GR32.Point(0, 3),
+        GR32.Point(3, 3),
+        GR32.Point(3, 0),
+        GR32.Point(6, 0),
+        GR32.Point(6, 3),
+        GR32.Point(9, 3),
+        GR32.Point(9, 6),
+        GR32.Point(6, 6),
+        GR32.Point(6, 9),
+        GR32.Point(3, 9),
+        GR32.Point(3, 6),
+        GR32.Point(0, 6),
+        GR32.Point(0, 3)
+      ],
+      ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
+      GetSymbolBrush,
+      GetSymbolPen);
     end;
   end;
 end;
@@ -589,8 +592,7 @@ begin
 
   FChromeTabControlPropertyItems := TChromeTabControlPropertyItems.Create;
 
-  FBmp := {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap.Create;
-  FBmp.PixelFormat := pf32Bit;
+  FBmp := TBitmap32.Create;
 
   FControlType := itTab;
 
@@ -598,7 +600,7 @@ begin
 
   FTabFiller := TLinearGradientPolygonFiller.Create;
 
-  FScrollableControl := TRUE;
+  FScrollableControl := True;
 end;
 
 destructor TChromeTabControl.Destroy;
@@ -761,7 +763,7 @@ end;
 
 function TChromeTabControl.AnimateStyle: Boolean;
 begin
-  Result := FChromeTabControlPropertyItems.TransformColors(FALSE);
+  Result := FChromeTabControlPropertyItems.TransformColors(False);
 
   if Result then
     Invalidate;
@@ -773,13 +775,13 @@ begin
      (RectWidth(ControlRect) -
       ChromeTabs32.GetOptions.Display.Tabs.ContentOffsetRight -
       ChromeTabs32.GetOptions.Display.Tabs.ContentOffsetLeft <= ChromeTabs32.GetOptions.Display.CloseButton.AutoHideWidth) then
-    Result := FALSE
+    Result := False
   else
   begin
     // Hide the close button on all tabs if we have the hide close button override set
     if ChromeTab.GetHideCloseButton then
     begin
-      Result := FALSE;
+      Result := False;
     end
     else
     begin
@@ -787,7 +789,7 @@ begin
         bvAll: Result := not ChromeTab.GetPinned;
         bvActive: Result := (not ChromeTab.GetPinned) and (FDrawState = dsActive);
       else
-        Result := FALSE;
+        Result := False;
       end;
     end;
   end;
@@ -795,19 +797,20 @@ end;
 
 function TChromeTabControl.ImageVisible(ImageList: TCustomImageList; ImageIndex: Integer): Boolean;
 begin
-  Result := (ChromeTabs32.GetOptions.Display.Tabs.ShowImages) and
-            (ImageList <> nil) and
-            (ImageIndex >= 0) and
-            (ImageIndex < ImageList.Count);
+  Result :=
+    (ChromeTabs32.GetOptions.Display.Tabs.ShowImages) and
+    (ImageList <> nil) and
+    (ImageIndex >= 0) and
+    (ImageIndex < ImageList.Count);
 end;
 
 procedure TChromeTabControl.Invalidate;
 begin
   inherited;
 
-  FPenInvalidated := TRUE;
-  FBrushInvalidated := TRUE;
-  FCloseButtonInvalidate := TRUE;
+  FPenInvalidated := True;
+  FBrushInvalidated := True;
+  FCloseButtonInvalidate := True;
 end;
 
 function TChromeTabControl.GetPolygons: IChromeTabPolygons;
@@ -818,46 +821,49 @@ begin
   begin
     Result := TChromeTabPolygons.Create;
 
-    Result.AddPolygon(NewPolygon(BidiControlRect, [GR32.Point(0, RectHeight(ControlRect)),
-                                       GR32.Point(4, RectHeight(ControlRect) - 3),
-                                       GR32.Point(12, 3),
-                                       GR32.Point(13, 2),
-                                       GR32.Point(14, 1),
-                                       GR32.Point(16, 0),
-                                       GR32.Point(RectWidth(ControlRect) - 16, 0),
-                                       GR32.Point(RectWidth(ControlRect) - 14, 1),
-                                       GR32.Point(RectWidth(ControlRect) - 13, 2),
-                                       GR32.Point(RectWidth(ControlRect) - 12, 3),
-                                       GR32.Point(RectWidth(ControlRect) - 4, RectHeight(ControlRect) - 3),
-                                       GR32.Point(RectWidth(ControlRect), RectHeight(ControlRect))],
-                                 ChromeTabs32.GetOptions.Display.Tabs.Orientation),
-                      GetTabBrush,
-                      GetTabPen);
+    Result.AddPolygon(NewPolygon(BidiControlRect,
+      [
+        GR32.Point(0, RectHeight(ControlRect)),
+        GR32.Point(4, RectHeight(ControlRect) - 3),
+        GR32.Point(12, 3),
+        GR32.Point(13, 2),
+        GR32.Point(14, 1),
+        GR32.Point(16, 0),
+        GR32.Point(RectWidth(ControlRect) - 16, 0),
+        GR32.Point(RectWidth(ControlRect) - 14, 1),
+        GR32.Point(RectWidth(ControlRect) - 13, 2),
+        GR32.Point(RectWidth(ControlRect) - 12, 3),
+        GR32.Point(RectWidth(ControlRect) - 4, RectHeight(ControlRect) - 3),
+        GR32.Point(RectWidth(ControlRect), RectHeight(ControlRect))
+      ],
+      ChromeTabs32.GetOptions.Display.Tabs.Orientation),
+      GetTabBrush, GetTabPen);
   end;
 end;
 
 function TChromeTabControl.GetCloseButonRect: TRect;
 begin
   Result.Left := ControlRect.Right -
-                 ChromeTabs32.GetOptions.Display.Tabs.ContentOffsetRight -
-                 ChromeTabs32.GetOptions.Display.CloseButton.Width -
-                 ChromeTabs32.GetOptions.Display.CloseButton.Offsets.Horizontal;
+    ChromeTabs32.GetOptions.Display.Tabs.ContentOffsetRight -
+    ChromeTabs32.GetOptions.Display.CloseButton.Width -
+    ChromeTabs32.GetOptions.Display.CloseButton.Offsets.Horizontal;
   Result.Top := ControlRect.Top +
-                ChromeTabs32.GetOptions.Display.CloseButton.Offsets.Vertical;
+    ChromeTabs32.GetOptions.Display.CloseButton.Offsets.Vertical;
   Result.Right := Result.Left +
-                  ChromeTabs32.GetOptions.Display.CloseButton.Width;
+    ChromeTabs32.GetOptions.Display.CloseButton.Width;
   Result.Bottom := Result.Top +
-                   ChromeTabs32.GetOptions.Display.CloseButton.Height;
+    ChromeTabs32.GetOptions.Display.CloseButton.Height;
 end;
 
 function TChromeTabControl.GetCloseButtonCrossRect: TRect;
 begin
   Result := GetCloseButonRect;
 
-  Result := Rect(Result.Left + ChromeTabs32.GetOptions.Display.CloseButton.CrossRadialOffset,
-                 Result.Top + ChromeTabs32.GetOptions.Display.CloseButton.CrossRadialOffset,
-                 Result.Right - ChromeTabs32.GetOptions.Display.CloseButton.CrossRadialOffset,
-                 Result.Bottom - ChromeTabs32.GetOptions.Display.CloseButton.CrossRadialOffset);
+  Result := Rect(
+    Result.Left + ChromeTabs32.GetOptions.Display.CloseButton.CrossRadialOffset,
+    Result.Top + ChromeTabs32.GetOptions.Display.CloseButton.CrossRadialOffset,
+    Result.Right - ChromeTabs32.GetOptions.Display.CloseButton.CrossRadialOffset,
+    Result.Bottom - ChromeTabs32.GetOptions.Display.CloseButton.CrossRadialOffset);
 end;
 
 function TChromeTabControl.GetTabBrush: TSolidBrush;
@@ -866,7 +872,7 @@ var
 begin
   if FBrushInvalidated then
   begin
-    FBrushInvalidated := FALSE;
+    FBrushInvalidated := False;
 
     FreeAndNil(FTabBrush);
   end;
@@ -890,7 +896,7 @@ var
 begin
   if FPenInvalidated then
   begin
-    FPenInvalidated := FALSE;
+    FPenInvalidated := False;
 
     FreeAndNil(FTabPen);
   end;
@@ -1019,9 +1025,9 @@ begin
   // Does the image fit between the left margin and the close button?
   if LeftOffset + ImageWidth > RightOffset then
   begin
-    NormalImageVisible := FALSE;
-    OverlayImageVisible := FALSE;
-    SpinnerVisible := FALSE;
+    NormalImageVisible := False;
+    OverlayImageVisible := False;
+    SpinnerVisible := False;
   end
   else
   begin
@@ -1082,7 +1088,7 @@ end;
 
 procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer; ClipPolygons: IChromeTabPolygons);
 
-(*
+(* TODO
   procedure DrawGDITextWithOffset(const Text: String; TextRect: TRect; OffsetX, OffsetY: Integer; FontColor: TColor; Alpha: Byte; TextHint: TextRenderingHint);
   const
     BlendFactorsNormal: array[0..2] of Single = (0.0, 0.0, 0.0);
@@ -1374,7 +1380,7 @@ var
 begin
   if (FTabProperties <> nil) and (ChromeTabs32 <> nil) then
   begin
-(*
+(* TODO
     OriginalClipRegion := TGPRegion.Create;
     try
       // Save the current clip region of the GPGraphics
@@ -1556,7 +1562,7 @@ begin
   begin
     FCloseButtonState := Value;
 
-    FCloseButtonInvalidate := TRUE;
+    FCloseButtonInvalidate := True;
 
     FChromeTabs32.DoOnChange(FChromeTab.GetTab, tcControlState);
   end;
@@ -1582,11 +1588,9 @@ begin
     else
       DefaultFont := nil;
 
-    FChromeTabControlPropertyItems.SetProperties(FTabProperties.Style,
-                                                 FTabProperties.Font,
-                                                 DefaultFont,
-                                                 AnimationTimeMS,
-                                                 EaseType);
+    FChromeTabControlPropertyItems.SetProperties(
+      FTabProperties.Style, FTabProperties.Font, DefaultFont,
+      AnimationTimeMS, EaseType);
 
     Invalidate;
   end;
@@ -1614,39 +1618,40 @@ begin
   begin
     Result := TChromeTabPolygons.Create;
 
-    Result.AddPolygon(BidiPolygon(
-                      NewPolygon(BidiControlRect, [GR32.Point(0, RectHeight(ControlRect)),
-                                               GR32.Point(0, 0),
-                                               GR32.Point(RectWidth(ControlRect), 0),
-                                               GR32.Point(RectWidth(ControlRect), RectHeight(ControlRect))],
-                                 ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
-                                 GetButtonBrush,
-                                 GetButtonPen);
-
+    Result.AddPolygon(BidiPolygon(NewPolygon(BidiControlRect,
+      [
+        GR32.Point(0, RectHeight(ControlRect)),
+        GR32.Point(0, 0),
+        GR32.Point(RectWidth(ControlRect), 0),
+        GR32.Point(RectWidth(ControlRect), RectHeight(ControlRect))
+      ],
+      ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
+      GetButtonBrush, GetButtonPen);
 
     case Direction of
       drLeft:
         begin
-          Result.AddPolygon(BidiPolygon(
-                            NewPolygon(BidiControlRect, [GR32.Point(3, RectHeight(ControlRect) div 2),
-                                                     GR32.Point(RectWidth(ControlRect) - 3, 2),
-                                                     GR32.Point(RectWidth(ControlRect) - 3, RectHeight(ControlRect) - 2),
-                                                     GR32.Point(3, RectHeight(ControlRect) div 2)],
-                                       ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
-                                       GetSymbolBrush,
-                                       GetSymbolPen);
+          Result.AddPolygon(BidiPolygon(NewPolygon(BidiControlRect,
+            [
+              GR32.Point(3, RectHeight(ControlRect) div 2),
+              GR32.Point(RectWidth(ControlRect) - 3, 2),
+              GR32.Point(RectWidth(ControlRect) - 3, RectHeight(ControlRect) - 2),
+              GR32.Point(3, RectHeight(ControlRect) div 2)
+            ], ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
+            GetSymbolBrush, GetSymbolPen);
         end;
 
       drRight:
         begin
-          Result.AddPolygon(BidiPolygon(
-                            NewPolygon(BidiControlRect, [GR32.Point(RectWidth(ControlRect) - 3, RectHeight(ControlRect) div 2),
-                                                     GR32.Point(3, 2),
-                                                     GR32.Point(3, RectHeight(ControlRect) - 2),
-                                                     GR32.Point(RectWidth(ControlRect) - 3, RectHeight(ControlRect) div 2)],
-                                       ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
-                                       GetSymbolBrush,
-                                       GetSymbolPen);
+          Result.AddPolygon(BidiPolygon(NewPolygon(BidiControlRect,
+            [
+              GR32.Point(RectWidth(ControlRect) - 3, RectHeight(ControlRect) div 2),
+              GR32.Point(3, 2),
+              GR32.Point(3, RectHeight(ControlRect) - 2),
+              GR32.Point(RectWidth(ControlRect) - 3, RectHeight(ControlRect) div 2)
+            ],
+            ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
+            GetSymbolBrush, GetSymbolPen);
         end;
     end;
   end;
@@ -1794,7 +1799,7 @@ begin
     FEndTickCount := 0;
     FCurrentTickCount := FEndTickCount;
 
-    TransformColors(TRUE);
+    TransformColors(True);
   end
   else
     FEndTickCount := EndTickCount;
@@ -1804,13 +1809,13 @@ function TChromeTabControlPropertyItems.TransformColors(ForceUpdate: Boolean): B
 var
   TransformPct: Integer;
 begin
-  Result := FALSE;
+  Result := False;
 
   if (ForceUpdate) or
      ((FStartTickCount > 0) and
       (FCurrentTickCount < FEndTickCount)) then
   begin
-    Result := TRUE;
+    Result := True;
 
     if ForceUpdate then
     begin
@@ -1846,14 +1851,14 @@ function TBaseChromeButtonControl.AnimateStyle: Boolean;
 var
   SymbolResult: Boolean;
 begin
-  Result := FButtonControlPropertyItems.TransformColors(FALSE);
+  Result := FButtonControlPropertyItems.TransformColors(False);
 
   if Result then
   begin
     FreeAndNil(FButtonBrush);
     FreeAndNil(FButtonPen);
 
-    SymbolResult := FSymbolControlPropertyItems.TransformColors(FALSE);
+    SymbolResult := FSymbolControlPropertyItems.TransformColors(False);
 
     if SymbolResult then
     begin

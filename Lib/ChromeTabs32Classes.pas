@@ -58,7 +58,7 @@ type
     function GetModified: Boolean;
     function GetTab: TChromeTab;
     function GetMarkedForDeletion: Boolean;
-    function GetSpinnerState: TChromeTabs32pinnerState;
+    function GetSpinnerState: TChromeTabs32SpinnerState;
     function GetHideCloseButton: Boolean;
     function GetData: Pointer;
     procedure SetData(const Value: Pointer);
@@ -124,7 +124,7 @@ type
     FVisible: Boolean;
     FModified: Boolean;
     FMarkedForDeletion: Boolean;
-    FSpinnerState: TChromeTabs32pinnerState;
+    FSpinnerState: TChromeTabs32SpinnerState;
     FHideCloseButton: Boolean;
 
     procedure SetActive(Value: boolean);
@@ -135,7 +135,7 @@ type
     procedure SetImageIndexOverlay(const Value: {$IF CompilerVersion >= 23.0}System.UITypes.{$IFEND}TImageIndex);
     procedure SetVisible(const Value: Boolean);
     procedure SetModified(const Value: Boolean);
-    procedure SetSpinnerState(const Value: TChromeTabs32pinnerState);
+    procedure SetSpinnerState(const Value: TChromeTabs32SpinnerState);
     procedure SetHideCloseButton(const Value: Boolean);
     procedure SetTabControl(const Value: TObject);
     procedure SetData(const Value: Pointer);
@@ -152,7 +152,7 @@ type
     function GetModified: Boolean;
     function GetTab: TChromeTab;
     function GetMarkedForDeletion: Boolean;
-    function GetSpinnerState: TChromeTabs32pinnerState;
+    function GetSpinnerState: TChromeTabs32SpinnerState;
     function GetHideCloseButton: Boolean;
     function GetData: Pointer;
   protected
@@ -180,7 +180,7 @@ type
     property Pinned: Boolean read GetPinned write SetPinned;
     property Visible: Boolean read GetVisible write SetVisible;
     property Modified: Boolean read GetModified write SetModified;
-    property SpinnerState: TChromeTabs32pinnerState read GetSpinnerState write SetSpinnerState;
+    property SpinnerState: TChromeTabs32SpinnerState read GetSpinnerState write SetSpinnerState;
     property HideCloseButton: Boolean read GetHideCloseButton write SetHideCloseButton;
   end;
 
@@ -981,7 +981,6 @@ type
     procedure SetShowPinnedTabText(const Value: Boolean);
   public
     constructor Create(AOwner: TPersistent); override;
-    destructor Destroy; override;
 
 //    property CanvasSmoothingMode: TSmoothingMode read FCanvasSmoothingMode write SetCanvasSmoothingMode;
   published
@@ -1222,7 +1221,7 @@ begin
   FCollection := Collection;
   FImageIndex := -1;
   FImageIndexOverlay := -1;
-  FVisible := TRUE;
+  FVisible := True;
 
   // Inherited needs to be here so the property values are
   // set before it is called
@@ -1258,11 +1257,11 @@ begin
 
     DoChanged(tcPinned);
 
-    Active := TRUE;
+    Active := True;
   end;
 end;
 
-procedure TChromeTab.SetSpinnerState(const Value: TChromeTabs32pinnerState);
+procedure TChromeTab.SetSpinnerState(const Value: TChromeTabs32SpinnerState);
 begin
   if Value <> FSpinnerState then
   begin
@@ -1279,7 +1278,7 @@ var
 begin
   if FActive <> Value then
   begin
-    Allow := TRUE;
+    Allow := True;
 
     if Value then
     begin
@@ -1413,7 +1412,7 @@ begin
   Result := FPinned;
 end;
 
-function TChromeTab.GetSpinnerState: TChromeTabs32pinnerState;
+function TChromeTab.GetSpinnerState: TChromeTabs32SpinnerState;
 begin
   Result := FSpinnerState;
 end;
@@ -1597,7 +1596,7 @@ begin
     if (not DeleteNow) and
        (GetChromeTabInterface.GetOptions.Animation.GetMovementAnimationEaseType(GetChromeTabInterface.GetOptions.Animation.MovementAnimations.TabDelete) <> ttNone) then
     begin
-      Items[Index].FMarkedForDeletion := TRUE;
+      Items[Index].FMarkedForDeletion := True;
 
       GetChromeTabInterface.DoOnChange(Items[Index], tcDeleted);
     end
@@ -1615,7 +1614,7 @@ begin
       Dec(NewIdx);
 
     if NewIdx <> -1 then
-      Items[NewIdx].Active := TRUE;
+      Items[NewIdx].Active := True;
   end;
 end;
 
@@ -1626,7 +1625,7 @@ begin
   for i := 0 to pred(Count) do
     if Items[i] = Value then
     begin
-      Items[i].Active := TRUE;
+      Items[i].Active := True;
 
       Break;
     end;
@@ -1717,19 +1716,13 @@ begin
   FImageOffsetLeft := 13;
   FTextHorizontalAlignment := taLeftJustify;
   FTextAlignmentVertical := taVerticalCenter;
-  FShowImages := TRUE;
+  FShowImages := True;
   FShowPinnedTabText := False;
 
   FTextTrimType := tttFade;
 
   // FCanvasSmoothingMode := SmoothingModeHighQuality;
   FOffsetRight := 0;
-end;
-
-destructor TChromeTabs32Options.Destroy;
-begin
-
-  inherited;
 end;
 
 procedure TChromeTabs32Options.SetOffsetRight(const Value: Integer);
@@ -1937,7 +1930,7 @@ end;
 
 procedure TChromeTabs32Persistent.Invalidate;
 begin
-  FInvalidated := TRUE;
+  FInvalidated := True;
 end;
 
 { TOptions }
@@ -2049,6 +2042,7 @@ begin
   DoChanged;
 end;
 
+
 { TChromeTabLookAndFeelStyle }
 
 constructor TChromeTabs32LookAndFeelStyle.Create(AOwner: TPersistent);
@@ -2080,7 +2074,7 @@ begin
   // Make sure thst the last brush wasn't broken
   if (FInvalidated) or (FBrush <> nil) then
   begin
-    FreeAndNil(FBrush);
+  FreeAndNil(FBrush);
 
     FInvalidated := False;
   end;
@@ -2119,7 +2113,7 @@ procedure TChromeTabs32LookAndFeelStyle.Invalidate;
 begin
   inherited;
 
-  FPenInvalidated := TRUE;
+  FPenInvalidated := True;
 end;
 
 procedure TChromeTabs32LookAndFeelStyle.SetStartAlpha(const Value: Byte);
@@ -2185,6 +2179,7 @@ begin
   DoChanged;
 end;
 
+
 { TChromeTabs32LookAndFeelCloseButton }
 
 constructor TChromeTabs32LookAndFeelCloseButton.Create(AOwner: TPersistent);
@@ -2245,6 +2240,7 @@ begin
   FCircle.Invalidate;
 end;
 
+
 { TChromeTabs32LookAndFeelAddButton }
 
 constructor TChromeTabs32LookAndFeelAddButton.Create(AOwner: TPersistent);
@@ -2284,7 +2280,8 @@ begin
   FPlusSign.Invalidate;
 end;
 
-// TChromeTabs32LookAndFeel
+
+{ TChromeTabs32LookAndFeel }
 
 constructor TChromeTabs32LookAndFeel.Create(AOwner: TPersistent);
 begin
@@ -2454,7 +2451,7 @@ begin
   FDragDisplay := ddTabAndControl;
   FDragFormBorderWidth := 2;
   FDragFormBorderColor := clGray;
-  FContrainDraggedTabWithinContainer := TRUE;
+  FContrainDraggedTabWithinContainer := True;
 end;
 
 procedure TChromeTabs32DragOptions.SetDragType(
@@ -2757,12 +2754,12 @@ begin
 
   FBackgroundDblClickMaximiseRestoreForm := False;
   FBackgroundDragMovesForm := False;
-  FTabSmartDeleteResizing := TRUE;
+  FTabSmartDeleteResizing := True;
   FTabSmartDeleteResizeCancelDelay := 700;
-  FUseBuiltInPopupMenu := TRUE;
-  FTabRightClickSelect := TRUE;
-  FActivateNewTab := TRUE;
-  FIgnoreDoubleClicksWhileAnimatingMovement := TRUE;
+  FUseBuiltInPopupMenu := True;
+  FTabRightClickSelect := True;
+  FActivateNewTab := True;
+  FIgnoreDoubleClicksWhileAnimatingMovement := True;
 end;
 
 procedure TChromeTabs32BehaviourOptions.SetActivateNewTab(const Value: Boolean);
@@ -2825,12 +2822,12 @@ begin
 
   FScrollStep := 20;
   FScrollRepeatDelay := 20;
-  FAutoHideButtons := TRUE;
+  FAutoHideButtons := True;
 
-  FDragScroll := TRUE;
+  FDragScroll := True;
   FDragScrollOffset := 50;
 
-  FMouseWheelScroll := TRUE;
+  FMouseWheelScroll := True;
 
   FScrollButtons := csbRight;
 end;
@@ -2962,7 +2959,7 @@ constructor TChromeTabs32ControlPropertiesEx.Create(AOwner: TPersistent);
 begin
   inherited;
 
-  FVisible := TRUE;
+  FVisible := True;
 end;
 
 procedure TChromeTabs32ControlPropertiesEx.SetVisible(const Value: Boolean);
@@ -2978,7 +2975,7 @@ constructor TChromeTabs32CloseButtonProperties.Create(AOwner: TPersistent);
 begin
   inherited;
 
-  FAutoHide := TRUE;
+  FAutoHide := True;
   FVisibility := bvAll;
 
   FAutoHideWidth := 20;
@@ -3030,7 +3027,7 @@ constructor TChromeTabs32AddButtonProperties.Create(AOwner: TPersistent);
 begin
   inherited;
 
-  FShowPlusSign := TRUE;
+  FShowPlusSign := True;
   FVisibility := avRightFloating;
 
   Offsets.Vertical := 9;
@@ -3415,7 +3412,7 @@ end;
 
 constructor TChromeTabPolygons.Create;
 begin
-  FPolygons := TObjectList.Create(TRUE);
+  FPolygons := TObjectList.Create(True);
 end;
 
 destructor TChromeTabPolygons.Destroy;
@@ -3430,7 +3427,7 @@ var
   i: Integer;
   Brush: TCustomBrush;
 begin
-  for i := 0 to pred(FPolygons.Count) do
+  for i := 0 to FPolygons.Count - 1 do
   begin
     TargetCanvas.Brushes.Clear;
 
@@ -3453,6 +3450,7 @@ function TChromeTabPolygons.GetPolygons(Index: Integer): TChromeTabPolygon;
 begin
   Result := TChromeTabPolygon(FPolygons[Index]);
 end;
+
 
 { TChromeTabs32LookAndFeelScrollButton }
 
@@ -3696,7 +3694,7 @@ constructor TChromeTabs32LookAndFeelFont.Create(AOwner: TPersistent);
 begin
   inherited;
 
-  FUseDefaultFont := TRUE;
+  FUseDefaultFont := True;
 end;
 
 procedure TChromeTabs32LookAndFeelFont.SetUseDefaultFont(const Value: Boolean);
@@ -3761,8 +3759,8 @@ constructor TChromeTabs32MovementAnimationTypes.Create(AOwner: TPersistent);
 begin
   inherited;
 
-  FUseDefaultEaseType := TRUE;
-  FUseDefaultAnimationTime := TRUE;
+  FUseDefaultEaseType := True;
+  FUseDefaultAnimationTime := True;
   FEaseType := ttLinearTween;
   FAnimationTimeMS := 200;
 end;
@@ -3800,7 +3798,7 @@ begin
   FUpload := TChromeTabs32SpinnerOptions.Create(Self);
   FDownload := TChromeTabs32SpinnerOptions.Create(Self);
 
-  FUpload.ReverseDirection := TRUE;
+  FUpload.ReverseDirection := True;
   FUpload.FRenderedAnimationStep := 2;
   FUpload.Position.Width := 16;
   FUpload.Position.Height := 16;
@@ -3813,7 +3811,7 @@ begin
   FDownload.SweepAngle := 135;
 
   FAnimationUpdateMS := 50;
-  FHideImagesWhenSpinnerVisible := TRUE;
+  FHideImagesWhenSpinnerVisible := True;
 end;
 
 destructor TChromeTabs32SpinnersOptions.Destroy;

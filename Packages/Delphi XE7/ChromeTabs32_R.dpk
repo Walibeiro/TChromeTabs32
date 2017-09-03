@@ -31,6 +31,7 @@ package ChromeTabs32_R;
 {$IMPLICITBUILD ON}
 
 requires
+  GR32_R,
   rtl,
   vcl,
   vclimg;

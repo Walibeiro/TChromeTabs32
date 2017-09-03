@@ -72,7 +72,7 @@ type
     ddTabAndControl
   );
 
-  TChromeTabs32pinnerState = (
+  TChromeTabs32SpinnerState = (
     tssNone,
     tssRenderedUpload,
     tssRenderedDownload,
@@ -158,7 +158,7 @@ type
   );
   TTabDropOptions = set of TTabDropOption;
 
-  TChromeTabs32tate = (
+  TChromeTabs32State = (
     stsAnimatingMovement,
     stsAnimatingStyle,
     stsDragging,
@@ -179,7 +179,7 @@ type
     stsDebug,
     stsAnimatingCloseTab
   );
-  TChromeTabs32tates = set of TChromeTabs32tate;
+  TChromeTabs32States = set of TChromeTabs32State;
 
   TChromeTabs32EaseType = (
     ttNone,
@@ -289,7 +289,7 @@ const
     'Disabled'
   );
 
-  ChromeTabs32tateDescriptions: array[TChromeTabs32tate] of string = (
+  ChromeTabs32StateDescriptions: array[TChromeTabs32State] of string = (
     'Animating Movement',
     'Animating Style',
     'Dragging',
