@@ -3308,7 +3308,8 @@ begin
     else
       TabLeft := TabControls[Tabs.Count - 1].ControlRect.Right;
 
-    TabLeft := FScrollWidth + FOptions.Display.Tabs.TabOverlap + FOptions.Display.AddButton.Offsets.Horizontal + FOptions.Display.Tabs.OffsetLeft;
+    TabLeft := FScrollWidth + FOptions.Display.Tabs.TabOverlap +
+      FOptions.Display.AddButton.Offsets.Horizontal + FOptions.Display.Tabs.OffsetLeft;
   finally
     // Reset the drag status now we're drawn everything
     if (HasState(stsCancellingDrag)) or
@@ -3854,7 +3855,7 @@ var
 begin
   // Don't draw while we're loading
   if ControlReady then
-  try
+  begin
     DrawTicks := GetTickCount;
     try
       if (HasState(stsControlPositionsInvalidated)) or
@@ -3966,23 +3967,22 @@ begin
 
         // Draw the bottom line
         Pen := FLookAndFeel.Tabs.BaseLine.GetPen;
-
+        Pen.BrushCollection := TabCanvas.Brushes;
+        TabCanvas.Path.BeginPath;
         case FOptions.Display.Tabs.Orientation of
           toTop:
             begin
-              Pen.BrushCollection := TabCanvas.Brushes;
               TabCanvas.Path.MoveTo(0, TabContainerRect.Bottom - 1);
               TabCanvas.Path.HorizontalLineTo(CorrectedClientWidth);
-              Pen.BrushCollection := nil;
-// Original         DrawLine(Pen, 0, TabContainerRect.Bottom - 1, CorrectedClientWidth, TabContainerRect.Bottom - 1);
             end;
           toBottom:
             begin
               TabCanvas.Path.MoveTo(0, TabContainerRect.Top);
               TabCanvas.Path.HorizontalLineTo(CorrectedClientWidth);
-// Original              TabCanvas.DrawLine(Pen, 0, TabContainerRect.Top, CorrectedClientWidth, TabContainerRect.Top);
             end;
         end;
+        TabCanvas.Path.EndPath;
+        Pen.BrushCollection := nil;
 
         // Restore the tab clip region
         SetTabClipRegion;
@@ -4030,9 +4030,7 @@ begin
     end;
 
     // Draw the canvas bitmap to the control canvas
-    BitBlt(Canvas.Handle, 0, 0, FCanvasBmp.Width, FCanvasBmp.Height, FCanvasBmp.Canvas.Handle, 0, 0, SRCCOPY);
-  finally
-
+    FCanvasBmp.DrawTo(Canvas.Handle);
   end;
 end;
 

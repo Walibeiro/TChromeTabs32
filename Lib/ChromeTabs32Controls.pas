@@ -1525,10 +1525,12 @@ begin
 
           // Draw the cross
           CloseButtonCrossPen.BrushCollection := TabCanvas.Brushes;
+          TabCanvas.Path.BeginPath;
           TabCanvas.Path.MoveTo(CrossRect.Left, CrossRect.Top);
           TabCanvas.Path.LineTo(CrossRect.Right, CrossRect.Bottom);
           TabCanvas.Path.MoveTo(CrossRect.Left, CrossRect.Bottom);
           TabCanvas.Path.LineTo(CrossRect.Right, CrossRect.Top);
+          TabCanvas.Path.EndPath;
           CloseButtonCrossPen.BrushCollection := nil;
 
 // original          TabCanvas.DrawLine(CloseButtonCrossPen, CrossRect.Left, CrossRect.Top, CrossRect.Right, CrossRect.Bottom);

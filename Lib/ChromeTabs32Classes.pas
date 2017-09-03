@@ -3437,8 +3437,9 @@ begin
     if (Polygons[i].Pen <> nil) and (DrawToFunctions in [dfPen, dfBrushAndPen]) then
       Polygons[i].Pen.BrushCollection := TargetCanvas.Brushes;
 
+    TargetCanvas.Path.BeginPath;
     TargetCanvas.Path.Polygon(PointToFloatPoint(TArrayOfPoint(Polygons[i].Polygon)));
-    TargetCanvas.Path.DrawPath;
+    TargetCanvas.Path.EndPath;
 
     if (Polygons[i].Brush <> nil) and (DrawToFunctions in [dfBrush, dfBrushAndPen]) then
       Polygons[i].Brush.BrushCollection := nil;
