@@ -1089,14 +1089,15 @@ end;
 
 procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer; ClipPolygons: IChromeTabPolygons);
 
-(* TODO
-  procedure DrawGDITextWithOffset(const Text: String; TextRect: TRect; OffsetX, OffsetY: Integer; FontColor: TColor; Alpha: Byte; TextHint: TextRenderingHint);
+  procedure DrawTextWithOffset(const Text: string; TextRect: TRect; OffsetX, OffsetY: Integer; FontColor: TColor; Alpha: Byte);
   const
     BlendFactorsNormal: array[0..2] of Single = (0.0, 0.0, 0.0);
   var
+(*
     TabsFont: TGPFont;
     GPRect: TGPRectF;
     TxtFormat: TGPStringFormat;
+*)
     TabsTxtBrush: TLinearGradientPolygonFiller;
     TextFormatFlags: Integer;
     TabText: String;
@@ -1104,6 +1105,7 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
     BlendPositions: array[0..2] of Single;
     BlendFactorsFade: array[0..2] of Single;
   begin
+(* TODO
     if ChromeTabs32.GetOptions.Behaviour.DebugMode then
       TextSize := 7
     else
@@ -1240,26 +1242,25 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
     finally
       FreeAndNil(TabsFont);
     end;
+*)
   end;
 
-  procedure DrawGDIText(const Text: String; TextRect: TRect);
+  procedure DrawText(const Text: String; TextRect: TRect);
   begin
-    DrawGDITextWithOffset(Text,
-                          TextRect,
-                          0,
-                          0,
-                          FChromeTabControlPropertyItems.CurrentTabProperties.FontColor,
-                          FChromeTabControlPropertyItems.CurrentTabProperties.FontAlpha,
-                          FChromeTabControlPropertyItems.StopTabProperties.TextRenderingMode);
+    DrawTextWithOffset(Text, TextRect, 0, 0,
+      FChromeTabControlPropertyItems.CurrentTabProperties.FontColor,
+      FChromeTabControlPropertyItems.CurrentTabProperties.FontAlpha);
+//      FChromeTabControlPropertyItems.StopTabProperties.TextRenderingMode);
   end;
 
   procedure DrawImage(Images: TCustomImageList; ImageIndex: Integer; ImageRect: TRect; ChromeTabItemType: TChromeTabItemType);
   var
-    ImageBitmap: TGPImage;
+// TODO    ImageBitmap: TGPImage;
     Handled: Boolean;
   begin
     ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ImageRect, ChromeTabItemType, ChromeTab.GetIndex, Handled);
 
+(* TODO
     if not Handled then
     begin
       ImageBitmap := ImageListToTGPImage(Images, ImageIndex);
@@ -1269,17 +1270,19 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
         FreeAndNil(ImageBitmap);
       end;
     end;
+*)
 
     ChromeTabs32.DoOnAfterDrawItem(TabCanvas, ImageRect, ChromeTabItemType, ChromeTab.GetIndex);
   end;
 
-  procedure DrawGlow(GlowRect: TRect; CentreColor, OutsideColor: TColor; CentreAlpha, OutsideAlpha: Byte);
+  procedure DrawGlow(GlowRect: TRect; CentreColor, OutsideColor: TColor32; CentreAlpha, OutsideAlpha: Byte);
   var
-    GPGraphicsPath: TCanvas32Path;
-    GlowBrush: TGPPathGradientBrush;
-    SurroundColors : array[0..0] of TGPColor;
+    Path: TFlattenedPath;
+    // TODO GlowBrush: TGPPathGradientBrush;
+    SurroundColors : array[0..0] of TColor32;
     ColCount: Integer;
   begin
+(* TODO
     GPGraphicsPath := TCanvas32Path.Create;
     try
       // Add the glow ellipse to the path
@@ -1312,6 +1315,7 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
     finally
       FreeAndNil(GPGraphicsPath);
     end;
+*)
   end;
 
   procedure DrawSpinner(ImageRect: TRect);
@@ -1342,6 +1346,7 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
 
         Offset := SpinnerLookAndFeel.Thickness / 2;
 
+(* TODO
         SpinPen := TStrokeBrush.Create(MakeGDIPColor(SpinnerLookAndFeel.Color, SpinnerLookAndFeel.Alpha), SpinnerLookAndFeel.Thickness);
         try
           TabCanvas.DrawArc(SpinPen,
@@ -1354,19 +1359,17 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
         finally
           FreeAndNil(SpinPen);
         end;
+*)
       end
       else
       begin
         SpinnerImages := GetSpinnerImageList;
 
         if SpinnerImages <> nil then
-        begin
           DrawImage(SpinnerImages, FSpinnerImageIndex, ImageRect, itTabImageSpinner);
-        end;
       end;
     end;
   end;
-*)
 
 var
   CloseButtonStyle: TChromeTabs32LookAndFeelStyle;
@@ -1427,7 +1430,6 @@ begin
             ModifiedTop := ControlRect.Bottom - ChromeTabs32.GetOptions.Display.TabModifiedGlow.VerticalOffset;
           end;
 
-(* TODO
           DrawGlow(BidiRect(Rect(FModifiedPosition,
                         ModifiedTop,
                         ChromeTabs32.GetOptions.Display.TabModifiedGlow.Width + FModifiedPosition,
@@ -1436,7 +1438,6 @@ begin
                         ChromeTabs32.GetLookAndFeel.Tabs.Modified.OutsideColor,
                         ChromeTabs32.GetLookAndFeel.Tabs.Modified.CentreAlpha,
                         ChromeTabs32.GetLookAndFeel.Tabs.Modified.OutsideAlpha);
-*)
         end;
       end;
 
@@ -1450,7 +1451,6 @@ begin
 
         if not Handled then
         begin
-(* TODO
           DrawGlow(Rect(MouseX - (ChromeTabs32.GetOptions.Display.TabMouseGlow.Width div 2),
                         MouseY - (ChromeTabs32.GetOptions.Display.TabMouseGlow.Height div 2),
                         MouseX + (ChromeTabs32.GetOptions.Display.TabMouseGlow.Width div 2),
@@ -1459,7 +1459,6 @@ begin
                         ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.OutsideColor,
                         ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.CentreAlpha,
                         ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.OutsideAlpha);
-*)
         end;
       end;
 
@@ -1473,10 +1472,8 @@ begin
       begin
         ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, TextRect, itTabText, ChromeTab.GetIndex, Handled);
 
-(* TODO
         if not Handled then
-          DrawGDIText(ChromeTab.GetCaption, TextRect);
-*)
+          DrawText(ChromeTab.GetCaption, TextRect);
 
         ChromeTabs32.DoOnAfterDrawItem(TabCanvas, TextRect, itTabText, ChromeTab.GetIndex);
       end;
@@ -1484,11 +1481,9 @@ begin
       // Fire before draw event
       ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ControlRect, itTabOutline, ChromeTab.GetIndex, Handled);
 
+      // Eventually draw the border after the modified glow and text
       if not Handled then
-      begin
-        // Draw the border after the modified glow and text
         ChromeTabPolygons.DrawTo(TabCanvas, dfPen);
-      end;
 
       // Draw the close button
       if CloseButtonVisible then
@@ -1543,7 +1538,6 @@ begin
         ChromeTabs32.DoOnAfterDrawItem(TabCanvas, ButtonRect, itTabCloseButton, ChromeTab.GetIndex);
       end;
 
-(* TODO
       // Draw the normal and overlay images
       if (not SpinnerVisible) or
          (not ChromeTabs32.GetOptions.Display.TabSpinners.HideImagesWhenSpinnerVisible) then
@@ -1558,7 +1552,6 @@ begin
       // Draw the spinner image
       if SpinnerVisible then
         DrawSpinner(ImageRect);
-*)
     finally
 // TODO      FreeAndNil(OriginalClipRegion);
     end;

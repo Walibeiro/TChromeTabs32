@@ -259,7 +259,7 @@ type
     function GetLastPinnedTabIndex: Integer;
     function GetPinnedTabCount: Integer;
     procedure UpdateTabControlProperties;
-    procedure DrawBackGroundTo(Targets: array of TCanvas32);
+    procedure DrawBackgroundTo(Targets: array of TCanvas32);
     function ControlRect: TRect;
     procedure ClearTabClosingStates;
     procedure UpdateProperties;
@@ -3833,10 +3833,11 @@ var
     // Set the clip region while re're drawing the tabs if we're not
     // overlaying the buttons
     if FOptions.Display.TabContainer.OverlayButtons then
-      TabCanvas.SetClip(RectToGPRectF(BidiRect(Rect(FOptions.Display.Tabs.OffsetLeft,
-                                               FOptions.Display.Tabs.OffsetTop,
-                                               CorrectedClientWidth - FOptions.Display.Tabs.OffsetRight,
-                                               ClientHeight - FOptions.Display.Tabs.OffsetBottom))))
+      TabCanvas.SetClip(RectToGPRectF(BidiRect(Rect(
+        FOptions.Display.Tabs.OffsetLeft,
+        FOptions.Display.Tabs.OffsetTop,
+        CorrectedClientWidth - FOptions.Display.Tabs.OffsetRight,
+        ClientHeight - FOptions.Display.Tabs.OffsetBottom))))
     else
       TabCanvas.SetClip(RectToGPRectF(BidiRect(TabContainerRect)));
 *)
@@ -3914,7 +3915,7 @@ begin
         end;
 
         // If it hasn't been handled, draw it now
-        DrawBackGroundTo(Targets);
+        DrawBackgroundTo(Targets);
 
         // After background draw event
         DoOnAfterDrawItem(BackgroundCanvas, ControlRect, itBackground, -1);
@@ -3964,13 +3965,15 @@ begin
 // TODO          TabCanvas.ResetClip;
 
         // Draw the bottom line
-        Pen :=  FLookAndFeel.Tabs.BaseLine.GetPen;
+        Pen := FLookAndFeel.Tabs.BaseLine.GetPen;
 
         case FOptions.Display.Tabs.Orientation of
           toTop:
             begin
+              Pen.BrushCollection := TabCanvas.Brushes;
               TabCanvas.Path.MoveTo(0, TabContainerRect.Bottom - 1);
               TabCanvas.Path.HorizontalLineTo(CorrectedClientWidth);
+              Pen.BrushCollection := nil;
 // Original         DrawLine(Pen, 0, TabContainerRect.Bottom - 1, CorrectedClientWidth, TabContainerRect.Bottom - 1);
             end;
           toBottom:
@@ -3996,9 +3999,7 @@ begin
 
         // Draw the drag tab if required
         if FDragTabControl <> nil then
-        begin
           FDragTabControl.DrawTo(TabCanvas, FLastMouseX, FLastMouseY);
-        end;
 
         // Draw the new button
         if (FOptions.Display.AddButton.Visibility <> avNone) and
@@ -4065,7 +4066,7 @@ begin
                  ABottom);
 end;
 
-procedure TCustomChromeTabs32.DrawBackGroundTo(Targets: array of TCanvas32);
+procedure TCustomChromeTabs32.DrawBackgroundTo(Targets: array of TCanvas32);
 var
   Bitmap32: TBitmap32;
   i: Integer;
@@ -4093,7 +4094,7 @@ begin
         end;
       end;
     finally
-      FreeAndNil(GPImage);
+      FreeAndNil(Bitmap32);
     end;
 *)
   finally
