@@ -367,7 +367,8 @@ begin
     Result := ChromeTabs32.BidiRect(FControlRect);
 end;
 
-function TBaseChromeTabs32Control.InternalGetPolygons(ControlType: TChromeTabItemType; DefaultBrush: TSolidBrush; DefaultPen: TStrokeBrush): IChromeTabPolygons;
+function TBaseChromeTabs32Control.InternalGetPolygons(ControlType: TChromeTabItemType;
+  DefaultBrush: TSolidBrush; DefaultPen: TStrokeBrush): IChromeTabPolygons;
 var
   i: Integer;
 begin
@@ -1380,15 +1381,16 @@ var
 begin
   if (FTabProperties <> nil) and (ChromeTabs32 <> nil) then
   begin
-(* TODO
-    OriginalClipRegion := TGPRegion.Create;
+//TODO    OriginalClipRegion := TGPRegion.Create;
     try
+(* TODO
       // Save the current clip region of the GPGraphics
       if ClipPolygons <> nil then
         for i := 0 to pred(ClipPolygons.PolygonCount) do
           SetTabClipRegionFromPolygon(TabCanvas, ClipPolygons.Polygons[i].Polygon, CombineModeExclude);
 
       TabCanvas.GetClip(OriginalClipRegion);
+*)
 
       ChromeTabPolygons := GetPolygons;
 
@@ -1405,8 +1407,10 @@ begin
         ChromeTabPolygons.DrawTo(TabCanvas, dfBrush);
       end;
 
+(* TODO
       // Set the clip region to that the glows stay within the tab
       SetTabClipRegionFromPolygon(TabCanvas, ChromeTabPolygons.Polygons[0].Polygon, CombineModeIntersect);
+*)
 
       // Draw the modified glow
       if (FChromeTab.GetModified) and
@@ -1423,6 +1427,7 @@ begin
             ModifiedTop := ControlRect.Bottom - ChromeTabs32.GetOptions.Display.TabModifiedGlow.VerticalOffset;
           end;
 
+(* TODO
           DrawGlow(BidiRect(Rect(FModifiedPosition,
                         ModifiedTop,
                         ChromeTabs32.GetOptions.Display.TabModifiedGlow.Width + FModifiedPosition,
@@ -1431,6 +1436,7 @@ begin
                         ChromeTabs32.GetLookAndFeel.Tabs.Modified.OutsideColor,
                         ChromeTabs32.GetLookAndFeel.Tabs.Modified.CentreAlpha,
                         ChromeTabs32.GetLookAndFeel.Tabs.Modified.OutsideAlpha);
+*)
         end;
       end;
 
@@ -1444,6 +1450,7 @@ begin
 
         if not Handled then
         begin
+(* TODO
           DrawGlow(Rect(MouseX - (ChromeTabs32.GetOptions.Display.TabMouseGlow.Width div 2),
                         MouseY - (ChromeTabs32.GetOptions.Display.TabMouseGlow.Height div 2),
                         MouseX + (ChromeTabs32.GetOptions.Display.TabMouseGlow.Width div 2),
@@ -1452,19 +1459,24 @@ begin
                         ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.OutsideColor,
                         ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.CentreAlpha,
                         ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.OutsideAlpha);
+*)
         end;
       end;
 
+(* TODO
       // Reset the clip region
       TabCanvas.SetClip(OriginalClipRegion);
+*)
 
       // Draw the text
       if TextVisible then
       begin
         ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, TextRect, itTabText, ChromeTab.GetIndex, Handled);
 
+(* TODO
         if not Handled then
           DrawGDIText(ChromeTab.GetCaption, TextRect);
+*)
 
         ChromeTabs32.DoOnAfterDrawItem(TabCanvas, TextRect, itTabText, ChromeTab.GetIndex);
       end;
@@ -1505,27 +1517,33 @@ begin
               end;
           end;
 
+(* TODO
           // Draw the circle
           TabCanvas.FillEllipse(CloseButtonStyle.GetBrush(ButtonRect),
-                                                          ButtonRect.Left,
-                                                          ButtonRect.Top,
-                                                          RectWidth(ButtonRect),
-                                                          RectHeight(ButtonRect));
+            ButtonRect.Left, ButtonRect.Top,
+            RectWidth(ButtonRect), RectHeight(ButtonRect));
 
           TabCanvas.DrawEllipse(CloseButtonStyle.GetPen,
-                                ButtonRect.Left,
-                                ButtonRect.Top,
-                                RectWidth(ButtonRect),
-                                RectHeight(ButtonRect));
+            ButtonRect.Left, ButtonRect.Top,
+            RectWidth(ButtonRect), RectHeight(ButtonRect));
+*)
 
           // Draw the cross
-          TabCanvas.DrawLine(CloseButtonCrossPen, CrossRect.Left, CrossRect.Top, CrossRect.Right, CrossRect.Bottom);
-          TabCanvas.DrawLine(CloseButtonCrossPen, CrossRect.Left, CrossRect.Bottom, CrossRect.Right, CrossRect.Top);
+          CloseButtonCrossPen.BrushCollection := TabCanvas.Brushes;
+          TabCanvas.Path.MoveTo(CrossRect.Left, CrossRect.Top);
+          TabCanvas.Path.LineTo(CrossRect.Right, CrossRect.Bottom);
+          TabCanvas.Path.MoveTo(CrossRect.Left, CrossRect.Bottom);
+          TabCanvas.Path.LineTo(CrossRect.Right, CrossRect.Top);
+          CloseButtonCrossPen.BrushCollection := nil;
+
+// original          TabCanvas.DrawLine(CloseButtonCrossPen, CrossRect.Left, CrossRect.Top, CrossRect.Right, CrossRect.Bottom);
+// original          TabCanvas.DrawLine(CloseButtonCrossPen, CrossRect.Left, CrossRect.Bottom, CrossRect.Right, CrossRect.Top);
         end;
 
         ChromeTabs32.DoOnAfterDrawItem(TabCanvas, ButtonRect, itTabCloseButton, ChromeTab.GetIndex);
       end;
 
+(* TODO
       // Draw the normal and overlay images
       if (not SpinnerVisible) or
          (not ChromeTabs32.GetOptions.Display.TabSpinners.HideImagesWhenSpinnerVisible) then
@@ -1540,10 +1558,10 @@ begin
       // Draw the spinner image
       if SpinnerVisible then
         DrawSpinner(ImageRect);
-    finally
-      FreeAndNil(OriginalClipRegion);
-    end;
 *)
+    finally
+// TODO      FreeAndNil(OriginalClipRegion);
+    end;
 
     ChromeTabs32.DoOnAfterDrawItem(TabCanvas, ControlRect, itTab, ChromeTab.GetIndex);
   end;
