@@ -36,7 +36,7 @@ uses
   Windows, Messages, Graphics,
   {$IFEND}
 
-  GR32, GR32_Paths, GR32_Brushes, GR32_ColorGradients,
+  GR32, GR32_Paths, GR32_Brushes, GR32_Polygons, GR32_ColorGradients,
 
   ChromeTabs32Types,
   ChromeTabs32Utils,
@@ -75,7 +75,7 @@ type
 
     procedure DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer; ClipPolygons: IChromeTabPolygons = nil); virtual; abstract;
 
-    function InternalGetPolygons(ControlType: TChromeTabItemType; DefaultBrush: TSolidBrush; DefaultPen: TStrokeBrush): IChromeTabPolygons; virtual;
+    function InternalGetPolygons(ControlType: TChromeTabItemType; DefaultFiller: TCustomPolygonFiller; DefaultPen: TStrokeBrush): IChromeTabPolygons; virtual;
     function GetPolygons: IChromeTabPolygons; virtual; abstract;
     function AnimateMovement: Boolean; virtual;
     function AnimateStyle: Boolean; virtual;
@@ -84,8 +84,8 @@ type
 
     property ControlRect: TRect read FControlRect;
     property BiDiControlRect: TRect read GetBidiControlRect;
-    function NewPolygon(ControlRect: TRect; const Polygon: array of TPoint; Orientation: TTabOrientation): TPolygon; virtual;
-    function BidiPolygon(Polygon: TPolygon): TPolygon;
+    function NewPolygon(ControlRect: TRect; const Polygon: array of TFloatPoint; Orientation: TTabOrientation): TArrayOfFloatPoint; virtual;
+    function BidiPolygon(Polygon: TArrayOfFloatPoint): TArrayOfFloatPoint;
 
     property StartRect: TRect read FStartRect;
     property EndRect: TRect read FEndRect;
@@ -104,18 +104,13 @@ type
   end;
 
   TChromeTabControlProperties = record
-    FontColor: TColor;
-    FontAlpha: Byte;
-    FontName: String;
+    FontColor: TColor32;
+    FontName: string;
     FontSize: Integer;
-//    TextRenderingMode: TTextRenderingHint;
-    StartColor: TColor;
-    StopColor: TColor;
-    OutlineColor: TColor;
+    StartColor: TColor32;
+    StopColor: TColor32;
+    OutlineColor: TColor32;
     OutlineSize: Single;
-    OutlineAlpha: Integer;
-    StartAlpha: Integer;
-    StopAlpha: Integer;
   end;
 
   TChromeTabControlPropertyItems = class
@@ -147,9 +142,10 @@ type
     FCloseButtonState: TDrawState;
     FChromeTabControlPropertyItems: TChromeTabControlPropertyItems;
     FTabProperties: TChromeTabs32LookAndFeelStyleProperties;
+
     FTabFiller: TLinearGradientPolygonFiller;
-    FTabBrush: TSolidBrush;
     FTabPen: TStrokeBrush;
+
     FModifiedPosition: Integer;
     FModifiedMovingLeft: Boolean;
     FPenInvalidated: Boolean;
@@ -160,7 +156,7 @@ type
     FSpinnerRenderedDegrees: Integer;
 
     function CloseButtonVisible: Boolean;
-    function GetTabBrush: TSolidBrush;
+    function GetTabFiller: TLinearGradientPolygonFiller;
     function GetTabPen: TStrokeBrush;
     function ImageVisible(ImageList: TCustomImageList; ImageIndex: Integer): Boolean;
     procedure CalculateRects(var ImageRect, TextRect, CloseButtonRect,
@@ -192,10 +188,10 @@ type
 
   TBaseChromeButtonControl = class(TBaseChromeTabs32Control)
   private
-    FButtonGradient: TLinearGradientPolygonFiller;
+    FButtonFiller: TLinearGradientPolygonFiller;
     FButtonBrush: TSolidBrush;
     FButtonPen: TStrokeBrush;
-    FSymbolGradient: TLinearGradientPolygonFiller;
+    FSymbolFiller: TLinearGradientPolygonFiller;
     FSymbolBrush: TSolidBrush;
     FSymbolPen: TStrokeBrush;
   protected
@@ -205,9 +201,9 @@ type
     FButtonStyle: TChromeTabs32LookAndFeelStyle;
     FSymbolStyle: TChromeTabs32LookAndFeelStyle;
 
-    function GetButtonBrush: TSolidBrush; virtual;
+    function GetButtonFiller: TLinearGradientPolygonFiller; virtual;
     function GetButtonPen: TStrokeBrush; virtual;
-    function GetSymbolBrush: TSolidBrush; virtual;
+    function GetSymbolFiller: TLinearGradientPolygonFiller; virtual;
     function GetSymbolPen: TStrokeBrush; virtual;
 
     procedure SetStylePropertyClasses; virtual;
@@ -258,6 +254,9 @@ type
 
 implementation
 
+uses
+  GR32_Blend, GR32_Text_VCL, GR32_VectorUtils;
+
 { TBaseChromeTabControl }
 
 function TBaseChromeTabs32Control.ScrollRect(ARect: TRect): TRect;
@@ -268,12 +267,11 @@ begin
     Result := ARect;
 end;
 
-function TBaseChromeTabs32Control.BidiPolygon(Polygon: TPolygon): TPolygon;
+function TBaseChromeTabs32Control.BidiPolygon(Polygon: TArrayOfFloatPoint): TArrayOfFloatPoint;
 begin
+  Result := Polygon;
   if ChromeTabs32.GetBiDiMode in BidiRightToLeftTabModes then
-    Result := HorzFlipPolygon(BidiControlRect, Polygon)
-  else
-    Result := Polygon;
+    HorzFlipPolygon(BidiControlRect, Result);
 end;
 
 function TBaseChromeTabs32Control.BidiRect(ARect: TRect): TRect;
@@ -284,7 +282,8 @@ begin
     Result := ARect;
 end;
 
-function TBaseChromeTabs32Control.NewPolygon(ControlRect: TRect; const Polygon: Array of TPoint; Orientation: TTabOrientation): TPolygon;
+function TBaseChromeTabs32Control.NewPolygon(ControlRect: TRect;
+  const Polygon: array of TFloatPoint; Orientation: TTabOrientation): TArrayOfFloatPoint;
 var
   ScrolledRect: TRect;
 begin
@@ -304,11 +303,8 @@ begin
     if FCurrentTickCount > FAnimationTime then
       FCurrentTickCount := FAnimationTime;
 
-    FControlRect := TransformRect(FStartRect,
-                                  FEndRect,
-                                  FCurrentTickCount,
-                                  FAnimationTime,
-                                  FEaseType);
+    FControlRect := TransformRect(FStartRect, FEndRect,
+      FCurrentTickCount, FAnimationTime, FEaseType);
   end;
 end;
 
@@ -368,20 +364,21 @@ begin
 end;
 
 function TBaseChromeTabs32Control.InternalGetPolygons(ControlType: TChromeTabItemType;
-  DefaultBrush: TSolidBrush; DefaultPen: TStrokeBrush): IChromeTabPolygons;
+  DefaultFiller: TCustomPolygonFiller; DefaultPen: TStrokeBrush): IChromeTabPolygons;
 var
   i: Integer;
 begin
   Result := nil;
 
-  ChromeTabs32.DoOnGetControlPolygons(Self, ControlRect, ControlType, ChromeTabs32.GetOptions.Display.Tabs.Orientation, Result);
+  ChromeTabs32.DoOnGetControlPolygons(Self, ControlRect, ControlType,
+    ChromeTabs32.GetOptions.Display.Tabs.Orientation, Result);
 
   if Result <> nil then
   begin
     for i := 0 to pred(Result.PolygonCount) do
     begin
-      if Result.Polygons[i].Brush = nil then
-        Result.Polygons[i].Brush := DefaultBrush;
+      if Result.Polygons[i].Filler = nil then
+        Result.Polygons[i].Filler := DefaultFiller;
 
       if Result.Polygons[i].Pen = nil then
         Result.Polygons[i].Pen := DefaultPen;
@@ -407,42 +404,34 @@ end;
 
 procedure TBaseChromeTabs32Control.SetHeight(const Value: Integer; AnimationTime: Cardinal; EaseType: TChromeTabs32EaseType);
 begin
-  SetPosition(Rect(FControlRect.Left,
-                   FControlRect.Top,
-                   FControlRect.Right,
-                   FControlRect.Top + Value),
-              AnimationTime,
-              EaseType);
+  SetPosition(Rect(
+    FControlRect.Left, FControlRect.Top,
+    FControlRect.Right, FControlRect.Top + Value),
+    AnimationTime, EaseType);
 end;
 
 procedure TBaseChromeTabs32Control.SetLeft(const Value: Integer; AnimationTime: Cardinal; EaseType: TChromeTabs32EaseType);
 begin
-  SetPosition(Rect(Value,
-                   FControlRect.Top,
-                   RectWidth(FControlRect) + Value,
-                   FControlRect.Bottom),
-              AnimationTime,
-              EaseType);
+  SetPosition(Rect(
+    Value, FControlRect.Top,
+    RectWidth(FControlRect) + Value, FControlRect.Bottom),
+    AnimationTime, EaseType);
 end;
 
 procedure TBaseChromeTabs32Control.SetWidth(const Value: Integer; AnimationTime: Cardinal; EaseType: TChromeTabs32EaseType);
 begin
-  SetPosition(Rect(FControlRect.Left,
-                   FControlRect.Top,
-                   FControlRect.Left + Value,
-                   FControlRect.Bottom),
-              AnimationTime,
-              EaseType);
+  SetPosition(Rect(
+    FControlRect.Left, FControlRect.Top,
+    FControlRect.Left + Value, FControlRect.Bottom),
+    AnimationTime, EaseType);
 end;
 
 procedure TBaseChromeTabs32Control.SetTop(const Value: Integer; AnimationTime: Cardinal; EaseType: TChromeTabs32EaseType);
 begin
-  SetPosition(Rect(FControlRect.Left,
-                   Value,
-                   FControlRect.Right,
-                   RectHeight(FControlRect) + Value),
-              AnimationTime,
-              EaseType);
+  SetPosition(Rect(
+    FControlRect.Left, Value,
+    FControlRect.Right, RectHeight(FControlRect) + Value),
+    AnimationTime, EaseType);
 end;
 
 procedure TBaseChromeTabs32Control.SetPosition(ARect: TRect; AnimationTime: Cardinal; EaseType: TChromeTabs32EaseType);
@@ -488,7 +477,7 @@ function TAddButtonControl.GetPolygons: IChromeTabPolygons;
 var
   LeftOffset, TopOffset: Integer;
 begin
-  Result := InternalGetPolygons(itAddButton, GetButtonBrush, GetButtonPen);
+  Result := InternalGetPolygons(itAddButton, GetButtonFiller, GetButtonPen);
 
   if Result = nil then
   begin
@@ -496,17 +485,17 @@ begin
 
     Result.AddPolygon(BidiPolygon(NewPolygon(BidiControlRect,
       [
-        GR32.Point(7, RectHeight(BidiControlRect)),
-        GR32.Point(4, RectHeight(BidiControlRect) - 2),
-        GR32.Point(0, 2),
-        GR32.Point(1, 0),
-        GR32.Point(RectWidth(BidiControlRect) - 7, 0),
-        GR32.Point(RectWidth(BidiControlRect) - 4, 2),
-        GR32.Point(RectWidth(BidiControlRect), RectHeight(BidiControlRect) - 2),
-        GR32.Point(RectWidth(BidiControlRect), RectHeight(BidiControlRect))
+        FloatPoint(7, RectHeight(BidiControlRect)),
+        FloatPoint(4, RectHeight(BidiControlRect) - 2),
+        FloatPoint(0, 2),
+        FloatPoint(1, 0),
+        FloatPoint(RectWidth(BidiControlRect) - 7, 0),
+        FloatPoint(RectWidth(BidiControlRect) - 4, 2),
+        FloatPoint(RectWidth(BidiControlRect), RectHeight(BidiControlRect) - 2),
+        FloatPoint(RectWidth(BidiControlRect), RectHeight(BidiControlRect))
       ],
       ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
-      GetButtonBrush, GetButtonPen);
+      GetButtonFiller, GetButtonPen);
 
     if ChromeTabs32.GetOptions.Display.AddButton.ShowPlusSign then
     begin
@@ -519,23 +508,22 @@ begin
           BidiControlRect.Right - LeftOffset,
           BidiControlRect.Bottom - TopOffset),
       [
-        GR32.Point(0, 3),
-        GR32.Point(3, 3),
-        GR32.Point(3, 0),
-        GR32.Point(6, 0),
-        GR32.Point(6, 3),
-        GR32.Point(9, 3),
-        GR32.Point(9, 6),
-        GR32.Point(6, 6),
-        GR32.Point(6, 9),
-        GR32.Point(3, 9),
-        GR32.Point(3, 6),
-        GR32.Point(0, 6),
-        GR32.Point(0, 3)
+        FloatPoint(0, 3),
+        FloatPoint(3, 3),
+        FloatPoint(3, 0),
+        FloatPoint(6, 0),
+        FloatPoint(6, 3),
+        FloatPoint(9, 3),
+        FloatPoint(9, 6),
+        FloatPoint(6, 6),
+        FloatPoint(6, 9),
+        FloatPoint(3, 9),
+        FloatPoint(3, 6),
+        FloatPoint(0, 6),
+        FloatPoint(0, 3)
       ],
       ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
-      GetSymbolBrush,
-      GetSymbolPen);
+      GetSymbolFiller, GetSymbolPen);
     end;
   end;
 end;
@@ -600,13 +588,14 @@ begin
   FChromeTab := TabInterface;
 
   FTabFiller := TLinearGradientPolygonFiller.Create;
+  FTabPen := TStrokeBrush.Create(nil);
 
   FScrollableControl := True;
 end;
 
 destructor TChromeTabControl.Destroy;
 begin
-  FreeAndNil(FTabBrush);
+  FreeAndNil(FTabFiller);
   FreeAndNil(FTabPen);
 
   FreeAndNil(FBmp);
@@ -676,11 +665,10 @@ begin
     LowX := ScrolledRect.Left - (ChromeTabs32.GetOptions.Display.TabModifiedGlow.Width);
     HighX := ScrolledRect.Right;
 
-    Distance := Round(CalculateEase(TickCount - FModifiedStartTicks,
-                                    0,
-                                    HighX - LowX,
-                                    ChromeTabs32.GetOptions.Display.TabModifiedGlow.AnimationPeriodMS,
-                                    ChromeTabs32.GetOptions.Display.TabModifiedGlow.EaseType));
+    Distance := Round(CalculateEase(
+      TickCount - FModifiedStartTicks, 0, HighX - LowX,
+      ChromeTabs32.GetOptions.Display.TabModifiedGlow.AnimationPeriodMS,
+      ChromeTabs32.GetOptions.Display.TabModifiedGlow.EaseType));
 
     if (ChromeTabs32.GetOptions.Display.TabModifiedGlow.Style = msRightToLeft) or
        ((ChromeTabs32.GetOptions.Display.TabModifiedGlow.Style = msKnightRider) and (FModifiedMovingLeft)) then
@@ -816,7 +804,7 @@ end;
 
 function TChromeTabControl.GetPolygons: IChromeTabPolygons;
 begin
-  Result := InternalGetPolygons(itTab, GetTabBrush, GetTabPen);
+  Result := InternalGetPolygons(itTab, GetTabFiller, GetTabPen);
 
   if Result = nil then
   begin
@@ -824,21 +812,21 @@ begin
 
     Result.AddPolygon(NewPolygon(BidiControlRect,
       [
-        GR32.Point(0, RectHeight(ControlRect)),
-        GR32.Point(4, RectHeight(ControlRect) - 3),
-        GR32.Point(12, 3),
-        GR32.Point(13, 2),
-        GR32.Point(14, 1),
-        GR32.Point(16, 0),
-        GR32.Point(RectWidth(ControlRect) - 16, 0),
-        GR32.Point(RectWidth(ControlRect) - 14, 1),
-        GR32.Point(RectWidth(ControlRect) - 13, 2),
-        GR32.Point(RectWidth(ControlRect) - 12, 3),
-        GR32.Point(RectWidth(ControlRect) - 4, RectHeight(ControlRect) - 3),
-        GR32.Point(RectWidth(ControlRect), RectHeight(ControlRect))
+        FloatPoint(0, RectHeight(ControlRect)),
+        FloatPoint(4, RectHeight(ControlRect) - 3),
+        FloatPoint(12, 3),
+        FloatPoint(13, 2),
+        FloatPoint(14, 1),
+        FloatPoint(16, 0),
+        FloatPoint(RectWidth(ControlRect) - 16, 0),
+        FloatPoint(RectWidth(ControlRect) - 14, 1),
+        FloatPoint(RectWidth(ControlRect) - 13, 2),
+        FloatPoint(RectWidth(ControlRect) - 12, 3),
+        FloatPoint(RectWidth(ControlRect) - 4, RectHeight(ControlRect) - 3),
+        FloatPoint(RectWidth(ControlRect), RectHeight(ControlRect))
       ],
       ChromeTabs32.GetOptions.Display.Tabs.Orientation),
-      GetTabBrush, GetTabPen);
+      GetTabFiller, GetTabPen);
   end;
 end;
 
@@ -867,46 +855,25 @@ begin
     Result.Bottom - ChromeTabs32.GetOptions.Display.CloseButton.CrossRadialOffset);
 end;
 
-function TChromeTabControl.GetTabBrush: TSolidBrush;
+function TChromeTabControl.GetTabFiller: TLinearGradientPolygonFiller;
 var
   ControlProperties: TChromeTabControlProperties;
 begin
-  if FBrushInvalidated then
-  begin
-    FBrushInvalidated := False;
-
-    FreeAndNil(FTabBrush);
-  end;
-
-  if FTabBrush = nil then
-  begin
-    ControlProperties := FChromeTabControlPropertyItems.CurrentTabProperties;
-    FTabBrush := TSolidBrush.Create(nil);
-    FTabBrush.Filler := FTabFiller;
-    FTabFiller.SimpleGradientY(
-      ControlRect.Top, SetAlpha(Color32(ControlProperties.StartColor), ControlProperties.StartAlpha),
-      ControlRect.Bottom, SetAlpha(ControlProperties.StopColor, ControlProperties.StopAlpha));
-  end;
-
-  Result := FTabBrush;
+  ControlProperties := FChromeTabControlPropertyItems.CurrentTabProperties;
+  FTabFiller.SimpleGradientY(
+      ControlRect.Top, ControlProperties.StartColor,
+      ControlRect.Bottom, ControlProperties.StopColor);
+  Result := FTabFiller;
 end;
 
 function TChromeTabControl.GetTabPen: TStrokeBrush;
 var
   ControlProperties: TChromeTabControlProperties;
 begin
-  if FPenInvalidated then
-  begin
-    FPenInvalidated := False;
-
-    FreeAndNil(FTabPen);
-  end;
-
   if FTabPen = nil then
   begin
     ControlProperties := FChromeTabControlPropertyItems.CurrentTabProperties;
-    FTabPen := TStrokeBrush.Create(nil);
-    FTabPen.FillColor := SetAlpha(Color32(ControlProperties.OutlineColor), ControlProperties.OutlineAlpha);
+    FTabPen.FillColor := ControlProperties.OutlineColor;
     FTabPen.StrokeWidth := ControlProperties.OutlineSize;
   end;
 
@@ -1032,7 +999,7 @@ begin
   end
   else
   begin
-    // Should we centre the image?
+    // Should we center the image?
     if (ChromeTab.GetPinned) and
        (not ChromeTabs32.GetOptions.Display.Tabs.ShowPinnedTabText) then
       ImageRect := Rect(ControlRect.Left + (RectWidth(ControlRect) div 2) - (ImageWidth div 2),
@@ -1050,17 +1017,16 @@ begin
     end;
   end;
 
-  // Does the Text fit?
+  // Does the text fit?
   TextVisible := ((not ChromeTab.GetPinned) or
                   (ChromeTabs32.GetOptions.Display.Tabs.ShowPinnedTabText)) and
                  (RightOffset - LeftOffset >= 5);
 
   if TextVisible then
   begin
-    TextRect := Rect(LeftOffset,
-                     ControlRect.Top,
-                     RightOffset,
-                     ControlRect.Bottom);
+    TextRect := Rect(
+      LeftOffset, ControlRect.Top,
+      RightOffset, ControlRect.Bottom);
   end;
 
   if (CloseButtonVisible) and
@@ -1069,16 +1035,18 @@ begin
      (not OverlayImageVisible) and
      (not SpinnerVisible) then
   begin
-    // If only the close button is visible, we need to centre it
-    CloseButtonRect := Rect(ControlRect.Left + (RectWidth(ControlRect) div 2) - (RectWidth(CloseButtonRect) div 2),
-                            CloseButtonRect.Top,
-                            ControlRect.Left + (RectWidth(ControlRect) div 2) - (RectWidth(CloseButtonRect) div 2) + RectWidth(CloseButtonRect),
-                            CloseButtonRect.Bottom);
+    // If only the close button is visible, we need to center it
+    CloseButtonRect := Rect(
+      ControlRect.Left + (RectWidth(ControlRect) div 2) - (RectWidth(CloseButtonRect) div 2),
+      CloseButtonRect.Top,
+      ControlRect.Left + (RectWidth(ControlRect) div 2) - (RectWidth(CloseButtonRect) div 2) + RectWidth(CloseButtonRect),
+      CloseButtonRect.Bottom);
 
-    CloseButtonCrossRect := Rect(ControlRect.Left + (RectWidth(ControlRect) div 2) - (RectWidth(CloseButtonCrossRect) div 2),
-                                 CloseButtonCrossRect.Top,
-                                 ControlRect.Left + (RectWidth(ControlRect) div 2) - (RectWidth(CloseButtonCrossRect) div 2) + RectWidth(CloseButtonCrossRect),
-                                 CloseButtonCrossRect.Bottom);
+    CloseButtonCrossRect := Rect(
+      ControlRect.Left + (RectWidth(ControlRect) div 2) - (RectWidth(CloseButtonCrossRect) div 2),
+      CloseButtonCrossRect.Top,
+      ControlRect.Left + (RectWidth(ControlRect) div 2) - (RectWidth(CloseButtonCrossRect) div 2) + RectWidth(CloseButtonCrossRect),
+      CloseButtonCrossRect.Bottom);
   end;
 
   ImageRect := ScrollRect(BidiRect(ImageRect));
@@ -1089,168 +1057,103 @@ end;
 
 procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer; ClipPolygons: IChromeTabPolygons);
 
-  procedure DrawTextWithOffset(const Text: string; TextRect: TRect; OffsetX, OffsetY: Integer; FontColor: TColor; Alpha: Byte);
-  const
-    BlendFactorsNormal: array[0..2] of Single = (0.0, 0.0, 0.0);
+  procedure DrawTextWithOffset(const Text: string; TextRect: TRect; OffsetX, OffsetY: Integer; FontColor: TColor32);
   var
-(*
-    TabsFont: TGPFont;
-    GPRect: TGPRectF;
-    TxtFormat: TGPStringFormat;
-*)
-    TabsTxtBrush: TLinearGradientPolygonFiller;
-    TextFormatFlags: Integer;
-    TabText: String;
-    TextSize: Integer;
-    BlendPositions: array[0..2] of Single;
-    BlendFactorsFade: array[0..2] of Single;
+    TabsTextFiller: TLinearGradientPolygonFiller;
+    TabsTextBrush: TSolidBrush;
+    TextFormatFlags: Cardinal;
+    TabText: string;
+    TextPoly: TArrayOfArrayOfFloatPoint;
   begin
-(* TODO
     if ChromeTabs32.GetOptions.Behaviour.DebugMode then
-      TextSize := 7
+      TabCanvas.Bitmap.Font.Size := 7
     else
-      TextSize := FChromeTabControlPropertyItems.CurrentTabProperties.FontSize;
+      TabCanvas.Bitmap.Font.Size := FChromeTabControlPropertyItems.CurrentTabProperties.FontSize;
 
-    TabsFont := TGPFont.Create(FChromeTabControlPropertyItems.StopTabProperties.FontName, TextSize);
+    TabsTextFiller := TLinearGradientPolygonFiller.Create;
     try
-      TabsTxtBrush := TLinearGradientPolygonFiller.Create(RectToGPRect(TextRect),
-                                                    MakeGDIPColor(FontColor, Alpha),
-                                                    MakeGDIPColor(FontColor, 0),
-                                                    LinearGradientModeHorizontal);
-      try
-        GPRect.X := TextRect.Left + OffsetX;
-        GPRect.Y := TextRect.Top + OffsetY;
-        GPRect.Width := RectWidth(TextRect);
-        GPRect.Height := RectHeight(TextRect);
+      OffsetRect(TextRect, OffsetX, OffsetY);
 
-        TxtFormat := TGPStringFormat.Create;
-        try
-          TabCanvas.SetTextRenderingHint(TextHint);
-
-          BlendPositions[0] := 0.0;
-          BlendPositions[2] := 1.0;
-
-          BlendFactorsFade[1] := 0.0;;
-
-          // Calculate the position at which we start to fade the text
-          // A correction is made for text under 80 pixels
-          if RectWidth(TextRect) > 80 then
-            BlendPositions[1] := 0.85
-          else
-            BlendPositions[1] := 0.85 - ((80 - RectWidth(TextRect)) / 80);
-
-          // Set the text trim mode
-          if (ChromeTabs32.GetOptions.Display.Tabs.TabWidthFromContent) and
-             (RectWidth(ControlRect) < ChromeTabs32.GetOptions.Display.Tabs.MaxWidth + ChromeTabs32.GetOptions.Display.Tabs.TabOverlap) then
-          begin
-            TxtFormat.SetTrimming(StringTrimmingNone);
-
-            TabsTxtBrush.SetBlend(@BlendFactorsNormal[0], @BlendPositions[0], Length(BlendFactorsNormal));
-          end else
-          if ChromeTabs32.GetOptions.Display.Tabs.TextTrimType <> tttFade then
-          begin
-            TxtFormat.SetTrimming(TStringTrimming(ChromeTabs32.GetOptions.Display.Tabs.TextTrimType));
-
-            TabsTxtBrush.SetBlend(@BlendFactorsNormal[0], @BlendPositions[0], Length(BlendFactorsNormal));
-          end
-          else
-          begin
-            // Set the fade blend factors to fade the end of the text
-            TxtFormat.SetTrimming(StringTrimmingNone);
-
-            if ChromeTabs32.GetBiDiMode in BidiRightTextAlignmentModes then
-            begin
-              BlendFactorsFade[0] := 1.0;
-              BlendFactorsFade[2] := 0.0;
-
-              BlendPositions[1] := 1 - BlendPositions[1];
-            end
-            else
-            begin
-              BlendFactorsFade[0] := 0.0;
-              BlendFactorsFade[2] := 1.0;
-            end;
-
-            TabsTxtBrush.SetBlend(@BlendFactorsFade[0], @BlendPositions[0], Length(BlendFactorsFade));
-          end;
-
-          // Set the verrtical alignment
-          case ChromeTabs32.GetOptions.Display.Tabs.TextAlignmentVertical of
-            taAlignTop: TxtFormat.SetLineAlignment(StringAlignmentNear);
-
-            taAlignBottom: TxtFormat.SetLineAlignment(StringAlignmentFar);
-
-            taVerticalCenter: TxtFormat.SetLineAlignment(StringAlignmentCenter);
-          end;
-
-          // Set the horizontal alignment
-          case ChromeTabs32.GetOptions.Display.Tabs.TextAlignmentHorizontal of
-            taLeftJustify: if (ChromeTabs32.GetBidiMode in BidiLeftToRightTextModes) or
-                              (ChromeTabs32.GetBidiMode in BidiRightTextAlignmentModes) then
-                             TxtFormat.SetAlignment(StringAlignmentNear)
-                           else
-                             TxtFormat.SetAlignment(StringAlignmentFar);
-
-            taRightJustify: if (ChromeTabs32.GetBidiMode in BidiLeftToRightTextModes) or
-                               (ChromeTabs32.GetBidiMode in BidiRightTextAlignmentModes) then
-                              TxtFormat.SetAlignment(StringAlignmentFar)
-                            else
-                              TxtFormat.SetAlignment(StringAlignmentNear);
-
-            taCenter: TxtFormat.SetAlignment(StringAlignmentCenter);
-          end;
-
-          TextFormatFlags := 0;
-
-          // Set other flags
-          if not ChromeTabs32.GetOptions.Behaviour.DebugMode then
-          begin
-            if not ChromeTabs32.GetOptions.Display.Tabs.WordWrap then
-              TextFormatFlags := TextFormatFlags + StringFormatFlagsNoWrap;
-
-            if ChromeTabs32.GetBiDiMode in BidiRightToLeftTextModes then
-              TextFormatFlags := TextFormatFlags + StringFormatFlagsDirectionRightToLeft;
-          end;
-
-          TxtFormat.SetFormatFlags(TextFormatFlags);
-
-          // Debug mode text
-          if ChromeTabs32.GetOptions.Behaviour.DebugMode then
-            TabText := format('L: %d, T: %d, R: %d: B: %d W: %d H: %d',
-                              [ControlRect.Left,
-                               ControlRect.Top,
-                               ControlRect.Right,
-                               ControlRect.Bottom,
-                               RectWidth(ControlRect),
-                               RectHeight(ControlRect)])
-          else
-            TabText := ChromeTab.GetCaption;
-
-          // Draw the text
-          TabCanvas.DrawString(PChar(TabText),
-                               Length(TabText),
-                               TabsFont,
-                               GPRect,
-                               TxtFormat,
-                               TabsTxtBrush);
-        finally
-          FreeAndNil(TxtFormat);
-        end;
-      finally
-        FreeAndNil(TabsTxtBrush);
+      // Set the text trim mode
+      if (ChromeTabs32.GetOptions.Display.Tabs.TabWidthFromContent) and
+         (RectWidth(ControlRect) < ChromeTabs32.GetOptions.Display.Tabs.MaxWidth + ChromeTabs32.GetOptions.Display.Tabs.TabOverlap) then
+        TabsTextFiller.Gradient.SetColors([FontColor])
+      else
+      if ChromeTabs32.GetOptions.Display.Tabs.TextTrimType <> tttFade then
+        TabsTextFiller.SimpleGradientX(TextRect.Left, FontColor,
+          TextRect.Right, SetAlpha(FontColor, 0))
+      else
+      begin
+        TabsTextFiller.SetPoints(
+          FloatPoint(TextRect.Left, TextRect.Top),
+          FloatPoint(TextRect.Right, TextRect.Top));
+        TabsTextFiller.Gradient.ClearColorStops;
+        TabsTextFiller.Gradient.AddColorStop(0, FontColor);
+        TabsTextFiller.Gradient.AddColorStop(0.8, FontColor);
+        TabsTextFiller.Gradient.AddColorStop(1, SetAlpha(FontColor, 0));
       end;
+
+      TextFormatFlags := 0;
+
+      // Set the verrtical alignment
+      case ChromeTabs32.GetOptions.Display.Tabs.TextAlignmentVertical of
+        taVerticalCenter:
+          TextFormatFlags := TextFormatFlags + DT_VCENTER;
+        taAlignBottom:
+          TextFormatFlags := TextFormatFlags + DT_BOTTOM;
+      end;
+
+      // Set the horizontal alignment
+      case ChromeTabs32.GetOptions.Display.Tabs.TextAlignmentHorizontal of
+        taLeftJustify:
+          if (ChromeTabs32.GetBidiMode in BidiLeftToRightTextModes) or
+             (ChromeTabs32.GetBidiMode in BidiRightTextAlignmentModes) then
+            TextFormatFlags := TextFormatFlags + DT_LEFT
+          else
+            TextFormatFlags := TextFormatFlags + DT_RIGHT;
+
+        taRightJustify:
+          if (ChromeTabs32.GetBidiMode in BidiLeftToRightTextModes) or
+             (ChromeTabs32.GetBidiMode in BidiRightTextAlignmentModes) then
+            TextFormatFlags := TextFormatFlags + DT_RIGHT
+          else
+            TextFormatFlags := TextFormatFlags + DT_LEFT;
+
+        taCenter:
+          TextFormatFlags := TextFormatFlags + DT_CENTER;
+      end;
+
+      // Set other flags
+      if not ChromeTabs32.GetOptions.Behaviour.DebugMode then
+      begin
+        if not ChromeTabs32.GetOptions.Display.Tabs.WordWrap then
+          TextFormatFlags := TextFormatFlags + DT_SINGLELINE;
+
+        if ChromeTabs32.GetBiDiMode in BidiRightToLeftTextModes then
+          TextFormatFlags := TextFormatFlags + DT_WORDBREAK;
+      end;
+
+      // Debug mode text
+      if ChromeTabs32.GetOptions.Behaviour.DebugMode then
+        TabText := Format('L: %d, T: %d, R: %d: B: %d W: %d H: %d',
+          [ControlRect.Left, ControlRect.Top,
+           ControlRect.Right, ControlRect.Bottom,
+           RectWidth(ControlRect), RectHeight(ControlRect)])
+      else
+        TabText := ChromeTab.GetCaption;
+
+      TextPoly := TextToPolyPolygon(TabCanvas.Bitmap.Font.Handle,
+        FloatRect(TextRect), TabText, TextFormatFlags);
+      PolyPolygonFS(TabCanvas.Bitmap, TextPoly, TextRect, TabsTextFiller);
     finally
-      FreeAndNil(TabsFont);
+      FreeAndNil(TabsTextFiller);
     end;
-*)
   end;
 
   procedure DrawText(const Text: String; TextRect: TRect);
   begin
     DrawTextWithOffset(Text, TextRect, 0, 0,
-      FChromeTabControlPropertyItems.CurrentTabProperties.FontColor,
-      FChromeTabControlPropertyItems.CurrentTabProperties.FontAlpha);
-//      FChromeTabControlPropertyItems.StopTabProperties.TextRenderingMode);
+      FChromeTabControlPropertyItems.CurrentTabProperties.FontColor);
   end;
 
   procedure DrawImage(Images: TCustomImageList; ImageIndex: Integer; ImageRect: TRect; ChromeTabItemType: TChromeTabItemType);
@@ -1275,47 +1178,16 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
     ChromeTabs32.DoOnAfterDrawItem(TabCanvas, ImageRect, ChromeTabItemType, ChromeTab.GetIndex);
   end;
 
-  procedure DrawGlow(GlowRect: TRect; CentreColor, OutsideColor: TColor32; CentreAlpha, OutsideAlpha: Byte);
+  procedure DrawGlow(GlowRect: TRect; CenterColor, OutsideColor: TColor32;
+    Contour: TArrayOfFloatPoint);
   var
-    Path: TFlattenedPath;
-    // TODO GlowBrush: TGPPathGradientBrush;
-    SurroundColors : array[0..0] of TColor32;
-    ColCount: Integer;
+    Filler: TRadialGradientPolygonFiller;
   begin
-(* TODO
-    GPGraphicsPath := TCanvas32Path.Create;
-    try
-      // Add the glow ellipse to the path
-      GPGraphicsPath.AddEllipse(RectToGPRectF(GlowRect));
-
-      // Create the glow brush
-      GlowBrush := TGPPathGradientBrush.Create(GPGraphicsPath);
-      try
-        // Set the glow parameters
-        GlowBrush.SetCenterGR32.Point(PointToGPGR32.Point(GR32.Point(GlowRect.Left +
-                                                      (RectWidth(GlowRect) div 2),
-                                                      GlowRect.Top +
-                                                      (Rectheight(GlowRect) div 2))));
-
-        GlowBrush.SetCenterColor(MakeGDIPColor(CentreColor,
-                                               CentreAlpha));
-        ColCount := 1;
-
-        SurroundColors[0] := MakeGDIPColor(OutsideColor,
-                                           OutsideAlpha);
-
-        GlowBrush.SetSurroundColors(@SurroundColors[0],
-                                    ColCount);
-
-        // Draw the glow
-        TabCanvas.FillPath(GlowBrush, GPGraphicsPath);
-      finally
-        FreeAndNil(GlowBrush);
-      end;
-    finally
-      FreeAndNil(GPGraphicsPath);
-    end;
-*)
+    Contour := ClipPolygon(Contour, FloatRect(GlowRect));
+    Filler := TRadialGradientPolygonFiller.Create(FloatRect(GlowRect));
+    Filler.Gradient.SetColors([CenterColor, OutsideColor]);
+    PolygonFS(TabCanvas.Bitmap, Contour, Filler);
+    FloatToStr(Filler.EllipseBounds.Left);
   end;
 
   procedure DrawSpinner(ImageRect: TRect);
@@ -1344,18 +1216,18 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
           SpinnerLookAndFeel := ChromeTabs32.GetLookAndFeel.Tabs.Spinners.Download;
         end;
 
-        Offset := SpinnerLookAndFeel.Thickness / 2;
+        Offset := SpinnerLookAndFeel.Thickness * 0.5;
 
 (* TODO
         SpinPen := TStrokeBrush.Create(MakeGDIPColor(SpinnerLookAndFeel.Color, SpinnerLookAndFeel.Alpha), SpinnerLookAndFeel.Thickness);
         try
           TabCanvas.DrawArc(SpinPen,
-                            ImageRect.Left + Offset + SpinnerOptions.Position.Offsets.Horizontal,
-                            ImageRect.Top + Offset + SpinnerOptions.Position.Offsets.Vertical,
-                            SpinnerOptions.Position.Width - (Offset * 2),
-                            SpinnerOptions.Position.Height - (Offset * 2),
-                            FSpinnerRenderedDegrees,
-                            SpinnerOptions.SweepAngle);
+            ImageRect.Left + Offset + SpinnerOptions.Position.Offsets.Horizontal,
+            ImageRect.Top + Offset + SpinnerOptions.Position.Offsets.Vertical,
+            SpinnerOptions.Position.Width - (Offset * 2),
+            SpinnerOptions.Position.Height - (Offset * 2),
+            FSpinnerRenderedDegrees,
+            SpinnerOptions.SweepAngle);
         finally
           FreeAndNil(SpinPen);
         end;
@@ -1378,185 +1250,141 @@ var
   NormalImageVisible, OverlayImageVisible, SpinnerVisible, TextVisible: Boolean;
   Handled: Boolean;
   ChromeTabPolygons: IChromeTabPolygons;
-//  OriginalClipRegion: TGPRegion;
-  i: Integer;
+  CirclePoly: TArrayOfFloatPoint;
   ModifiedTop: Integer;
 begin
   if (FTabProperties <> nil) and (ChromeTabs32 <> nil) then
   begin
-//TODO    OriginalClipRegion := TGPRegion.Create;
-    try
-(* TODO
-      // Save the current clip region of the GPGraphics
-      if ClipPolygons <> nil then
-        for i := 0 to pred(ClipPolygons.PolygonCount) do
-          SetTabClipRegionFromPolygon(TabCanvas, ClipPolygons.Polygons[i].Polygon, CombineModeExclude);
+    ChromeTabPolygons := GetPolygons;
 
-      TabCanvas.GetClip(OriginalClipRegion);
-*)
+    // Calculate the positions and visibilty of the controls
+    CalculateRects(ImageRect, TextRect, ButtonRect, CrossRect, NormalImageVisible, OverlayImageVisible, SpinnerVisible, TextVisible);
 
-      ChromeTabPolygons := GetPolygons;
+    // Fire the before draw event
+    ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ControlRect, itTab, ChromeTab.GetIndex, Handled);
 
-      // Calculate the positions and visibilty of the controls
-      CalculateRects(ImageRect, TextRect, ButtonRect, CrossRect, NormalImageVisible, OverlayImageVisible, SpinnerVisible, TextVisible);
-
-      // Fire the before draw event
-      ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ControlRect, itTab, ChromeTab.GetIndex, Handled);
-
-      // Only continue if the drawing hasn't already been handled
-      if not Handled then
-      begin
-        // Draw the tab background
-        ChromeTabPolygons.DrawTo(TabCanvas, dfBrush);
-      end;
-
-(* TODO
-      // Set the clip region to that the glows stay within the tab
-      SetTabClipRegionFromPolygon(TabCanvas, ChromeTabPolygons.Polygons[0].Polygon, CombineModeIntersect);
-*)
-
-      // Draw the modified glow
-      if (FChromeTab.GetModified) and
-         (ChromeTabs32.GetOptions.Display.TabModifiedGlow.Style <> msNone) then
-      begin
-        // Fire before draw event
-        ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ControlRect, itTabModifiedGlow, ChromeTab.GetIndex, Handled);
-
-        if not Handled then
-        begin
-          case ChromeTabs32.GetOptions.Display.Tabs.Orientation of
-            toTop: ModifiedTop := ChromeTabs32.GetOptions.Display.TabModifiedGlow.VerticalOffset;
-          else
-            ModifiedTop := ControlRect.Bottom - ChromeTabs32.GetOptions.Display.TabModifiedGlow.VerticalOffset;
-          end;
-
-          DrawGlow(BidiRect(Rect(FModifiedPosition,
-                        ModifiedTop,
-                        ChromeTabs32.GetOptions.Display.TabModifiedGlow.Width + FModifiedPosition,
-                        ChromeTabs32.GetOptions.Display.TabModifiedGlow.Height + ChromeTabs32.GetOptions.Display.TabModifiedGlow.VerticalOffset)),
-                        ChromeTabs32.GetLookAndFeel.Tabs.Modified.CentreColor,
-                        ChromeTabs32.GetLookAndFeel.Tabs.Modified.OutsideColor,
-                        ChromeTabs32.GetLookAndFeel.Tabs.Modified.CentreAlpha,
-                        ChromeTabs32.GetLookAndFeel.Tabs.Modified.OutsideAlpha);
-        end;
-      end;
-
-      // Draw the mouse glow
-      if (ChromeTabs32.GetOptions.Display.TabMouseGlow.Visible) and
-         (not ChromeTabs32.IsDragging) and
-         (PointInPolygon(ChromeTabPolygons.Polygons[0].Polygon, MouseX, MouseY)) then
-      begin
-        // Fire before draw event
-        ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ControlRect, itTabMouseGlow, ChromeTab.GetIndex, Handled);
-
-        if not Handled then
-        begin
-          DrawGlow(Rect(MouseX - (ChromeTabs32.GetOptions.Display.TabMouseGlow.Width div 2),
-                        MouseY - (ChromeTabs32.GetOptions.Display.TabMouseGlow.Height div 2),
-                        MouseX + (ChromeTabs32.GetOptions.Display.TabMouseGlow.Width div 2),
-                        MouseY + (ChromeTabs32.GetOptions.Display.TabMouseGlow.Height div 2)),
-                        ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.CentreColor,
-                        ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.OutsideColor,
-                        ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.CentreAlpha,
-                        ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.OutsideAlpha);
-        end;
-      end;
-
-(* TODO
-      // Reset the clip region
-      TabCanvas.SetClip(OriginalClipRegion);
-*)
-
-      // Draw the text
-      if TextVisible then
-      begin
-        ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, TextRect, itTabText, ChromeTab.GetIndex, Handled);
-
-        if not Handled then
-          DrawText(ChromeTab.GetCaption, TextRect);
-
-        ChromeTabs32.DoOnAfterDrawItem(TabCanvas, TextRect, itTabText, ChromeTab.GetIndex);
-      end;
-
-      // Fire before draw event
-      ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ControlRect, itTabOutline, ChromeTab.GetIndex, Handled);
-
-      // Eventually draw the border after the modified glow and text
-      if not Handled then
-        ChromeTabPolygons.DrawTo(TabCanvas, dfPen);
-
-      // Draw the close button
-      if CloseButtonVisible then
-      begin
-        ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ButtonRect, itTabCloseButton, ChromeTab.GetIndex, Handled);
-
-        if not Handled then
-        begin
-          case FCloseButtonState of
-            dsDown:
-              begin
-                CloseButtonStyle := ChromeTabs32.GetLookAndFeel.CloseButton.Circle.Down;
-                CloseButtonCrossPen := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Down.GetPen;
-              end;
-
-            dsHot:
-              begin
-                CloseButtonStyle := ChromeTabs32.GetLookAndFeel.CloseButton.Circle.Hot;
-                CloseButtonCrossPen := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Hot.GetPen;
-              end;
-
-            else
-              begin
-                CloseButtonStyle := ChromeTabs32.GetLookAndFeel.CloseButton.Circle.Normal;
-                CloseButtonCrossPen := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Normal.GetPen;
-              end;
-          end;
-
-(* TODO
-          // Draw the circle
-          TabCanvas.FillEllipse(CloseButtonStyle.GetBrush(ButtonRect),
-            ButtonRect.Left, ButtonRect.Top,
-            RectWidth(ButtonRect), RectHeight(ButtonRect));
-
-          TabCanvas.DrawEllipse(CloseButtonStyle.GetPen,
-            ButtonRect.Left, ButtonRect.Top,
-            RectWidth(ButtonRect), RectHeight(ButtonRect));
-*)
-
-          // Draw the cross
-          CloseButtonCrossPen.BrushCollection := TabCanvas.Brushes;
-          TabCanvas.Path.BeginPath;
-          TabCanvas.Path.MoveTo(CrossRect.Left, CrossRect.Top);
-          TabCanvas.Path.LineTo(CrossRect.Right, CrossRect.Bottom);
-          TabCanvas.Path.MoveTo(CrossRect.Left, CrossRect.Bottom);
-          TabCanvas.Path.LineTo(CrossRect.Right, CrossRect.Top);
-          TabCanvas.Path.EndPath;
-          CloseButtonCrossPen.BrushCollection := nil;
-
-// original          TabCanvas.DrawLine(CloseButtonCrossPen, CrossRect.Left, CrossRect.Top, CrossRect.Right, CrossRect.Bottom);
-// original          TabCanvas.DrawLine(CloseButtonCrossPen, CrossRect.Left, CrossRect.Bottom, CrossRect.Right, CrossRect.Top);
-        end;
-
-        ChromeTabs32.DoOnAfterDrawItem(TabCanvas, ButtonRect, itTabCloseButton, ChromeTab.GetIndex);
-      end;
-
-      // Draw the normal and overlay images
-      if (not SpinnerVisible) or
-         (not ChromeTabs32.GetOptions.Display.TabSpinners.HideImagesWhenSpinnerVisible) then
-      begin
-        if NormalImageVisible then
-          DrawImage(ChromeTabs32.GetImages, ChromeTab.GetImageIndex, ImageRect, itTabImage);
-
-        if OverlayImageVisible then
-          DrawImage(ChromeTabs32.GetImagesOverlay, ChromeTab.GetImageIndexOverlay, ImageRect, itTabImageOverlay);
-      end;
-
-      // Draw the spinner image
-      if SpinnerVisible then
-        DrawSpinner(ImageRect);
-    finally
-// TODO      FreeAndNil(OriginalClipRegion);
+    // Only continue if the drawing hasn't already been handled
+    if not Handled then
+    begin
+      // Draw the tab background
+      ChromeTabPolygons.DrawTo(TabCanvas, dfBrush);
     end;
+
+    // Draw the modified glow
+    if (FChromeTab.GetModified) and
+       (ChromeTabs32.GetOptions.Display.TabModifiedGlow.Style <> msNone) then
+    begin
+      // Fire before draw event
+      ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ControlRect, itTabModifiedGlow, ChromeTab.GetIndex, Handled);
+
+      if not Handled then
+      begin
+        case ChromeTabs32.GetOptions.Display.Tabs.Orientation of
+          toTop: ModifiedTop := ChromeTabs32.GetOptions.Display.TabModifiedGlow.VerticalOffset;
+        else
+          ModifiedTop := ControlRect.Bottom - ChromeTabs32.GetOptions.Display.TabModifiedGlow.VerticalOffset;
+        end;
+
+        DrawGlow(BidiRect(Rect(FModifiedPosition, ModifiedTop,
+          ChromeTabs32.GetOptions.Display.TabModifiedGlow.Width + FModifiedPosition,
+          ChromeTabs32.GetOptions.Display.TabModifiedGlow.Height + ChromeTabs32.GetOptions.Display.TabModifiedGlow.VerticalOffset)),
+          ChromeTabs32.GetLookAndFeel.Tabs.Modified.CenterColor,
+          ChromeTabs32.GetLookAndFeel.Tabs.Modified.OutsideColor,
+          ChromeTabPolygons.Polygons[0].Polygon);
+      end;
+    end;
+
+    // Draw the mouse glow
+    if (ChromeTabs32.GetOptions.Display.TabMouseGlow.Visible) and
+       (not ChromeTabs32.IsDragging) and
+       (PointInPolygon(ChromeTabPolygons.Polygons[0].Polygon, MouseX, MouseY)) then
+    begin
+      // Fire before draw event
+      ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ControlRect, itTabMouseGlow, ChromeTab.GetIndex, Handled);
+
+      if not Handled then
+      begin
+        DrawGlow(Rect(MouseX - (ChromeTabs32.GetOptions.Display.TabMouseGlow.Width div 2),
+          MouseY - (ChromeTabs32.GetOptions.Display.TabMouseGlow.Height div 2),
+          MouseX + (ChromeTabs32.GetOptions.Display.TabMouseGlow.Width div 2),
+          MouseY + (ChromeTabs32.GetOptions.Display.TabMouseGlow.Height div 2)),
+          ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.CenterColor,
+          ChromeTabs32.GetLookAndFeel.Tabs.MouseGlow.OutsideColor,
+          ChromeTabPolygons.Polygons[0].Polygon);
+      end;
+    end;
+
+    // Draw the text
+    if TextVisible then
+    begin
+      ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, TextRect, itTabText, ChromeTab.GetIndex, Handled);
+
+      if not Handled then
+        DrawText(ChromeTab.GetCaption, TextRect);
+
+      ChromeTabs32.DoOnAfterDrawItem(TabCanvas, TextRect, itTabText, ChromeTab.GetIndex);
+    end;
+
+    // Fire before draw event
+    ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ControlRect, itTabOutline, ChromeTab.GetIndex, Handled);
+
+    // Eventually draw the border after the modified glow and text
+    if not Handled then
+      ChromeTabPolygons.DrawTo(TabCanvas, dfPen);
+
+    // Draw the close button
+    if CloseButtonVisible then
+    begin
+      ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ButtonRect, itTabCloseButton, ChromeTab.GetIndex, Handled);
+
+      if not Handled then
+      begin
+        case FCloseButtonState of
+          dsDown:
+            begin
+              CloseButtonStyle := ChromeTabs32.GetLookAndFeel.CloseButton.Circle.Down;
+              CloseButtonCrossPen := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Down.Pen;
+            end;
+
+          dsHot:
+            begin
+              CloseButtonStyle := ChromeTabs32.GetLookAndFeel.CloseButton.Circle.Hot;
+              CloseButtonCrossPen := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Hot.Pen;
+            end;
+
+          else
+            begin
+              CloseButtonStyle := ChromeTabs32.GetLookAndFeel.CloseButton.Circle.Normal;
+              CloseButtonCrossPen := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Normal.Pen;
+            end;
+        end;
+
+        CirclePoly := Circle(ButtonRect);
+        PolygonFS(TabCanvas.Bitmap, CirclePoly, CloseButtonStyle.GetPolygonFiller(ButtonRect));
+        PolylineFS(TabCanvas.Bitmap, CirclePoly, CloseButtonStyle.OutlineColor,
+          True, CloseButtonStyle.OutlineSize);
+
+        PolygonFS(TabCanvas.Bitmap, BuildPolyLine(Line(CrossRect.Left, CrossRect.Top, CrossRect.Right, CrossRect.Bottom), CloseButtonCrossPen.StrokeWidth), CloseButtonCrossPen.FillColor);
+        PolygonFS(TabCanvas.Bitmap, BuildPolyLine(Line(CrossRect.Left, CrossRect.Bottom, CrossRect.Right, CrossRect.Top), CloseButtonCrossPen.StrokeWidth), CloseButtonCrossPen.FillColor);
+      end;
+
+      ChromeTabs32.DoOnAfterDrawItem(TabCanvas, ButtonRect, itTabCloseButton, ChromeTab.GetIndex);
+    end;
+
+    // Draw the normal and overlay images
+    if (not SpinnerVisible) or
+       (not ChromeTabs32.GetOptions.Display.TabSpinners.HideImagesWhenSpinnerVisible) then
+    begin
+      if NormalImageVisible then
+        DrawImage(ChromeTabs32.GetImages, ChromeTab.GetImageIndex, ImageRect, itTabImage);
+
+      if OverlayImageVisible then
+        DrawImage(ChromeTabs32.GetImagesOverlay, ChromeTab.GetImageIndexOverlay, ImageRect, itTabImageOverlay);
+    end;
+
+    // Draw the spinner image
+    if SpinnerVisible then
+      DrawSpinner(ImageRect);
 
     ChromeTabs32.DoOnAfterDrawItem(TabCanvas, ControlRect, itTab, ChromeTab.GetIndex);
   end;
@@ -1623,8 +1451,8 @@ function TScrollButtonControl.GetArrowPolygons(
   Direction: TChromeTabDirection): IChromeTabPolygons;
 begin
   case Direction of
-    drLeft:  Result := InternalGetPolygons(itScrollLeftButton, GetButtonBrush, GetButtonPen);
-    drRight: Result := InternalGetPolygons(itScrollRightButton, GetButtonBrush, GetButtonPen);
+    drLeft:  Result := InternalGetPolygons(itScrollLeftButton, GetButtonFiller, GetButtonPen);
+    drRight: Result := InternalGetPolygons(itScrollRightButton, GetButtonFiller, GetButtonPen);
   end;
 
   if Result = nil then
@@ -1633,38 +1461,38 @@ begin
 
     Result.AddPolygon(BidiPolygon(NewPolygon(BidiControlRect,
       [
-        GR32.Point(0, RectHeight(ControlRect)),
-        GR32.Point(0, 0),
-        GR32.Point(RectWidth(ControlRect), 0),
-        GR32.Point(RectWidth(ControlRect), RectHeight(ControlRect))
+        FloatPoint(0, RectHeight(ControlRect)),
+        FloatPoint(0, 0),
+        FloatPoint(RectWidth(ControlRect), 0),
+        FloatPoint(RectWidth(ControlRect), RectHeight(ControlRect))
       ],
       ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
-      GetButtonBrush, GetButtonPen);
+      GetButtonFiller, GetButtonPen);
 
     case Direction of
       drLeft:
         begin
           Result.AddPolygon(BidiPolygon(NewPolygon(BidiControlRect,
             [
-              GR32.Point(3, RectHeight(ControlRect) div 2),
-              GR32.Point(RectWidth(ControlRect) - 3, 2),
-              GR32.Point(RectWidth(ControlRect) - 3, RectHeight(ControlRect) - 2),
-              GR32.Point(3, RectHeight(ControlRect) div 2)
+              FloatPoint(3, RectHeight(ControlRect) div 2),
+              FloatPoint(RectWidth(ControlRect) - 3, 2),
+              FloatPoint(RectWidth(ControlRect) - 3, RectHeight(ControlRect) - 2),
+              FloatPoint(3, RectHeight(ControlRect) div 2)
             ], ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
-            GetSymbolBrush, GetSymbolPen);
+            GetSymbolFiller, GetSymbolPen);
         end;
 
       drRight:
         begin
           Result.AddPolygon(BidiPolygon(NewPolygon(BidiControlRect,
             [
-              GR32.Point(RectWidth(ControlRect) - 3, RectHeight(ControlRect) div 2),
-              GR32.Point(3, 2),
-              GR32.Point(3, RectHeight(ControlRect) - 2),
-              GR32.Point(RectWidth(ControlRect) - 3, RectHeight(ControlRect) div 2)
+              FloatPoint(RectWidth(ControlRect) - 3, RectHeight(ControlRect) div 2),
+              FloatPoint(3, 2),
+              FloatPoint(3, RectHeight(ControlRect) - 2),
+              FloatPoint(RectWidth(ControlRect) - 3, RectHeight(ControlRect) div 2)
             ],
             ChromeTabs32.GetOptions.Display.Tabs.Orientation)),
-            GetSymbolBrush, GetSymbolPen);
+            GetSymbolFiller, GetSymbolPen);
         end;
     end;
   end;
@@ -1786,7 +1614,6 @@ begin
 
   // Copy the property values to the record
   Dst.FontColor := Font.Color;
-  Dst.FontAlpha := Font.Alpha;
   Dst.FontName := Font.Name;
   Dst.FontSize := Font.Size;
   if FontCreated then
@@ -1796,9 +1623,6 @@ begin
   Dst.StopColor := Style.StopColor;
   Dst.OutlineColor := Style.OutlineColor;
   Dst.OutlineSize := Style.OutlineSize;
-  Dst.OutlineAlpha := Style.OutlineAlpha;
-  Dst.StartAlpha := Style.StartAlpha;
-  Dst.StopAlpha := Style.StopAlpha;
 
   FStopTabProperties := Dst;
   FStartTabProperties := CurrentTabProperties;
@@ -1820,7 +1644,7 @@ end;
 
 function TChromeTabControlPropertyItems.TransformColors(ForceUpdate: Boolean): Boolean;
 var
-  TransformPct: Integer;
+  TransformScale: Single;
 begin
   Result := False;
 
@@ -1831,9 +1655,7 @@ begin
     Result := True;
 
     if ForceUpdate then
-    begin
-      TransformPct := 100;
-    end
+      TransformScale := 1
     else
     begin
       FCurrentTickCount := GetTickCount - FStartTickCount;
@@ -1841,20 +1663,16 @@ begin
       if FCurrentTickCount > FEndTickCount then
         FCurrentTickCount := FEndTickCount;
 
-      TransformPct := Round(CalculateEase(FCurrentTickCount, 0, 100, FEndTickCount, FEaseType));
+      TransformScale := CalculateEase(FCurrentTickCount, 0, 1, FEndTickCount, FEaseType);
     end;
 
-    FCurrentTabProperties.FontColor := ColorBetween(FStartTabProperties.FontColor, FStopTabProperties.FontColor, TransformPct);
-    FCurrentTabProperties.FontAlpha := IntegerBetween(FStartTabProperties.FontAlpha, FStopTabProperties.FontAlpha, TransformPct);
-    FCurrentTabProperties.FontSize := IntegerBetween(FStartTabProperties.FontSize, FStopTabProperties.FontSize, TransformPct);
+    FCurrentTabProperties.FontColor := ColorBetween(FStartTabProperties.FontColor, FStopTabProperties.FontColor, TransformScale);
+    FCurrentTabProperties.FontSize := IntegerBetween(FStartTabProperties.FontSize, FStopTabProperties.FontSize, TransformScale);
 
-    FCurrentTabProperties.StartColor := ColorBetween(FStartTabProperties.StartColor, FStopTabProperties.StartColor, TransformPct);
-    FCurrentTabProperties.StopColor := ColorBetween(FStartTabProperties.StopColor, FStopTabProperties.StopColor, TransformPct);
-    FCurrentTabProperties.OutlineColor := ColorBetween(FStartTabProperties.OutlineColor, FStopTabProperties.OutlineColor, TransformPct);
-    FCurrentTabProperties.OutlineSize := SingleBetween(FStartTabProperties.OutlineSize, FStopTabProperties.OutlineSize, TransformPct);
-    FCurrentTabProperties.StartAlpha := IntegerBetween(FStartTabProperties.StartAlpha, FStopTabProperties.StartAlpha, TransformPct);
-    FCurrentTabProperties.StopAlpha := IntegerBetween(FStartTabProperties.StopAlpha, FStopTabProperties.StopAlpha, TransformPct);
-    FCurrentTabProperties.OutlineAlpha := IntegerBetween(FStartTabProperties.OutlineAlpha, FStopTabProperties.OutlineAlpha, TransformPct);
+    FCurrentTabProperties.StartColor := ColorBetween(FStartTabProperties.StartColor, FStopTabProperties.StartColor, TransformScale);
+    FCurrentTabProperties.StopColor := ColorBetween(FStartTabProperties.StopColor, FStopTabProperties.StopColor, TransformScale);
+    FCurrentTabProperties.OutlineColor := ColorBetween(FStartTabProperties.OutlineColor, FStopTabProperties.OutlineColor, TransformScale);
+    FCurrentTabProperties.OutlineSize := SingleBetween(FStartTabProperties.OutlineSize, FStopTabProperties.OutlineSize, TransformScale);
   end;
 end;
 
@@ -1890,8 +1708,8 @@ constructor TBaseChromeButtonControl.Create(ChromeTabs32: IChromeTabs32);
 begin
   inherited Create(ChromeTabs32);
 
-  FButtonGradient := TLinearGradientPolygonFiller.Create;
-  FSymbolGradient := TLinearGradientPolygonFiller.Create;
+  FButtonFiller := TLinearGradientPolygonFiller.Create;
+  FSymbolFiller := TLinearGradientPolygonFiller.Create;
 
   FButtonControlPropertyItems := TChromeTabControlPropertyItems.Create;
   FSymbolControlPropertyItems := TChromeTabControlPropertyItems.Create;
@@ -1912,21 +1730,15 @@ begin
   inherited;
 end;
 
-function TBaseChromeButtonControl.GetButtonBrush: TSolidBrush;
+function TBaseChromeButtonControl.GetButtonFiller: TLinearGradientPolygonFiller;
 var
   ControlProperties: TChromeTabControlProperties;
 begin
-  if FButtonBrush = nil then
-  begin
-    ControlProperties := FButtonControlPropertyItems.CurrentTabProperties;
-    FButtonBrush := TSolidBrush.Create(nil);
-    FButtonBrush.Filler := FButtonGradient;
-    FButtonGradient.SimpleGradientX(
-      ControlRect.Top, SetAlpha(Color32(ControlProperties.StartColor), ControlProperties.StartAlpha),
-      ControlRect.Bottom, SetAlpha(Color32(ControlProperties.StopColor), ControlProperties.StopAlpha));
-  end;
-
-  Result := FButtonBrush;
+  ControlProperties := FButtonControlPropertyItems.CurrentTabProperties;
+  FButtonFiller.SimpleGradientX(
+    ControlRect.Top, ControlProperties.StartColor,
+    ControlRect.Bottom, ControlProperties.StopColor);
+  Result := FButtonFiller;
 end;
 
 function TBaseChromeButtonControl.GetButtonPen: TStrokeBrush;
@@ -1937,28 +1749,22 @@ begin
   begin
     ControlProperties := FButtonControlPropertyItems.CurrentTabProperties;
     FButtonPen := TStrokeBrush.Create(nil);
-    FButtonPen.FillColor := SetAlpha(Color32(ControlProperties.OutlineColor), ControlProperties.OutlineAlpha);
+    FButtonPen.FillColor := ControlProperties.OutlineColor;
     FButtonPen.StrokeWidth := ControlProperties.OutlineSize
   end;
 
   Result := FButtonPen;
 end;
 
-function TBaseChromeButtonControl.GetSymbolBrush: TSolidBrush;
+function TBaseChromeButtonControl.GetSymbolFiller: TLinearGradientPolygonFiller;
 var
   ControlProperties: TChromeTabControlProperties;
 begin
-  if FSymbolBrush = nil then
-  begin
-    ControlProperties := FSymbolControlPropertyItems.CurrentTabProperties;
-    FSymbolBrush := TSolidBrush.Create(nil);
-    FSymbolBrush.Filler := FSymbolGradient;
-    FSymbolGradient.SimpleGradientX(
-      ControlRect.Top, SetAlpha(Color32(ControlProperties.StartColor), ControlProperties.StartAlpha),
-      ControlRect.Bottom, SetAlpha(Color32(ControlProperties.StopColor), ControlProperties.StopAlpha));
-  end;
-
-  Result := FSymbolBrush;
+  ControlProperties := FSymbolControlPropertyItems.CurrentTabProperties;
+  FSymbolFiller.SimpleGradientX(
+    ControlRect.Top, ControlProperties.StartColor,
+    ControlRect.Bottom, ControlProperties.StopColor);
+  Result := FSymbolFiller;
 end;
 
 function TBaseChromeButtonControl.GetSymbolPen: TStrokeBrush;
@@ -1969,7 +1775,7 @@ begin
   begin
     ControlProperties := FSymbolControlPropertyItems.CurrentTabProperties;
     FSymbolPen := TStrokeBrush.Create(nil);
-    FSymbolPen.FillColor := SetAlpha(Color32(ControlProperties.OutlineColor), ControlProperties.OutlineAlpha);
+    FSymbolPen.FillColor := ControlProperties.OutlineColor;
     FSymbolPen.StrokeWidth := ControlProperties.OutlineSize
   end;
 

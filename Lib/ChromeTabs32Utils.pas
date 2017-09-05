@@ -23,8 +23,9 @@ unit ChromeTabs32Utils;
 
 interface
 
-{.$DEFINE USE_PNGIMAGE} // <-- Enable this define if you want to use an external
-                        //     copy of pngImage in Delphi 2008 or earlier
+{$IF CompilerVersion >= 18.0}
+  {$DEFINE USEINLINING}
+{$IFEND}
 
 uses
   {$IF CompilerVersion >= 23.0}
@@ -39,53 +40,46 @@ uses
   Graphics,
   {$IFEND}
 
-  {$IFDEF USE_PNGIMAGE}
-  pngImage,
-  {$ENDIF}
-
   GR32,
 
   ChromeTabs32Types;
 
-function PointInPolygon(Polygon: TPolygon; X, Y: Integer): Boolean;
-function SameRect(Rect1, Rect2: TRect): Boolean;
-function ColorBetween(const ColorA, ColorB: TColor; const Percent: Integer): TColor;
-function IntegerBetween(const IntA, IntB: Integer; const Percent: Integer): Integer;
-function SingleBetween(const SingA, SingB: Single; const Percent: Integer): Single;
+function PointInPolygon(Polygon: TArrayOfFloatPoint; X, Y: Integer): Boolean;
+function SameRect(Rect1, Rect2: TRect): Boolean; {$IFDEF USEINLINING} inline; {$ENDIF}
+function ColorBetween(const ColorA, ColorB: TColor32; const Scale: Single): TColor32; {$IFDEF USEINLINING} inline; {$ENDIF}
+function IntegerBetween(const IntA, IntB: Integer; const Scale: Single): Integer; {$IFDEF USEINLINING} inline; {$ENDIF}
+function SingleBetween(const SingA, SingB: Single; const Scale: Single): Single; {$IFDEF USEINLINING} inline; {$ENDIF}
 procedure PaintControlToCanvas(SrcControl: TControl; TargetCanvas: TCanvas);
-procedure CopyControlToBitmap(AWinControl: TWinControl; Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap; X, Y: Integer);
+procedure CopyControlToBitmap(AWinControl: TWinControl; Bitmap: TBitmap32; X, Y: Integer);
 function ImageListToBitmap32(ImageList: TCustomImageList; ImageIndex: Integer): TBitmap32;
 function ChromeTabs32StatesToString(States: TChromeTabs32States): String;
 function RectToFloatRect(ARect: TRect): TFloatRect;
 function RectToFixedRect(ARect: TRect): TFixedRect;
 function PointToFloatPoint(Pt: TPoint): TFloatPoint;
-function IconToGPImage(Icon: TIcon): TBitmap32;
-function GeneratePolygon(ControlRect: TRect; const PolygonPoints: Array of TPoint; Orientation: TTabOrientation): TPolygon;
-function CreateAlphaBlendForm(AOwner: TComponent; Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap; Alpha: Byte): TForm;
-//procedure SetTabClipRegionFromPolygon(GPGraphics: TGPGraphics; Polygon: TPolygon; CombineMode: TCombineMode);
-procedure ClearBitmap(Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap);
+function IconToBitmap32(Icon: TIcon): TBitmap32;
+function GeneratePolygon(ControlRect: TRect; const PolygonPoints: array of TFloatPoint; Orientation: TTabOrientation): TArrayOfFloatPoint;
+function CreateAlphaBlendForm(AOwner: TComponent; Bitmap: TBitmap32; Alpha: Byte): TForm;
 procedure ScaleImage(Bitmap, ScaledBitmap: TBitmap32; ScaleFactor: Single);
 procedure EnableControlAndChildren(Control: TWinControl; DoEnable: Boolean);
 procedure SaveComponentToStream(AComponent: TComponent; AStream: TStream);
 procedure ReadComponentFromStream(AComponent: TComponent; AStream: TStream);
 function ComponentToCode(AComponent: TComponent; const ComponentName: String): String;
-function HorzFlipRect(ParentRect, ChildRect: TRect): TRect;
-function HorzFlipPolygon(ParentRect: TRect; Polygon: TPolygon): TPolygon;
-function RectHeight(Rect: TRect): Integer;
-function RectWidth(Rect: TRect): Integer;
-function RectInflate(ARect: TRect; Value: Integer): TRect;
-//procedure BitmapTo32BitBitmap(Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap);
-procedure SetColorAlpha(Bitmap: TBitmap32; AColor: TColor; NewAlpha: Byte);
+function HorzFlipRect(ParentRect, ChildRect: TRect): TRect; {$IFDEF USEINLINING} inline; {$ENDIF}
+procedure HorzFlipPolygon(ParentRect: TRect; var Polygon: TArrayOfFloatPoint); {$IFDEF USEINLINING} inline; {$ENDIF}
+function RectHeight(Rect: TRect): Integer; {$IFDEF USEINLINING} inline; {$ENDIF}
+function RectWidth(Rect: TRect): Integer; {$IFDEF USEINLINING} inline; {$ENDIF}
+function RectInflate(ARect: TRect; Value: Integer): TRect; {$IFDEF USEINLINING} inline; {$ENDIF}
+procedure SetColorAlpha(Bitmap: TBitmap32; AColor: TColor32);
 function TransformRect(StartRect, EndRect: TRect; CurrentTicks, EndTicks: Cardinal; EaseType: TChromeTabs32EaseType): TRect;
-function CalculateEase(CurrentTime, StartValue, ChangeInValue, Duration: Double; EaseType: TChromeTabs32EaseType): Double; overload;
-function CalculateEase(StartPos, EndPos, PositionPct: Double; EaseType: TChromeTabs32EaseType): Double; overload;
+function CalculateEase(CurrentTime, StartValue, ChangeInValue, Duration: Single; EaseType: TChromeTabs32EaseType): Single; overload;
+function CalculateEase(StartPos, EndPos, Position: Single; EaseType: TChromeTabs32EaseType): Single; overload; {$IFDEF USEINLINING} inline; {$ENDIF}
 
 implementation
 
 uses
-  GR32_Resamplers;
+  GR32_Resamplers, GR32_Blend;
 
-function CalculateEase(CurrentTime, StartValue, ChangeInValue, Duration: Double; EaseType: TChromeTabs32EaseType): Double;
+function CalculateEase(CurrentTime, StartValue, ChangeInValue, Duration: Single; EaseType: TChromeTabs32EaseType): Single;
 begin
   case EaseType of
     ttNone:
@@ -257,16 +251,9 @@ begin
   end;
 end;
 
-function CalculateEase(StartPos, EndPos, PositionPct: Double; EaseType: TChromeTabs32EaseType): Double;
-var
-  t, b, c, d: Double;
+function CalculateEase(StartPos, EndPos, Position: Single; EaseType: TChromeTabs32EaseType): Single;
 begin
-  c := EndPos - StartPos;
-  d := 100;
-  t := PositionPct;
-  b := StartPos;
-
-  Result := CalculateEase(t, b, c, d, EaseType);
+  Result := CalculateEase(Position, StartPos, EndPos - StartPos, 1, EaseType);
 end;
 
 function TransformRect(StartRect, EndRect: TRect; CurrentTicks, EndTicks: Cardinal; EaseType: TChromeTabs32EaseType): TRect;
@@ -285,18 +272,15 @@ end;
 
 function HorzFlipRect(ParentRect, ChildRect: TRect): TRect;
 begin
-  Result := Rect(ParentRect.Left + ParentRect.Right - ChildRect.Right,
-                 ChildRect.Top,
-                 ParentRect.Left + ParentRect.Right - ChildRect.Left,
-                 ChildRect.Bottom);
+  Result := Rect(
+    ParentRect.Left + ParentRect.Right - ChildRect.Right, ChildRect.Top,
+    ParentRect.Left + ParentRect.Right - ChildRect.Left, ChildRect.Bottom);
 end;
 
-function HorzFlipPolygon(ParentRect: TRect; Polygon: TPolygon): TPolygon;
+procedure HorzFlipPolygon(ParentRect: TRect; var Polygon: TArrayOfFloatPoint);
 var
   i: Integer;
 begin
-  Result := Polygon;
-
   for i := Low(Polygon) to High(Polygon) do
     Polygon[i].X := ParentRect.Left + ParentRect.Right - Polygon[i].X;
 end;
@@ -375,83 +359,41 @@ begin
   Result := Rect.Right - Rect.Left;
 end;
 
-procedure ClearBitmap(Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap);
-(*
-var
-  Graphics: TGPGraphics;
-  Brush: TGPBrush;
-*)
-begin
-(*
-  Graphics := TGPGraphics.Create(Bitmap.Handle);
-  try
-    Brush := TGPLinearGradientBrush.Create(MakePoint(0, 0),
-                                               MakePoint(0, Bitmap.Height),
-                                               MakeGDIPColor(clBlack, 0),
-                                               MakeGDIPColor(clBlack, 0));
-    try
-      Graphics.FillRectangle(Brush, 0, 0, Bitmap.Width, Bitmap.Height);
-    finally
-      FreeAndNil(Brush);
-    end;
-  finally
-    FreeAndNil(Graphics);
-  end;
-*)
-end;
-
 procedure ScaleImage(Bitmap, ScaledBitmap: TBitmap32; ScaleFactor: Single);
 begin
   ScaledBitmap.SetSize(Round(Bitmap.Width * ScaleFactor), Round(Bitmap.Height * ScaleFactor));
   Bitmap.DrawTo(ScaledBitmap, ScaledBitmap.BoundsRect);
 end;
 
-(*
-procedure SetTabClipRegionFromPolygon(GPGraphics: TGPGraphics; Polygon: TPolygon; CombineMode: TCombineMode);
-var
-  TabPathPolygon: PGPPoint;
-  TabPath: TGPGraphicsPath;
-begin
-  TabPathPolygon := PGPPoint(Polygon);
-
-  // Create a clip region so we don't draw outside the tab
-  TabPath := TGPGraphicsPath.Create;
-  try
-    TabPath.AddPolygon(TabPathPolygon, length(Polygon));
-
-    GPGraphics.SetClip(TabPath, CombineMode);
-  finally
-    FreeAndNil(TabPath);
-  end;
-end;
-*)
-
-function GeneratePolygon(ControlRect: TRect; const PolygonPoints: Array of TPoint; Orientation: TTabOrientation): TPolygon;
+function GeneratePolygon(ControlRect: TRect;
+  const PolygonPoints: array of TFloatPoint;
+  Orientation: TTabOrientation): TArrayOfFloatPoint;
 var
   i: Integer;
 begin
-  SetLength(Result, length(PolygonPoints));
+  SetLength(Result, Length(PolygonPoints));
 
-  for i := low(PolygonPoints) to High(PolygonPoints) do
+  for i := Low(PolygonPoints) to High(PolygonPoints) do
   begin
     case Orientation of
       toTop:
-        Result[i] := GR32.Point(PolygonPoints[i].X + ControlRect.Left,
-          PolygonPoints[i].Y + ControlRect.Top);
+        Result[i] := FloatPoint(
+          0.5 + PolygonPoints[i].X + ControlRect.Left,
+          0.5 + PolygonPoints[i].Y + ControlRect.Top);
 
       toBottom:
-        Result[i] := GR32.Point(PolygonPoints[i].X + ControlRect.Left,
-          (RectHeight(ControlRect) - PolygonPoints[i].Y) + ControlRect.Top - 1);
+        Result[i] := FloatPoint(
+          0.5 + PolygonPoints[i].X + ControlRect.Left,
+          0.5 + (RectHeight(ControlRect) - PolygonPoints[i].Y) + ControlRect.Top - 1);
     end;
   end;
 end;
 
 function RectInflate(ARect: TRect; Value: Integer): TRect;
 begin
-  Result := Rect(ARect.Left + Value,
-                 ARect.Top + Value,
-                 ARect.Right - Value,
-                 ARect.Bottom - Value);
+  Result := Rect(
+    ARect.Left + Value, ARect.Top + Value,
+    ARect.Right - Value, ARect.Bottom - Value);
 end;
 
 function RectToFloatRect(ARect: TRect): TFloatRect;
@@ -503,7 +445,7 @@ begin
     end;
 end;
 
-function IconToGPImage(Icon: TIcon): TBitmap32;
+function IconToBitmap32(Icon: TIcon): TBitmap32;
 var
   MemStream: TMemoryStream;
 begin
@@ -521,41 +463,6 @@ begin
 // TODO  Result := TBitmap32.Create(TStreamAdapter.Create(MemStream, soOwned));
 end;
 
-{$IFDEF USE_PNGIMAGE}
-function ImageListToBitmap32(ImageList: TCustomImageList; ImageIndex: Integer): TBitmap32;
-var
-  Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap;
-  PNGObject: {$IF CompilerVersion >= 28}TPNGImage{$ELSE}TPNGObject{$IFEND};
-  Stream: TStream;
-begin
-  Stream := TMemoryStream.Create;
-  try
-    PNGObject := {$IF CompilerVersion >= 28}TPNGImage{$ELSE}TPNGObject{$IFEND}.Create;
-    try
-      Bitmap := {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap.Create;
-      try
-        ImageList.GetBitmap(ImageIndex, Bitmap);
-
-        Bitmap.Transparent := True;
-        PNGObject.Assign(Bitmap);
-      finally
-        FreeAndNil(Bitmap);
-      end;
-
-      PNGObject.SaveToStream(Stream);
-      Stream.Position := 0;
-    finally
-      FreeAndNil(PNGObject);
-    end;
-  except
-    FreeAndNil(Stream);
-
-    raise;
-  end;
-
-  Result := TGPBitmap.Create(TStreamAdapter.Create(Stream, soOwned));
-end;
-{$ELSE}
 function ImageListToBitmap32(ImageList: TCustomImageList; ImageIndex: Integer): TBitmap32;
 var
   Icon: TIcon;
@@ -563,16 +470,15 @@ begin
   Icon := TIcon.Create;
   try
     ImageList.GetIcon(ImageIndex, Icon);
-    Icon.Transparent := TRUE;
+    Icon.Transparent := True;
 
-    Result := IconToGPImage(Icon);
+    Result := IconToBitmap32(Icon);
   finally
     FreeAndNil(Icon);
   end;
 end;
-{$ENDIF}
 
-procedure CopyControlToBitmap(AWinControl: TWinControl; Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap; X, Y: Integer);
+procedure CopyControlToBitmap(AWinControl: TWinControl; Bitmap: TBitmap32; X, Y: Integer);
 var
  SrcDC: HDC;
 begin
@@ -610,42 +516,31 @@ begin
   end;
 end;
 
-function IntegerBetween(const IntA, IntB: Integer; const Percent: Integer): Integer;
+function IntegerBetween(const IntA, IntB: Integer; const Scale: Single): Integer;
 begin
-  Result := Percent * (IntB - IntA) div 100 + IntA;
+  Result := Round(Scale * (IntB - IntA)) + IntA;
 end;
 
-function SingleBetween(const SingA, SingB: Single; const Percent: Integer): Single;
+function SingleBetween(const SingA, SingB: Single; const Scale: Single): Single;
 begin
-  Result := Percent * (SingB - SingA) / 100 + SingA;
+  Result := Scale * (SingB - SingA) + SingA;
 end;
 
-function ColorBetween(const ColorA, ColorB: TColor; const Percent: Integer): TColor;
-var
-  R1, G1, B1: Byte;
-  R2, G2, B2: Byte;
+function ColorBetween(const ColorA, ColorB: TColor32; const Scale: Single): TColor32;
 begin
-  R1:= GetRValue(ColorA);
-  G1:= GetGValue(ColorA);
-  B1:= GetBValue(ColorA);
-  R2:= GetRValue(ColorB);
-  G2:= GetGValue(ColorB);
-  B2:= GetBValue(ColorB);
-
-  Result:= RGB(Percent * (R2-R1) div 100 + R1,
-               Percent * (G2-G1) div 100 + G1,
-               Percent * (B2-B1) div 100 + B1);
+  Result := BlendRegEx(ColorB, ColorA, Round(Scale * 255));
 end;
 
 function SameRect(Rect1, Rect2: TRect): Boolean;
 begin
-  Result := (Rect1.Left = Rect2.Left) and
-            (Rect1.Top = Rect2.Top) and
-            (Rect1.Right = Rect2.Right) and
-            (Rect1.Bottom = Rect2.Bottom);
+  Result :=
+    (Rect1.Left = Rect2.Left) and
+    (Rect1.Top = Rect2.Top) and
+    (Rect1.Right = Rect2.Right) and
+    (Rect1.Bottom = Rect2.Bottom);
 end;
 
-function PointInPolygon(Polygon: TPolygon; X, Y: Integer): Boolean;
+function PointInPolygon(Polygon: TArrayOfFloatPoint; X, Y: Integer): Boolean;
 var
   Count, i, n: Integer;
 begin
@@ -653,7 +548,7 @@ begin
 
   Count := Length(Polygon);
 
-  n := pred(Count);
+  n := Pred(Count);
 
   for i := 0 to pred(Count) do
   begin
@@ -672,7 +567,7 @@ begin
   end;
 end;
 
-procedure SetColorAlpha(Bitmap: TBitmap32; AColor: TColor; NewAlpha: Byte);
+procedure SetColorAlpha(Bitmap: TBitmap32; AColor: TColor32);
 var
   Row, Col: integer;
   p: PColor32Array;
@@ -682,7 +577,7 @@ begin
   for Row := 0 to 255 do
     for Col := Row to 255 do
     begin
-      PreMult[Row, Col] := Row*Col div 255;
+      PreMult[Row, Col] := Row * Col div 255;
 
       if (Row <> Col) then
         PreMult[Col, Row] := PreMult[Row, Col]; // a*b = b*a
@@ -717,7 +612,7 @@ end;
 
 // Thanks to Anders Melander for the transparent form tutorial
 // (http://melander.dk/articles/alphasplash2/2/)
-function CreateAlphaBlendForm(AOwner: TComponent; Bitmap: {$IF CompilerVersion >= 23.0}Vcl.Graphics.{$IFEND}TBitmap; Alpha: Byte): TForm;
+function CreateAlphaBlendForm(AOwner: TComponent; Bitmap: TBitmap32; Alpha: Byte): TForm;
 var
   BlendFunction: TBlendFunction;
   BitmapPos: TPoint;

@@ -6,7 +6,7 @@ unit ChromeTabs32;
 //               features seen in the Google Chrome tab control along with
 //               much, much more.
 //
-//----------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 //
 // The contents of this file are subject to the Mozilla Public License
 // Version 1.1 (the "License"); you may not use this file except in compliance
@@ -28,7 +28,7 @@ unit ChromeTabs32;
 //
 // Portions created by Easy-IP AS are Copyright
 // (C) 2012 Easy-IP AS. All Rights Reserved.
-//----------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 //
 // Inspiration for TChromeTabs32 came from TrkSmartTabs (http://www.rmklever.com) and
 // TIceTabSet (http://sourceforge.net/projects/icetabset/).
@@ -39,7 +39,7 @@ unit ChromeTabs32;
 //
 // For a list of recent changes please see file ChangeLog.txt
 //
-//----------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 //
 // Features include:
 //
@@ -523,6 +523,9 @@ type
   end;
 
 implementation
+
+uses
+  GR32_Polygons, GR32_VectorUtils;
 
 const
   TabDragScaleFactor = 0.7;
@@ -2222,27 +2225,22 @@ begin
           end;
         end;
 
-(* TODO
         // Copy the control to the bitmap
         if ActualDragDisplay in [ddControl, ddTabAndControl] then
           CopyControlToBitmap(DragControl, Bitmap, 0, ControlTop);
-*)
 
         DragCanvas := TCanvas32.Create(Bitmap);
         try
           if ActualDragDisplay in [ddTab, ddTabAndControl] then
           begin
-            // Draw a background for the tab. This will be made transparent later
-            Bitmap.Canvas.Brush.Color := TransparentColor;
-
             case FOptions.Display.Tabs.Orientation of
-              toTop: Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, RectHeight(TabControls[ATab.Index].ControlRect) - 1));
-              toBottom: Bitmap.Canvas.FillRect(Rect(0, Bitmap.Height, Bitmap.Width, Bitmap.Height - RectHeight(TabControls[ATab.Index].ControlRect)));
+              toTop:
+                Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, RectHeight(TabControls[ATab.Index].ControlRect) - 1));
+              toBottom:
+                Bitmap.Canvas.FillRect(Rect(0, Bitmap.Height, Bitmap.Width, Bitmap.Height - RectHeight(TabControls[ATab.Index].ControlRect)));
             end;
 
             // Do the painting...
-// TODO            DragCanvas.SetSmoothingMode(FOptions.Display.Tabs.CanvasSmoothingMode);
-
             TabControls[ATab.Index].ScrollableControl := False;
             TempRect := TabControls[ATab.Index].ControlRect;
             try
@@ -2268,33 +2266,39 @@ begin
 
           if ActualDragDisplay in [ddControl, ddTabAndControl] then
           begin
-(* TODO
-            BorderPen := TGPPen.Create(MakeGDIPColor(FOptions.DragDrop.DragFormBorderColor, 255), FOptions.DragDrop.DragFormBorderWidth);
+            BorderPen := TStrokeBrush(DragCanvas.Brushes.Add(TStrokeBrush));
+            BorderPen.FillColor := SetAlpha(FOptions.DragDrop.DragFormBorderColor, 255);
+            BorderPen.StrokeWidth := FOptions.DragDrop.DragFormBorderWidth;
             try
               BorderOffset := FOptions.DragDrop.DragFormBorderWidth div 2;
 
               case FOptions.Display.Tabs.Orientation of
                 toTop:
                   begin
-                    DragCanvas.DrawLine(BorderPen, TabEndX, ControlTop, Bitmap.Width - BorderOffset, ControlTop);
-                    DragCanvas.DrawLine(BorderPen, Bitmap.Width - BorderOffset, ControlTop, Bitmap.Width - BorderOffset, Bitmap.Height - BorderOffset);
-                    DragCanvas.DrawLine(BorderPen, Bitmap.Width - BorderOffset, Bitmap.Height - BorderOffset, 0, Bitmap.Height - BorderOffset);
-                    DragCanvas.DrawLine(BorderPen, 0, Bitmap.Height - BorderOffset, 0, ControlTop);
+                    DragCanvas.Path.BeginPath;
+                    DragCanvas.Path.MoveTo(TabEndX, ControlTop);
+                    DragCanvas.Path.LineTo(Bitmap.Width - BorderOffset, ControlTop);
+                    DragCanvas.Path.LineTo(Bitmap.Width - BorderOffset, Bitmap.Height - BorderOffset);
+                    DragCanvas.Path.LineTo(0, Bitmap.Height - BorderOffset);
+                    DragCanvas.Path.LineTo(0, ControlTop);
+                    DragCanvas.Path.EndPath;
                   end;
 
                 toBottom:
                   begin
                     { TODO : Needs fixing for bottom tabs }
-                    DragCanvas.DrawLine(BorderPen, TabEndX, ControlTop, Bitmap.Width - BorderOffset, ControlTop);
-                    DragCanvas.DrawLine(BorderPen, Bitmap.Width - BorderOffset, ControlTop, Bitmap.Width - BorderOffset, Bitmap.Height - BorderOffset);
-                    DragCanvas.DrawLine(BorderPen, Bitmap.Width - BorderOffset, Bitmap.Height - BorderOffset, 0, Bitmap.Height - BorderOffset);
-                    DragCanvas.DrawLine(BorderPen, 0, Bitmap.Height - BorderOffset, 0, ControlTop);
+                    DragCanvas.Path.BeginPath;
+                    DragCanvas.Path.MoveTo(TabEndX, ControlTop);
+                    DragCanvas.Path.LineTo(Bitmap.Width - BorderOffset, ControlTop);
+                    DragCanvas.Path.LineTo(Bitmap.Width - BorderOffset, Bitmap.Height - BorderOffset);
+                    DragCanvas.Path.LineTo(0, Bitmap.Height - BorderOffset);
+                    DragCanvas.Path.LineTo(0, ControlTop);
+                    DragCanvas.Path.EndPath;
                   end;
               end;
             finally
               FreeAndNil(BorderPen);
             end;
-*)
           end;
         finally
           FreeAndNil(DragCanvas);
@@ -2316,11 +2320,8 @@ begin
 
           ScaleImage(Bitmap, ScaledBitmap, ActualImageResizeFactor);
 
-          // Make the tab background colour transparent
-          SetColorAlpha(ScaledBitmap, TransparentColor, 0);
-
           // Create the alpha blend form
-// TODO          Result := CreateAlphaBlendForm(Self, ScaledBitmap, ActualImageAlpha);
+          Result := CreateAlphaBlendForm(Self, ScaledBitmap, ActualImageAlpha);
 
           Result.BorderStyle := bsNone;
         finally
@@ -3423,11 +3424,6 @@ begin
       for i := 0 to pred(Tabs.Count) do
         SetControlDrawState(TabControls[i], TabControls[i].DrawState, True);
 
-      FLookAndFeel.Invalidate;
-      FScrollButtonLeftControl.Invalidate;
-      FScrollButtonRightControl.Invalidate;
-      FAddButtonControl.Invalidate;
-
       if not HasState(stsDeletingUnPinnedTabs) then
         AddState(stsControlPositionsInvalidated);
 
@@ -3826,30 +3822,13 @@ procedure TCustomChromeTabs32.DrawCanvas;
 var
   TabCanvas, BackgroundCanvas: TCanvas32;
 
-  procedure SetTabClipRegion;
-  begin
-(* TODO
-    TabCanvas.ResetClip;
-
-    // Set the clip region while re're drawing the tabs if we're not
-    // overlaying the buttons
-    if FOptions.Display.TabContainer.OverlayButtons then
-      TabCanvas.SetClip(RectToGPRectF(BidiRect(Rect(
-        FOptions.Display.Tabs.OffsetLeft,
-        FOptions.Display.Tabs.OffsetTop,
-        CorrectedClientWidth - FOptions.Display.Tabs.OffsetRight,
-        ClientHeight - FOptions.Display.Tabs.OffsetBottom))))
-    else
-      TabCanvas.SetClip(RectToGPRectF(BidiRect(TabContainerRect)));
-*)
-  end;
-
 var
   i: Integer;
   Handled: Boolean;
   Targets: array of TCanvas32;
   DrawTicks: Cardinal;
   Pen: TStrokeBrush;
+  PenColor: TColor32;
   PrevVisibleIndex: Integer;
   ClipPolygons: IChromeTabPolygons;
 begin
@@ -3889,10 +3868,6 @@ begin
       TabCanvas := TCanvas32.Create(FCanvasBmp);
       BackgroundCanvas := TCanvas32.Create(FBackgroundBmp);
       try
-        // Set the canvas properties
-// TODO        TabCanvas.SetSmoothingMode(FOptions.Display.Tabs.CanvasSmoothingMode);
-// TODO        BackgroundCanvas.SetSmoothingMode(FOptions.Display.Tabs.CanvasSmoothingMode);
-
         // Allow the user to draw the tab canvas
         DoOnBeforeDrawItem(TabCanvas, ControlRect, itTabContainer, -1, Handled);
 
@@ -3922,15 +3897,13 @@ begin
         DoOnAfterDrawItem(BackgroundCanvas, ControlRect, itBackground, -1);
 
         // Draw the inactive tabs
-        for i := pred(FTabs.Count) downto 0 do
+        for i := Pred(FTabs.Count) downto 0 do
         begin
           if (Tabs[i].Visible) and
              (i <> ActiveTabIndex) and
              (TabControls[i].ControlRect.Right >= ScrollOffset) and
              (TabControls[i].ControlRect.Left <= CorrectedClientWidth + ScrollOffset) then
           begin
-            SetTabClipRegion;
-
             ClipPolygons := nil;
 
             // Save the current clip region of the GPGraphics
@@ -3959,33 +3932,25 @@ begin
           end;
         end;
 
-        // Clear the clipping region while we draw the base line
-        if FOptions.Display.Tabs.BaseLineTabRegionOnly then
-          SetTabClipRegion
-        else
-// TODO          TabCanvas.ResetClip;
-
         // Draw the bottom line
-        Pen := FLookAndFeel.Tabs.BaseLine.GetPen;
-        Pen.BrushCollection := TabCanvas.Brushes;
-        TabCanvas.Path.BeginPath;
+        Pen := FLookAndFeel.Tabs.BaseLine.Pen;
+        if Pen.StrokeWidth = 1 then
+        begin
+          PenColor := Pen.FillColor;
+          case FOptions.Display.Tabs.Orientation of
+            toTop:
+              TabCanvas.Bitmap.HorzLine(0, TabContainerRect.Bottom - 1, CorrectedClientWidth, PenColor);
+            toBottom:
+              TabCanvas.Bitmap.HorzLine(0, TabContainerRect.Top, CorrectedClientWidth, PenColor);
+          end;
+        end
+        else
         case FOptions.Display.Tabs.Orientation of
           toTop:
-            begin
-              TabCanvas.Path.MoveTo(0, TabContainerRect.Bottom - 1);
-              TabCanvas.Path.HorizontalLineTo(CorrectedClientWidth);
-            end;
+            PolygonFS(TabCanvas.Bitmap, BuildPolyLine(HorzLine(0, TabContainerRect.Bottom - 1, CorrectedClientWidth), Pen.StrokeWidth), Pen.FillColor);
           toBottom:
-            begin
-              TabCanvas.Path.MoveTo(0, TabContainerRect.Top);
-              TabCanvas.Path.HorizontalLineTo(CorrectedClientWidth);
-            end;
+            PolygonFS(TabCanvas.Bitmap, BuildPolyLine(HorzLine(0, TabContainerRect.Top - 1, CorrectedClientWidth), Pen.StrokeWidth), Pen.FillColor);
         end;
-        TabCanvas.Path.EndPath;
-        Pen.BrushCollection := nil;
-
-        // Restore the tab clip region
-        SetTabClipRegion;
 
         // Draw the active tab
         if (ActiveTabIndex <> -1) and
@@ -3993,9 +3958,6 @@ begin
            (TabControls[ActiveTabIndex].ControlRect.Right >= ScrollOffset) and
            (TabControls[ActiveTabIndex].ControlRect.Left <= CorrectedClientWidth + ScrollOffset) then
           TabControls[ActiveTabIndex].DrawTo(TabCanvas, FLastMouseX, FLastMouseY);
-
-        // Clear the clip region
-// TODO        TabCanvas.ResetClip;
 
         // Draw the drag tab if required
         if FDragTabControl <> nil then
@@ -4041,10 +4003,9 @@ end;
 
 function TCustomChromeTabs32.ScrollRect(ARect: TRect): TRect;
 begin
-  Result := Rect(ARect.Left - BidiScrollOffset,
-                 ARect.Top,
-                 ARect.Right - BidiScrollOffset,
-                 ARect.Bottom);
+  Result := Rect(
+    ARect.Left - BidiScrollOffset, ARect.Top,
+    ARect.Right - BidiScrollOffset, ARect.Bottom);
 end;
 
 procedure TCustomChromeTabs32.ScrollIntoView(Tab: TChromeTab);
@@ -4058,10 +4019,9 @@ end;
 
 function TCustomChromeTabs32.ScrollRect(ALeft, ATop, ARight, ABottom: Integer): TRect;
 begin
-  Result := Rect(ALeft - ScrollOffset,
-                 ATop,
-                 ARight - ScrollOffset,
-                 ABottom);
+  Result := Rect(
+    ALeft - ScrollOffset, ATop,
+    ARight - ScrollOffset, ABottom);
 end;
 
 procedure TCustomChromeTabs32.DrawBackgroundTo(Targets: array of TCanvas32);
@@ -4073,13 +4033,13 @@ begin
   PaintControlToCanvas(Self, FCanvasBmp.Canvas);
   PaintControlToCanvas(Self, FBackgroundBmp.Canvas);
 
+(* TODO
   MemStream := TMemoryStream.Create;
   try
     FCanvasBmp.SaveToStream(MemStream);
 
     MemStream.Position := 0;
 
-(* TODO
     Bitmap32 := TBitmap32.Create(TStreamAdapter.Create(MemStream));
     try
       for i := low(Targets) to high(Targets) do
@@ -4094,10 +4054,10 @@ begin
     finally
       FreeAndNil(Bitmap32);
     end;
-*)
   finally
     FreeAndNil(MemStream);
   end;
+*)
 end;
 
 procedure TCustomChromeTabs32.SetDefaultOptions;
@@ -4164,7 +4124,7 @@ begin
   FOptions.DragDrop.DragOutsideImageAlpha := 220;
   FOptions.DragDrop.DragOutsideDistancePixels := 30;
   FOptions.DragDrop.DragStartPixels := 2;
-  FOptions.DragDrop.DragControlImageResizeFactor := 0.500000000000000000;
+  FOptions.DragDrop.DragControlImageResizeFactor := 0.5;
   FOptions.DragDrop.DragCursor := crDefault;
   FOptions.DragDrop.DragDisplay := ddTabAndControl;
   FOptions.DragDrop.DragFormBorderWidth := 2;
@@ -4210,191 +4170,116 @@ procedure TCustomChromeTabs32.SetDefaultLookAndFeel;
 begin
   BeginUpdate;
   try
-    FLookAndFeel.TabsContainer.StartColor := 14586466;
-    FLookAndFeel.TabsContainer.StopColor := 13201730;
-    FLookAndFeel.TabsContainer.StartAlpha := 255;
-    FLookAndFeel.TabsContainer.StopAlpha := 255;
-    FLookAndFeel.TabsContainer.OutlineColor := 14520930;
-    FLookAndFeel.TabsContainer.OutlineAlpha := 0;
-    FLookAndFeel.Tabs.BaseLine.Color := 11110509;
-    FLookAndFeel.Tabs.BaseLine.Thickness := 1.000000000000000000;
-    FLookAndFeel.Tabs.BaseLine.Alpha := 255;
-    FLookAndFeel.Tabs.Modified.CentreColor := clWhite;
-    FLookAndFeel.Tabs.Modified.OutsideColor := clWhite;
-    FLookAndFeel.Tabs.Modified.CentreAlpha := 130;
-    FLookAndFeel.Tabs.Modified.OutsideAlpha := 0;
+    FLookAndFeel.TabsContainer.StartColor := $FF6292DE;
+    FLookAndFeel.TabsContainer.StopColor := $FF4271C9;
+    FLookAndFeel.TabsContainer.OutlineColor := $006292DD;
+    FLookAndFeel.Tabs.BaseLine.Color := $FF6D88A9;
+    FLookAndFeel.Tabs.BaseLine.Thickness := 1;
+    FLookAndFeel.Tabs.Modified.CenterColor := SetAlpha(clWhite32, 130);
+    FLookAndFeel.Tabs.Modified.OutsideColor := SetAlpha(clWhite32, 0);
     FLookAndFeel.Tabs.DefaultFont.Name := 'Segoe UI';
-    FLookAndFeel.Tabs.DefaultFont.Color := clBlack;
+    FLookAndFeel.Tabs.DefaultFont.Color := clBlack32;
     FLookAndFeel.Tabs.DefaultFont.Size := 9;
-    FLookAndFeel.Tabs.DefaultFont.Alpha := 255;
-    FLookAndFeel.Tabs.MouseGlow.CentreColor := clWhite;
-    FLookAndFeel.Tabs.MouseGlow.OutsideColor := clWhite;
-    FLookAndFeel.Tabs.MouseGlow.CentreAlpha := 120;
-    FLookAndFeel.Tabs.MouseGlow.OutsideAlpha := 0;
+    FLookAndFeel.Tabs.MouseGlow.CenterColor := SetAlpha(clWhite32, 120);
+    FLookAndFeel.Tabs.MouseGlow.OutsideColor := SetAlpha(clWhite32, 0);
     FLookAndFeel.Tabs.Active.Font.Name := 'Segoe UI';
-    FLookAndFeel.Tabs.Active.Font.Color := clOlive;
+    FLookAndFeel.Tabs.Active.Font.Color := SetAlpha(clOlive32, 100);
     FLookAndFeel.Tabs.Active.Font.Size := 9;
-    FLookAndFeel.Tabs.Active.Font.Alpha := 100;
     FLookAndFeel.Tabs.Active.Font.UseDefaultFont := True;
-    FLookAndFeel.Tabs.Active.Style.StartColor := clWhite;
-    FLookAndFeel.Tabs.Active.Style.StopColor := 16316920;
-    FLookAndFeel.Tabs.Active.Style.StartAlpha := 255;
-    FLookAndFeel.Tabs.Active.Style.StopAlpha := 255;
-    FLookAndFeel.Tabs.Active.Style.OutlineColor := 10189918;
-    FLookAndFeel.Tabs.Active.Style.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.Tabs.Active.Style.OutlineAlpha := 255;
+    FLookAndFeel.Tabs.Active.Style.StartColor := clWhite32;
+    FLookAndFeel.Tabs.Active.Style.StopColor := $FFF8F9F8;
+    FLookAndFeel.Tabs.Active.Style.OutlineColor := $FF5E7C9B;
+    FLookAndFeel.Tabs.Active.Style.OutlineSize := 1;
     FLookAndFeel.Tabs.NotActive.Font.Name := 'Segoe UI';
-    FLookAndFeel.Tabs.NotActive.Font.Color := 4603477;
+    FLookAndFeel.Tabs.NotActive.Font.Color := $D755463E;
     FLookAndFeel.Tabs.NotActive.Font.Size := 9;
-    FLookAndFeel.Tabs.NotActive.Font.Alpha := 215;
     FLookAndFeel.Tabs.NotActive.Font.UseDefaultFont := False;
-    FLookAndFeel.Tabs.NotActive.Style.StartColor := 15194573;
-    FLookAndFeel.Tabs.NotActive.Style.StopColor := 15194573;
-    FLookAndFeel.Tabs.NotActive.Style.StartAlpha := 210;
-    FLookAndFeel.Tabs.NotActive.Style.StopAlpha := 210;
-    FLookAndFeel.Tabs.NotActive.Style.OutlineColor := 13546390;
-    FLookAndFeel.Tabs.NotActive.Style.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.Tabs.NotActive.Style.OutlineAlpha := 215;
+    FLookAndFeel.Tabs.NotActive.Style.StartColor := $D2CDD9E7;
+    FLookAndFeel.Tabs.NotActive.Style.StopColor := $D2CDD9E7;
+    FLookAndFeel.Tabs.NotActive.Style.OutlineColor := $D796B3CE;
+    FLookAndFeel.Tabs.NotActive.Style.OutlineSize := 1;
     FLookAndFeel.Tabs.Hot.Font.Name := 'Segoe UI';
-    FLookAndFeel.Tabs.Hot.Font.Color := 4210752;
+    FLookAndFeel.Tabs.Hot.Font.Color := $D7404040;
     FLookAndFeel.Tabs.Hot.Font.Size := 9;
-    FLookAndFeel.Tabs.Hot.Font.Alpha := 215;
     FLookAndFeel.Tabs.Hot.Font.UseDefaultFont := False;
-    FLookAndFeel.Tabs.Hot.Style.StartColor := 15721176;
-    FLookAndFeel.Tabs.Hot.Style.StopColor := 15589847;
-    FLookAndFeel.Tabs.Hot.Style.StartAlpha := 255;
-    FLookAndFeel.Tabs.Hot.Style.StopAlpha := 255;
-    FLookAndFeel.Tabs.Hot.Style.OutlineColor := 12423799;
-    FLookAndFeel.Tabs.Hot.Style.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.Tabs.Hot.Style.OutlineAlpha := 235;
-    FLookAndFeel.CloseButton.Cross.Normal.Color := 6643031;
-    FLookAndFeel.CloseButton.Cross.Normal.Thickness := 1.500000000000000000;
-    FLookAndFeel.CloseButton.Cross.Normal.Alpha := 255;
-    FLookAndFeel.CloseButton.Cross.Down.Color := 15461369;
-    FLookAndFeel.CloseButton.Cross.Down.Thickness := 2.000000000000000000;
-    FLookAndFeel.CloseButton.Cross.Down.Alpha := 220;
-    FLookAndFeel.CloseButton.Cross.Hot.Color := clWhite;
-    FLookAndFeel.CloseButton.Cross.Hot.Thickness := 2.000000000000000000;
-    FLookAndFeel.CloseButton.Cross.Hot.Alpha := 220;
-    FLookAndFeel.CloseButton.Circle.Normal.StartColor := clGradientActiveCaption;
-    FLookAndFeel.CloseButton.Circle.Normal.StopColor := clNone;
-    FLookAndFeel.CloseButton.Circle.Normal.StartAlpha := 0;
-    FLookAndFeel.CloseButton.Circle.Normal.StopAlpha := 0;
-    FLookAndFeel.CloseButton.Circle.Normal.OutlineColor := clGray;
-    FLookAndFeel.CloseButton.Circle.Normal.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.CloseButton.Circle.Normal.OutlineAlpha := 0;
-    FLookAndFeel.CloseButton.Circle.Down.StartColor := 3487169;
-    FLookAndFeel.CloseButton.Circle.Down.StopColor := 3487169;
-    FLookAndFeel.CloseButton.Circle.Down.StartAlpha := 255;
-    FLookAndFeel.CloseButton.Circle.Down.StopAlpha := 255;
-    FLookAndFeel.CloseButton.Circle.Down.OutlineColor := clGray;
-    FLookAndFeel.CloseButton.Circle.Down.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.CloseButton.Circle.Down.OutlineAlpha := 255;
-    FLookAndFeel.CloseButton.Circle.Hot.StartColor := 9408475;
-    FLookAndFeel.CloseButton.Circle.Hot.StopColor := 9803748;
-    FLookAndFeel.CloseButton.Circle.Hot.StartAlpha := 255;
-    FLookAndFeel.CloseButton.Circle.Hot.StopAlpha := 255;
-    FLookAndFeel.CloseButton.Circle.Hot.OutlineColor := 6054595;
-    FLookAndFeel.CloseButton.Circle.Hot.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.CloseButton.Circle.Hot.OutlineAlpha := 255;
-    FLookAndFeel.AddButton.Button.Normal.StartColor := 14340292;
-    FLookAndFeel.AddButton.Button.Normal.StopColor := 14340035;
-    FLookAndFeel.AddButton.Button.Normal.StartAlpha := 255;
-    FLookAndFeel.AddButton.Button.Normal.StopAlpha := 255;
-    FLookAndFeel.AddButton.Button.Normal.OutlineColor := 13088421;
-    FLookAndFeel.AddButton.Button.Normal.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.AddButton.Button.Normal.OutlineAlpha := 255;
-    FLookAndFeel.AddButton.Button.Down.StartColor := 13417645;
-    FLookAndFeel.AddButton.Button.Down.StopColor := 13417644;
-    FLookAndFeel.AddButton.Button.Down.StartAlpha := 255;
-    FLookAndFeel.AddButton.Button.Down.StopAlpha := 255;
-    FLookAndFeel.AddButton.Button.Down.OutlineColor := 10852748;
-    FLookAndFeel.AddButton.Button.Down.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.AddButton.Button.Down.OutlineAlpha := 255;
-    FLookAndFeel.AddButton.Button.Hot.StartColor := 15524314;
-    FLookAndFeel.AddButton.Button.Hot.StopColor := 15524314;
-    FLookAndFeel.AddButton.Button.Hot.StartAlpha := 255;
-    FLookAndFeel.AddButton.Button.Hot.StopAlpha := 255;
-    FLookAndFeel.AddButton.Button.Hot.OutlineColor := 14927787;
-    FLookAndFeel.AddButton.Button.Hot.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.AddButton.Button.Hot.OutlineAlpha := 255;
-    FLookAndFeel.AddButton.PlusSign.Normal.StartColor := clWhite;
-    FLookAndFeel.AddButton.PlusSign.Normal.StopColor := clWhite;
-    FLookAndFeel.AddButton.PlusSign.Normal.StartAlpha := 255;
-    FLookAndFeel.AddButton.PlusSign.Normal.StopAlpha := 255;
-    FLookAndFeel.AddButton.PlusSign.Normal.OutlineColor := clGray;
-    FLookAndFeel.AddButton.PlusSign.Normal.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.AddButton.PlusSign.Normal.OutlineAlpha := 255;
-    FLookAndFeel.AddButton.PlusSign.Down.StartColor := clWhite;
-    FLookAndFeel.AddButton.PlusSign.Down.StopColor := clWhite;
-    FLookAndFeel.AddButton.PlusSign.Down.StartAlpha := 255;
-    FLookAndFeel.AddButton.PlusSign.Down.StopAlpha := 255;
-    FLookAndFeel.AddButton.PlusSign.Down.OutlineColor := clGray;
-    FLookAndFeel.AddButton.PlusSign.Down.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.AddButton.PlusSign.Down.OutlineAlpha := 255;
-    FLookAndFeel.AddButton.PlusSign.Hot.StartColor := clWhite;
-    FLookAndFeel.AddButton.PlusSign.Hot.StopColor := clWhite;
-    FLookAndFeel.AddButton.PlusSign.Hot.StartAlpha := 255;
-    FLookAndFeel.AddButton.PlusSign.Hot.StopAlpha := 255;
-    FLookAndFeel.AddButton.PlusSign.Hot.OutlineColor := clGray;
-    FLookAndFeel.AddButton.PlusSign.Hot.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.AddButton.PlusSign.Hot.OutlineAlpha := 255;
-    FLookAndFeel.ScrollButtons.Button.Normal.StartColor := 14735310;
-    FLookAndFeel.ScrollButtons.Button.Normal.StopColor := 14274499;
-    FLookAndFeel.ScrollButtons.Button.Normal.StartAlpha := 255;
-    FLookAndFeel.ScrollButtons.Button.Normal.StopAlpha := 255;
-    FLookAndFeel.ScrollButtons.Button.Normal.OutlineColor := 11507842;
-    FLookAndFeel.ScrollButtons.Button.Normal.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.ScrollButtons.Button.Normal.OutlineAlpha := 255;
-    FLookAndFeel.ScrollButtons.Button.Down.StartColor := 13417645;
-    FLookAndFeel.ScrollButtons.Button.Down.StopColor := 13417644;
-    FLookAndFeel.ScrollButtons.Button.Down.StartAlpha := 255;
-    FLookAndFeel.ScrollButtons.Button.Down.StopAlpha := 255;
-    FLookAndFeel.ScrollButtons.Button.Down.OutlineColor := 10852748;
-    FLookAndFeel.ScrollButtons.Button.Down.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.ScrollButtons.Button.Down.OutlineAlpha := 255;
-    FLookAndFeel.ScrollButtons.Button.Hot.StartColor := 15524314;
-    FLookAndFeel.ScrollButtons.Button.Hot.StopColor := 15524313;
-    FLookAndFeel.ScrollButtons.Button.Hot.StartAlpha := 255;
-    FLookAndFeel.ScrollButtons.Button.Hot.StopAlpha := 255;
-    FLookAndFeel.ScrollButtons.Button.Hot.OutlineColor := 14927788;
-    FLookAndFeel.ScrollButtons.Button.Hot.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.ScrollButtons.Button.Hot.OutlineAlpha := 255;
-    FLookAndFeel.ScrollButtons.Button.Disabled.StartColor := 14340036;
-    FLookAndFeel.ScrollButtons.Button.Disabled.StopColor := 14274499;
-    FLookAndFeel.ScrollButtons.Button.Disabled.StartAlpha := 150;
-    FLookAndFeel.ScrollButtons.Button.Disabled.StopAlpha := 150;
-    FLookAndFeel.ScrollButtons.Button.Disabled.OutlineColor := 11113341;
-    FLookAndFeel.ScrollButtons.Button.Disabled.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.ScrollButtons.Button.Disabled.OutlineAlpha := 100;
-    FLookAndFeel.ScrollButtons.Arrow.Normal.StartColor := clWhite;
-    FLookAndFeel.ScrollButtons.Arrow.Normal.StopColor := clWhite;
-    FLookAndFeel.ScrollButtons.Arrow.Normal.StartAlpha := 255;
-    FLookAndFeel.ScrollButtons.Arrow.Normal.StopAlpha := 255;
-    FLookAndFeel.ScrollButtons.Arrow.Normal.OutlineColor := clGray;
-    FLookAndFeel.ScrollButtons.Arrow.Normal.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.ScrollButtons.Arrow.Normal.OutlineAlpha := 200;
-    FLookAndFeel.ScrollButtons.Arrow.Down.StartColor := clWhite;
-    FLookAndFeel.ScrollButtons.Arrow.Down.StopColor := clWhite;
-    FLookAndFeel.ScrollButtons.Arrow.Down.StartAlpha := 255;
-    FLookAndFeel.ScrollButtons.Arrow.Down.StopAlpha := 255;
-    FLookAndFeel.ScrollButtons.Arrow.Down.OutlineColor := clGray;
-    FLookAndFeel.ScrollButtons.Arrow.Down.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.ScrollButtons.Arrow.Down.OutlineAlpha := 200;
-    FLookAndFeel.ScrollButtons.Arrow.Hot.StartColor := clWhite;
-    FLookAndFeel.ScrollButtons.Arrow.Hot.StopColor := clWhite;
-    FLookAndFeel.ScrollButtons.Arrow.Hot.StartAlpha := 255;
-    FLookAndFeel.ScrollButtons.Arrow.Hot.StopAlpha := 255;
-    FLookAndFeel.ScrollButtons.Arrow.Hot.OutlineColor := clGray;
-    FLookAndFeel.ScrollButtons.Arrow.Hot.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.ScrollButtons.Arrow.Hot.OutlineAlpha := 200;
-    FLookAndFeel.ScrollButtons.Arrow.Disabled.StartColor := clSilver;
-    FLookAndFeel.ScrollButtons.Arrow.Disabled.StopColor := clSilver;
-    FLookAndFeel.ScrollButtons.Arrow.Disabled.StartAlpha := 150;
-    FLookAndFeel.ScrollButtons.Arrow.Disabled.StopAlpha := 150;
-    FLookAndFeel.ScrollButtons.Arrow.Disabled.OutlineColor := clGray;
-    FLookAndFeel.ScrollButtons.Arrow.Disabled.OutlineSize := 1.000000000000000000;
-    FLookAndFeel.ScrollButtons.Arrow.Disabled.OutlineAlpha := 200;
+    FLookAndFeel.Tabs.Hot.Style.StartColor := $FFD8E2EF;
+    FLookAndFeel.Tabs.Hot.Style.StopColor := $FFD7E1ED;
+    FLookAndFeel.Tabs.Hot.Style.OutlineColor := $EB7792BD;
+    FLookAndFeel.Tabs.Hot.Style.OutlineSize := 1;
+    FLookAndFeel.CloseButton.Cross.Normal.Color := $FF575D65;
+    FLookAndFeel.CloseButton.Cross.Normal.Thickness := 1.5;
+    FLookAndFeel.CloseButton.Cross.Down.Color := $DCF9EBEB;
+    FLookAndFeel.CloseButton.Cross.Down.Thickness := 2;
+    FLookAndFeel.CloseButton.Cross.Hot.Color := SetAlpha(clWhite, 220);
+    FLookAndFeel.CloseButton.Cross.Hot.Thickness := 2;
+    FLookAndFeel.CloseButton.Circle.Normal.StartColor := SetAlpha(Color32(clGradientActiveCaption), 0);
+    FLookAndFeel.CloseButton.Circle.Normal.StopColor := SetAlpha(Color32(clNone), 0);
+    FLookAndFeel.CloseButton.Circle.Normal.OutlineColor := $00808080;
+    FLookAndFeel.CloseButton.Circle.Normal.OutlineSize := 1;
+    FLookAndFeel.CloseButton.Circle.Down.StartColor := $FFC13535;
+    FLookAndFeel.CloseButton.Circle.Down.StopColor := $FFC13535;
+    FLookAndFeel.CloseButton.Circle.Down.OutlineColor := $00808080;
+    FLookAndFeel.CloseButton.Circle.Down.OutlineSize := 1;
+    FLookAndFeel.CloseButton.Circle.Hot.StartColor := $FFDB8F8F;
+    FLookAndFeel.CloseButton.Circle.Hot.StopColor := $FFE49795;
+    FLookAndFeel.CloseButton.Circle.Hot.OutlineColor := $FF5C62C3;
+    FLookAndFeel.CloseButton.Circle.Hot.OutlineSize := 1;
+    FLookAndFeel.AddButton.Button.Normal.StartColor := $FFC4D0DA;
+    FLookAndFeel.AddButton.Button.Normal.StopColor := $FFC3CFDA;
+    FLookAndFeel.AddButton.Button.Normal.OutlineColor := $FFA5B6C7;
+    FLookAndFeel.AddButton.Button.Normal.OutlineSize := 1;
+    FLookAndFeel.AddButton.Button.Down.StartColor := $FFADBCCC;
+    FLookAndFeel.AddButton.Button.Down.StopColor := $FFCCBCAC;
+    FLookAndFeel.AddButton.Button.Down.OutlineColor := $FF8C99A5;
+    FLookAndFeel.AddButton.Button.Down.OutlineSize := 1;
+    FLookAndFeel.AddButton.Button.Hot.StartColor := $FFDAE1EC;
+    FLookAndFeel.AddButton.Button.Hot.StopColor := $FFDAE1EC;
+    FLookAndFeel.AddButton.Button.Hot.OutlineColor := $FFABC7E3;
+    FLookAndFeel.AddButton.Button.Hot.OutlineSize := 1;
+    FLookAndFeel.AddButton.PlusSign.Normal.StartColor := clWhite32;
+    FLookAndFeel.AddButton.PlusSign.Normal.StopColor := clWhite32;
+    FLookAndFeel.AddButton.PlusSign.Normal.OutlineColor := clGray32;
+    FLookAndFeel.AddButton.PlusSign.Normal.OutlineSize := 1;
+    FLookAndFeel.AddButton.PlusSign.Down.StartColor := clWhite32;
+    FLookAndFeel.AddButton.PlusSign.Down.StopColor := clWhite32;
+    FLookAndFeel.AddButton.PlusSign.Down.OutlineColor := clGray32;
+    FLookAndFeel.AddButton.PlusSign.Down.OutlineSize := 1;
+    FLookAndFeel.AddButton.PlusSign.Hot.StartColor := clWhite32;
+    FLookAndFeel.AddButton.PlusSign.Hot.StopColor := clWhite32;
+    FLookAndFeel.AddButton.PlusSign.Hot.OutlineColor := clGray32;
+    FLookAndFeel.AddButton.PlusSign.Hot.OutlineSize := 1;
+    FLookAndFeel.ScrollButtons.Button.Normal.StartColor := $FFCED7E0;
+    FLookAndFeel.ScrollButtons.Button.Normal.StopColor := $FFC3CFD9;
+    FLookAndFeel.ScrollButtons.Button.Normal.OutlineColor := $FF8298AF;
+    FLookAndFeel.ScrollButtons.Button.Normal.OutlineSize := 1;
+    FLookAndFeel.ScrollButtons.Button.Down.StartColor := $FFADBCCC;
+    FLookAndFeel.ScrollButtons.Button.Down.StopColor := $FFACBCCC;
+    FLookAndFeel.ScrollButtons.Button.Down.OutlineColor := $FF8C99A5;
+    FLookAndFeel.ScrollButtons.Button.Down.OutlineSize := 1;
+    FLookAndFeel.ScrollButtons.Button.Hot.StartColor := $FFDAE1EC;
+    FLookAndFeel.ScrollButtons.Button.Hot.StopColor := $FFD9E1EC;
+    FLookAndFeel.ScrollButtons.Button.Hot.OutlineColor := $FFACC7E3;
+    FLookAndFeel.ScrollButtons.Button.Hot.OutlineSize := 1;
+    FLookAndFeel.ScrollButtons.Button.Disabled.StartColor := $96C4CFDA;
+    FLookAndFeel.ScrollButtons.Button.Disabled.StopColor := $96C3CFD9;
+    FLookAndFeel.ScrollButtons.Button.Disabled.OutlineColor := $647DA993;
+    FLookAndFeel.ScrollButtons.Button.Disabled.OutlineSize := 1;
+    FLookAndFeel.ScrollButtons.Arrow.Normal.StartColor := clWhite32;
+    FLookAndFeel.ScrollButtons.Arrow.Normal.StopColor := clWhite32;
+    FLookAndFeel.ScrollButtons.Arrow.Normal.OutlineColor := $C8808080;
+    FLookAndFeel.ScrollButtons.Arrow.Normal.OutlineSize := 1;
+    FLookAndFeel.ScrollButtons.Arrow.Down.StartColor := clWhite32;
+    FLookAndFeel.ScrollButtons.Arrow.Down.StopColor := clWhite32;
+    FLookAndFeel.ScrollButtons.Arrow.Down.OutlineColor := $C8808080;
+    FLookAndFeel.ScrollButtons.Arrow.Down.OutlineSize := 1;
+    FLookAndFeel.ScrollButtons.Arrow.Hot.StartColor := clWhite32;
+    FLookAndFeel.ScrollButtons.Arrow.Hot.StopColor := clWhite32;
+    FLookAndFeel.ScrollButtons.Arrow.Hot.OutlineColor := $C8808080;
+    FLookAndFeel.ScrollButtons.Arrow.Hot.OutlineSize := 1;
+    FLookAndFeel.ScrollButtons.Arrow.Disabled.StartColor := SetAlpha(Color32(clSilver), 150);
+    FLookAndFeel.ScrollButtons.Arrow.Disabled.StopColor := SetAlpha(Color32(clSilver), 150);
+    FLookAndFeel.ScrollButtons.Arrow.Disabled.OutlineColor := $C8808080;
+    FLookAndFeel.ScrollButtons.Arrow.Disabled.OutlineSize := 1;
   finally
     EndUpdate;
   end;

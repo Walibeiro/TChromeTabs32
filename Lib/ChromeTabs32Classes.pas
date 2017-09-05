@@ -67,12 +67,12 @@ type
 
   TChromeTabPolygon = class(TObject)
   private
-    FPolygon: TPolygon;
-    FBrush: TCustomBrush;
+    FPolygon: TArrayOfFloatPoint;
     FPen: TStrokeBrush;
+    FFiller: TCustomPolygonFiller;
   public
-    property Polygon: TPolygon read FPolygon write FPolygon;
-    property Brush: TCustomBrush read FBrush write FBrush;
+    property Polygon: TArrayOfFloatPoint read FPolygon write FPolygon;
+    property Filler: TCustomPolygonFiller read FFiller write FFiller;
     property Pen: TStrokeBrush read FPen write FPen;
   end;
 
@@ -81,7 +81,7 @@ type
     function GetPolygonCount: Integer;
     function GetPolygons(Index: Integer): TChromeTabPolygon;
 
-    function AddPolygon(Polygon: TPolygon; Brush: TSolidBrush; Pen: TStrokeBrush): IChromeTabPolygons;
+    function AddPolygon(Polygon: TArrayOfFloatPoint; Filler: TCustomPolygonFiller; Pen: TStrokeBrush): IChromeTabPolygons;
     procedure DrawTo(TargetCanvas: TCanvas32; DrawToFunctions: TDrawToFunctions = dfBrushAndPen);
 
     property PolygonCount: Integer read GetPolygonCount;
@@ -98,7 +98,7 @@ type
     constructor Create; virtual;
     destructor Destroy; override;
 
-    function AddPolygon(Polygon: TPolygon; Brush: TSolidBrush; Pen: TStrokeBrush): IChromeTabPolygons; virtual;
+    function AddPolygon(Polygon: TArrayOfFloatPoint; Filler: TCustomPolygonFiller; Pen: TStrokeBrush): IChromeTabPolygons; virtual;
     procedure DrawTo(TargetCanvas: TCanvas32; DrawToFunctions: TDrawToFunctions = dfBrushAndPen); virtual;
 
     property PolygonCount: Integer read GetPolygonCount;
@@ -214,100 +214,71 @@ type
   private
     FOwner: TPersistent;
   protected
-    FInvalidated: Boolean;
-
     function GetOwner: TPersistent; override;
     procedure DoChanged; virtual;
   public
     constructor Create(AOwner: TPersistent); virtual;
-
-    procedure Invalidate; virtual;
 
     property Owner: TPersistent read FOwner;
   end;
 
   TChromeTabs32LookAndFeelStyle = class(TChromeTabs32Persistent)
   private
-    FStartColor: TColor;
-    FStopColor: TColor;
-    FStartAlpha: Byte;
-    FStopAlpha: Byte;
-    FBrush: TLinearGradientPolygonFiller;
+    FFiller: TLinearGradientPolygonFiller;
     FPen: TStrokeBrush;
-    FOutlineColor: TColor;
-    FOutlineAlpha: Byte;
-    FOutlineSize: Single;
-    FPenInvalidated: Boolean;
 
-    procedure SetStartColor(const Value: TColor);
-    procedure SetStopColor(const Value: TColor);
-    procedure SetStartAlpha(const Value: Byte);
-    procedure SetOutlineColor(const Value: TColor);
+    procedure SetStartColor(const Value: TColor32);
+    procedure SetStopColor(const Value: TColor32);
+    procedure SetOutlineColor(const Value: TColor32);
     procedure SetOutlineSize(const Value: Single);
-    procedure SetStopAlpha(const Value: Byte);
-    procedure SetOutlineAlpha(const Value: Byte);
+    function GetOutlineColor: TColor32;
+    function GetOutlineSize: Single;
+    function GetStartColor: TColor32;
+    function GetStopColor: TColor32;
   public
     function GetPolygonFiller(ClientRect: TRect): TLinearGradientPolygonFiller;
-    function GetPen: TStrokeBrush;
-
-    procedure Invalidate; override;
   published
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
 
-    property StartColor: TColor read FStartColor write SetStartColor;
-    property StopColor: TColor read FStopColor write SetStopColor;
-    property StartAlpha: Byte read FStartAlpha write SetStartAlpha;
-    property StopAlpha: Byte read FStopAlpha write SetStopAlpha;
-    property OutlineColor: TColor read FOutlineColor write SetOutlineColor;
-    property OutlineSize: Single read FOutlineSize write SetOutlineSize;
-    property OutlineAlpha: Byte read FOutlineAlpha write SetOutlineAlpha;
+    property StartColor: TColor32 read GetStartColor write SetStartColor;
+    property StopColor: TColor32 read GetStopColor write SetStopColor;
+    property OutlineColor: TColor32 read GetOutlineColor write SetOutlineColor;
+    property OutlineSize: Single read GetOutlineSize write SetOutlineSize;
   end;
 
   TChromeTabs32LookAndFeelPen = class(TChromeTabs32Persistent)
   private
-    FColor: TColor;
-    FThickness: Single;
-    FAlpha: Integer;
     FPen: TStrokeBrush;
   private
-    procedure SetColor(const Value: TColor);
+    procedure SetColor(const Value: TColor32);
     procedure SetThickness(const Value: Single);
-    procedure SetAlpha(const Value: Integer);
+    function GetThickness: Single;
+    function GetColor: TColor32;
   public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
-
-    function GetPen: TStrokeBrush;
-
-    procedure Invalidate; override;
   published
-    property Color: TColor read FColor write SetColor;
-    property Thickness: Single read FThickness write SetThickness;
-    property Alpha: Integer read FAlpha write SetAlpha;
+    property Color: TColor32 read GetColor write SetColor;
+    property Thickness: Single read GetThickness write SetThickness;
+    property Pen: TStrokeBrush read FPen;
   end;
 
   TChromeTabs32LookAndFeelBaseFont = class(TChromeTabs32Persistent)
   private
     FName: TFontName;
-    FColor: TColor;
+    FColor: TColor32;
     FSize: Integer;
-    FAlpha: Byte;
-//    FTextRenderingMode: TTextRenderingHint;
 
-    procedure SetAlpha(const Value: Byte);
-    procedure SetColor(const Value: TColor);
+    procedure SetColor(const Value: TColor32);
     procedure SetName(const Value: TFontName);
     procedure SetSize(const Value: Integer);
-//    procedure SetTextRenderingMode(const Value: TTextRenderingHint);
   public
     constructor Create(AOwner: TPersistent); override;
   published
     property Name: TFontName read FName write SetName;
-    property Color: TColor read FColor write SetColor;
+    property Color: TColor32 read FColor write SetColor;
     property Size: Integer read FSize write SetSize;
-    property Alpha: Byte read FAlpha write SetAlpha;
-//    property TextRenderingMode: TTextRenderingHint read FTextRenderingMode write SetTextRenderingMode;
   end;
 
   TChromeTabs32LookAndFeelFont = class(TChromeTabs32LookAndFeelBaseFont)
@@ -331,8 +302,6 @@ type
   public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
-
-    procedure Invalidate; override;
   published
     property Font: TChromeTabs32LookAndFeelFont read FFont write SetFont;
     property Style: TChromeTabs32LookAndFeelStyle read FStyle write SetStyle;
@@ -350,8 +319,6 @@ type
   public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
-
-    procedure Invalidate; override;
   protected
     property Active: TChromeTabs32LookAndFeelStyleProperties read FStyleProperty1 write SetStyleProperty1;
     property NotActive: TChromeTabs32LookAndFeelStyleProperties read FStyleProperty2 write SetStyleProperty2;
@@ -360,22 +327,16 @@ type
 
   TChromeTabs32LookAndFeelGlow = class(TChromeTabs32Persistent)
   private
-    FCentreColor: TColor;
-    FOutsideColor: TColor;
-    FCentreAlpha: Byte;
-    FOutsideAlpha: Byte;
+    FCenterColor: TColor32;
+    FOutsideColor: TColor32;
 
-    procedure SetCentreAlpha(const Value: Byte);
-    procedure SetCentreColor(const Value: TColor);
-    procedure SetOutsideAlpha(const Value: Byte);
-    procedure SetOutsideColor(const Value: TColor);
+    procedure SetCenterColor(const Value: TColor32);
+    procedure SetOutsideColor(const Value: TColor32);
   public
     constructor Create(AOwner: TPersistent); override;
   published
-    property CentreColor: TColor read FCentreColor write SetCentreColor;
-    property OutsideColor: TColor read FOutsideColor write SetOutsideColor;
-    property CentreAlpha: Byte read FCentreAlpha write SetCentreAlpha;
-    property OutsideAlpha: Byte read FOutsideAlpha write SetOutsideAlpha;
+    property CenterColor: TColor32 read FCenterColor write SetCenterColor;
+    property OutsideColor: TColor32 read FOutsideColor write SetOutsideColor;
   end;
 
   TChromeTabs32LookAndFeelSpinners = class(TChromeTabs32Persistent)
@@ -409,8 +370,6 @@ type
   public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
-
-    procedure Invalidate; override;
   published
     property BaseLine: TChromeTabs32LookAndFeelPen read FBaseLine write SetBaseLine;
     property Modified: TChromeTabs32LookAndFeelGlow read FModified write SetModified;
@@ -434,8 +393,6 @@ type
   public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
-
-    procedure Invalidate; override;
   protected
     property Normal: TChromeTabs32LookAndFeelStyle read FStyleProperty1 write SetStyleProperty1;
     property Down: TChromeTabs32LookAndFeelStyle read FStyleProperty2 write SetStyleProperty2;
@@ -454,8 +411,6 @@ type
   public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
-
-    procedure Invalidate; override;
   protected
     property Pen1: TChromeTabs32LookAndFeelPen read FPen1 write SetPen1;
     property Pen2: TChromeTabs32LookAndFeelPen read FPen2 write SetPen2;
@@ -484,8 +439,6 @@ type
   public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
-
-    procedure Invalidate; override;
   published
     property Disabled: TChromeTabs32LookAndFeelStyle read FDisabled write SetDisabled;
   end;
@@ -500,8 +453,6 @@ type
   public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
-
-    procedure Invalidate; override;
   published
     property Button: TChromeTabs32LookAndFeelButtonItems read FButton write SetButton;
     property PlusSign: TChromeTabs32LookAndFeelButtonItems read FPlusSign write SetPlusSign;
@@ -517,8 +468,6 @@ type
   public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
-
-    procedure Invalidate; override;
   published
     property Cross: TChromeTabs32LookAndFeelPenItem read FCross write SetCross;
     property Circle: TChromeTabs32LookAndFeelButtonItems read FCircle write SetCircle;
@@ -534,8 +483,6 @@ type
   public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
-
-    procedure Invalidate; override;
   published
     property Button: TChromeTabs32LookAndFeelDisabledButton read FButton write SetButton;
     property Arrow: TChromeTabs32LookAndFeelDisabledButton read FArrow write SetArrow;
@@ -557,8 +504,6 @@ type
   public
     constructor Create(AOwner: TPersistent); override;
     destructor Destroy; override;
-
-    procedure Invalidate; override;
   published
     property TabsContainer: TChromeTabs32LookAndFeelStyle read FTabsContainer write SetTabsContainer;
     property Tabs: TChromeTabs32LookAndFeelTab read FTabs write SetTabs;
@@ -949,7 +894,6 @@ type
     FOrientation: TTabOrientation;
     FContentOffsetLeft: Integer;
     FContentOffsetRight: Integer;
-//    FCanvasSmoothingMode: TSmoothingMode;
     FBaseLineTabRegionOnly: Boolean;
     FWordWrap: Boolean;
     FTextHorizontalAlignment: TAlignment;
@@ -971,7 +915,6 @@ type
     procedure SetOffsetBottom(const Value: Integer);
     procedure SetContentOffsetRight(const Value: Integer);
     procedure SetOffsetRight(const Value: Integer);
-//    procedure SetCanvasSmoothingMode(const Value: TSmoothingMode);
     procedure SetBaseLineTabRegionOnly(const Value: Boolean);
     procedure SetWordWrap(const Value: Boolean);
     procedure SetTextAlignmentHorizontal(const Value: TAlignment);
@@ -981,8 +924,6 @@ type
     procedure SetShowPinnedTabText(const Value: Boolean);
   public
     constructor Create(AOwner: TPersistent); override;
-
-//    property CanvasSmoothingMode: TSmoothingMode read FCanvasSmoothingMode write SetCanvasSmoothingMode;
   published
     property SeeThroughTabs: Boolean read FSeeThroughTabs write SetSeeThroughTabs;
     property TabOverlap: Integer read FTabOverlap write SetOverlap;
@@ -1051,8 +992,6 @@ type
     procedure SetTransparentBackground(const Value: Boolean);
     procedure SetPaddingLeft(const Value: Integer);
     procedure SetPaddingRight(const Value: Integer);
-  public
-    constructor Create(AOwner: TPersistent); override;
   published
     property TransparentBackground: Boolean read FTransparentBackground write SetTransparentBackground;
     property OverlayButtons: Boolean read FOverlayButtons write SetOverlayButtons;
@@ -1226,14 +1165,10 @@ begin
   // Inherited needs to be here so the property values are
   // set before it is called
   inherited;
-
-//  GetChromeTabInterface.TabCreate(Self);
 end;
 
 destructor TChromeTab.Destroy;
 begin
-//  GetChromeTabInterface.TabDestroy(Self);
-
   inherited;
 
   if FTabControl <> nil then
@@ -1721,7 +1656,6 @@ begin
 
   FTextTrimType := tttFade;
 
-  // FCanvasSmoothingMode := SmoothingModeHighQuality;
   FOffsetRight := 0;
 end;
 
@@ -1759,15 +1693,6 @@ begin
 
   DoChanged;
 end;
-
-(*
-procedure TChromeTabs32Options.SetCanvasSmoothingMode(const Value: TSmoothingMode);
-begin
-  FCanvasSmoothingMode := Value;
-
-  DoChanged;
-end;
-*)
 
 procedure TChromeTabs32Options.SetContentOffsetLeft(const Value: Integer);
 begin
@@ -1928,10 +1853,6 @@ begin
     Result := nil;
 end;
 
-procedure TChromeTabs32Persistent.Invalidate;
-begin
-  FInvalidated := True;
-end;
 
 { TOptions }
 
@@ -2020,13 +1941,6 @@ begin
   inherited;
 end;
 
-procedure TChromeTabs32LookAndFeelStyleProperties.Invalidate;
-begin
-  inherited;
-
-  FStyle.Invalidate;
-end;
-
 procedure TChromeTabs32LookAndFeelStyleProperties.SetFont(const Value: TChromeTabs32LookAndFeelFont);
 begin
   FFont.Assign(Value);
@@ -2049,21 +1963,20 @@ constructor TChromeTabs32LookAndFeelStyle.Create(AOwner: TPersistent);
 begin
   inherited;
 
-  FStartAlpha := 255;
-  FStopAlpha := 255;
-  FOutlineAlpha := 255;
+  FFiller := TLinearGradientPolygonFiller.Create;
+  FFiller.SimpleGradient(
+    FloatPoint(0, 0), StartColor,
+    FloatPoint(0, 9), StopColor);
 
-  FOutlineSize := 1;
-
-  FOutlineColor := clGray;
-  FStartColor := clWhite;
-  FStopColor := clWhite;
+  FPen := TStrokeBrush.Create(nil);
+  FPen.FillColor := clGray32;
+  FPen.StrokeWidth := 1;
 end;
 
 destructor TChromeTabs32LookAndFeelStyle.Destroy;
 begin
   FreeAndNil(FPen);
-  FreeAndNil(FBrush);
+  FreeAndNil(FFiller);
 
   inherited;
 end;
@@ -2071,110 +1984,57 @@ end;
 function TChromeTabs32LookAndFeelStyle.GetPolygonFiller(
   ClientRect: TRect): TLinearGradientPolygonFiller;
 begin
-  // Make sure thst the last brush wasn't broken
-  if (FInvalidated) or (FBrush <> nil) then
-  begin
-  FreeAndNil(FBrush);
+  FFiller.SetPoints(
+    FloatPoint(0, ClientRect.Top),
+    FloatPoint(0, ClientRect.Bottom));
 
-    FInvalidated := False;
-  end;
-
-  if FBrush = nil then
-  begin
-    FBrush := TLinearGradientPolygonFiller.Create;
-    FBrush.SimpleGradient(
-      FloatPoint(0, ClientRect.Top), SetAlpha(Color32(StartColor), StartAlpha),
-      FloatPoint(0, ClientRect.Bottom), SetAlpha(Color32(StopColor), StopAlpha));
-  end;
-
-  Result := FBrush;
+  Result := FFiller;
 end;
 
-function TChromeTabs32LookAndFeelStyle.GetPen: TStrokeBrush;
+function TChromeTabs32LookAndFeelStyle.GetStartColor: TColor32;
 begin
-  if FPenInvalidated then
-  begin
-    FreeAndNil(FPen);
-
-    FPenInvalidated := False;
-  end;
-
-  if FPen = nil then
-  begin
-    FPen := TStrokeBrush.Create(nil);
-    FPen.StrokeWidth := FOutlineSize;
-    FPen.FillColor := SetAlpha(Color32(FOutlineColor), FOutlineAlpha);
-  end;
-
-  Result := FPen;
+  Result := FFiller.Gradient.GradientEntry[0].Color32;
 end;
 
-procedure TChromeTabs32LookAndFeelStyle.Invalidate;
+function TChromeTabs32LookAndFeelStyle.GetStopColor: TColor32;
 begin
-  inherited;
-
-  FPenInvalidated := True;
+  Result := FFiller.Gradient.GradientEntry[1].Color32;
 end;
 
-procedure TChromeTabs32LookAndFeelStyle.SetStartAlpha(const Value: Byte);
+procedure TChromeTabs32LookAndFeelStyle.SetOutlineColor(const Value: TColor32);
 begin
-  FStartAlpha := Value;
-
-  Invalidate;
+  FPen.FillColor := Value;
 
   DoChanged;
 end;
 
-procedure TChromeTabs32LookAndFeelStyle.SetOutlineAlpha(const Value: Byte);
+function TChromeTabs32LookAndFeelStyle.GetOutlineColor: TColor32;
 begin
-  FOutlineAlpha := Value;
-
-  Invalidate;
-
-  DoChanged;
-end;
-
-procedure TChromeTabs32LookAndFeelStyle.SetOutlineColor(const Value: TColor);
-begin
-  FOutlineColor := Value;
-
-  Invalidate;
-
-  DoChanged;
+  Result := FPen.FillColor;
 end;
 
 procedure TChromeTabs32LookAndFeelStyle.SetOutlineSize(const Value: Single);
 begin
-  FOutlineSize := Value;
-
-  Invalidate;
+  FPen.StrokeWidth := Value;
 
   DoChanged;
 end;
 
-procedure TChromeTabs32LookAndFeelStyle.SetStartColor(const Value: TColor);
+function TChromeTabs32LookAndFeelStyle.GetOutlineSize: Single;
 begin
-  FStartColor := Value;
+  Result := FPen.StrokeWidth;
+end;
 
-  Invalidate;
+procedure TChromeTabs32LookAndFeelStyle.SetStartColor(const Value: TColor32);
+begin
+  FFiller.Gradient.StartColor := Value;
 
   DoChanged;
 end;
 
-procedure TChromeTabs32LookAndFeelStyle.SetStopAlpha(const Value: Byte);
+procedure TChromeTabs32LookAndFeelStyle.SetStopColor(const Value: TColor32);
 begin
-  FStopAlpha := Value;
-
-  Invalidate;
-
-  DoChanged;
-end;
-
-procedure TChromeTabs32LookAndFeelStyle.SetStopColor(const Value: TColor);
-begin
-  FStopColor := Value;
-
-  Invalidate;
+  FFiller.Gradient.EndColor := Value;
 
   DoChanged;
 end;
@@ -2189,22 +2049,21 @@ begin
   FCircle := TChromeTabs32LookAndFeelButtonItems.Create(Self);
   FCross := TChromeTabs32LookAndFeelPenItem.Create(Self);
 
-  FCross.Normal.Color := $00B8AFA9;
-  FCross.Hot.Color := clWhite;
-  FCross.Hot.Alpha := 240;
-  FCross.Down.Color := clRed;
+  FCross.Normal.Color := $00A9AFB8;
+  FCross.Hot.Color := SetAlpha(clWhite, 240);
+  FCross.Down.Color := clRed32;
 
   FCircle.Normal.StartColor := clWhite;
   FCircle.Normal.StopColor := FCircle.Normal.StartColor;
-  FCircle.Normal.OutlineAlpha := 0;
+  FCircle.Normal.OutlineColor := $00FFFFFF;
 
-  FCircle.Hot.StartColor := $003535c1;
+  FCircle.Hot.StartColor := $00c13535;
   FCircle.Hot.StopColor := FCircle.Hot.StartColor;
-  FCircle.Hot.OutlineAlpha := 0;
+  FCircle.Hot.OutlineColor := $00FFFFFF;
 
-  FCircle.Down.StartColor := $003535c1;
+  FCircle.Down.StartColor := $00c13535;
   FCircle.Down.StopColor := FCircle.Down.StartColor;
-  FCircle.Down.OutlineAlpha := 0;
+  FCircle.Down.OutlineColor := $00FFFFFF;
 end;
 
 destructor TChromeTabs32LookAndFeelCloseButton.Destroy;
@@ -2219,8 +2078,6 @@ procedure TChromeTabs32LookAndFeelCloseButton.SetCircle(const Value: TChromeTabs
 begin
   FCircle.Assign(Value);
 
-  Invalidate;
-
   DoChanged;
 end;
 
@@ -2229,15 +2086,7 @@ procedure TChromeTabs32LookAndFeelCloseButton.SetCross(
 begin
   FCross := Value;
 
-  Invalidate;
-
   DoChanged;
-end;
-
-procedure TChromeTabs32LookAndFeelCloseButton.Invalidate;
-begin
-  FCross.Invalidate;
-  FCircle.Invalidate;
 end;
 
 
@@ -2272,14 +2121,6 @@ begin
   FPlusSign.Assign(Value);
 end;
 
-procedure TChromeTabs32LookAndFeelAddButton.Invalidate;
-begin
-  inherited;
-
-  FButton.Invalidate;
-  FPlusSign.Invalidate;
-end;
-
 
 { TChromeTabs32LookAndFeel }
 
@@ -2305,17 +2146,6 @@ begin
   FreeAndNil(FScrollButtons);
 
   inherited;
-end;
-
-procedure TChromeTabs32LookAndFeel.Invalidate;
-begin
-  inherited;
-
-  FScrollButtons.Invalidate;
-  FTabs.Invalidate;
-  FTabsContainer.Invalidate;
-  FCloseButton.Invalidate;
-  FAddButton.Invalidate;
 end;
 
 procedure TChromeTabs32LookAndFeel.SetTabsContainer(const Value: TChromeTabs32LookAndFeelStyle);
@@ -3110,12 +2940,6 @@ begin
   DoChanged;
 end;
 
-procedure TChromeTabs32LookAndFeelCustomStyleItems.Invalidate;
-begin
-  FStyleProperty1.Invalidate;
-  FStyleProperty2.Invalidate;
-  FStyleProperty3.Invalidate;
-end;
 
 { TChromeTabs32CustomLookAndFeelStylePropertyItems }
 
@@ -3149,18 +2973,12 @@ begin
   FStyleProperty2.AssignTo(Value);
 end;
 
-procedure TChromeTabs32CustomLookAndFeelStylePropertyItems.Invalidate;
-begin
-  FStyleProperty1.Invalidate;
-  FStyleProperty2.Invalidate;
-  FStyleProperty3.Invalidate;
-end;
-
 procedure TChromeTabs32CustomLookAndFeelStylePropertyItems.SetStyleProperty3(
   const Value: TChromeTabs32LookAndFeelStyleProperties);
 begin
   FStyleProperty3.AssignTo(Value);
 end;
+
 
 { TChromeTabs32LookAndFeelPen }
 
@@ -3168,9 +2986,9 @@ constructor TChromeTabs32LookAndFeelPen.Create(AOwner: TPersistent);
 begin
   inherited;
 
-  FThickness := 1;
-  FAlpha := 255;
-  FColor := clBlack;
+  FPen := TStrokeBrush.Create(nil);
+  FPen.FillColor := clBlack32;
+  FPen.StrokeWidth := 1;
 end;
 
 destructor TChromeTabs32LookAndFeelPen.Destroy;
@@ -3180,58 +2998,30 @@ begin
   inherited;
 end;
 
-function TChromeTabs32LookAndFeelPen.GetPen: TStrokeBrush;
+function TChromeTabs32LookAndFeelPen.GetColor: TColor32;
 begin
-  if FInvalidated then
-  begin
-    FreeAndNil(FPen);
-
-    FInvalidated := False;
-  end;
-
-  if FPen = nil then
-  begin
-    FPen := TStrokeBrush.Create(nil);
-    FPen.FillColor := GR32.SetAlpha(Color32(FColor), FAlpha);
-    FPen.StrokeWidth := FThickness;
-  end;
-
-  Result := FPen;
+  Result := FPen.FillColor;
 end;
 
-procedure TChromeTabs32LookAndFeelPen.Invalidate;
+function TChromeTabs32LookAndFeelPen.GetThickness: Single;
 begin
-  inherited;
-
-  FreeAndNil(FPen);
+  Result := FPen.StrokeWidth;
 end;
 
-procedure TChromeTabs32LookAndFeelPen.SetAlpha(const Value: Integer);
+procedure TChromeTabs32LookAndFeelPen.SetColor(const Value: TColor32);
 begin
-  FAlpha := Value;
-
-  Invalidate;
-
-  DoChanged;
-end;
-
-procedure TChromeTabs32LookAndFeelPen.SetColor(const Value: TColor);
-begin
-  FColor := Value;
-
-  Invalidate;
+  FPen.FillColor := Value;
 
   DoChanged;
 end;
 
 procedure TChromeTabs32LookAndFeelPen.SetThickness(const Value: Single);
 begin
-  FThickness := Value;
-
-  Invalidate;
+  FPen.StrokeWidth := Value;
 
   DoChanged;
 end;
+
 
 { TChromeTabs32CustomLookAndFeelPenItem }
 
@@ -3258,8 +3048,6 @@ procedure TChromeTabs32CustomLookAndFeelPenItem.SetPen1(
 begin
   FPen1.Assign(Value);
 
-  Invalidate;
-
   DoChanged;
 end;
 
@@ -3267,8 +3055,6 @@ procedure TChromeTabs32CustomLookAndFeelPenItem.SetPen2(
   const Value: TChromeTabs32LookAndFeelPen);
 begin
   FPen2.Assign(Value);
-
-  Invalidate;
 
   DoChanged;
 end;
@@ -3278,17 +3064,9 @@ procedure TChromeTabs32CustomLookAndFeelPenItem.SetPen3(
 begin
   FPen3.Assign(Value);
 
-  Invalidate;
-
   DoChanged;
 end;
 
-procedure TChromeTabs32CustomLookAndFeelPenItem.Invalidate;
-begin
-  FPen1.Invalidate;
-  FPen2.Invalidate;
-  FPen3.Invalidate;
-end;
 
 { TChromeTabs32LookAndFeelDisabledButton }
 
@@ -3315,12 +3093,6 @@ begin
   DoChanged;
 end;
 
-procedure TChromeTabs32LookAndFeelDisabledButton.Invalidate;
-begin
-  inherited;
-
-  FDisabled.Invalidate;
-end;
 
 { TChromeTabs32LookAndFeelTab }
 
@@ -3334,9 +3106,8 @@ begin
   FMouseGlow := TChromeTabs32LookAndFeelGlow.Create(Self);
   FSpinners := TChromeTabs32LookAndFeelSpinners.Create(Self);
 
-  FBaseLine.Color := clGray;
+  FBaseLine.Color := clGray32;
   FBaseLine.Thickness := 2;
-  FBaseLine.Alpha := 255;
 end;
 
 destructor TChromeTabs32LookAndFeelTab.Destroy;
@@ -3388,15 +3159,11 @@ begin
   FSpinners.Assign(Value);
 end;
 
-procedure TChromeTabs32LookAndFeelTab.Invalidate;
-begin
-  FBaseLine.Invalidate;
-end;
 
 { TChromeTabPolygons }
 
-function TChromeTabPolygons.AddPolygon(Polygon: TPolygon;
-  Brush: TSolidBrush; Pen: TStrokeBrush): IChromeTabPolygons;
+function TChromeTabPolygons.AddPolygon(Polygon: TArrayOfFloatPoint;
+  Filler: TCustomPolygonFiller; Pen: TStrokeBrush): IChromeTabPolygons;
 var
   ChromeTabPolygon: TChromeTabPolygon;
 begin
@@ -3406,7 +3173,7 @@ begin
   FPolygons.Add(ChromeTabPolygon);
 
   ChromeTabPolygon.Polygon := Polygon;
-  ChromeTabPolygon.Brush := Brush;
+  ChromeTabPolygon.Filler := Filler;
   ChromeTabPolygon.Pen := Pen;
 end;
 
@@ -3425,27 +3192,17 @@ end;
 procedure TChromeTabPolygons.DrawTo(TargetCanvas: TCanvas32; DrawToFunctions: TDrawToFunctions);
 var
   i: Integer;
-  Brush: TCustomBrush;
 begin
   for i := 0 to FPolygons.Count - 1 do
   begin
     TargetCanvas.Brushes.Clear;
 
-    if (Polygons[i].Brush <> nil) and (DrawToFunctions in [dfBrush, dfBrushAndPen]) then
-      Polygons[i].Brush.BrushCollection := TargetCanvas.Brushes;
+    if Assigned(Polygons[i].Filler) and (DrawToFunctions in [dfBrush, dfBrushAndPen]) then
+      PolygonFS(TargetCanvas.Bitmap, Polygons[i].Polygon, Polygons[i].Filler);
 
-    if (Polygons[i].Pen <> nil) and (DrawToFunctions in [dfPen, dfBrushAndPen]) then
-      Polygons[i].Pen.BrushCollection := TargetCanvas.Brushes;
-
-    TargetCanvas.Path.BeginPath;
-    TargetCanvas.Path.Polygon(PointToFloatPoint(TArrayOfPoint(Polygons[i].Polygon)));
-    TargetCanvas.Path.EndPath;
-
-    if (Polygons[i].Brush <> nil) and (DrawToFunctions in [dfBrush, dfBrushAndPen]) then
-      Polygons[i].Brush.BrushCollection := nil;
-
-    if (Polygons[i].Pen <> nil) and (DrawToFunctions in [dfPen, dfBrushAndPen]) then
-      Polygons[i].Pen.BrushCollection := nil;
+    if (DrawToFunctions in [dfPen, dfBrushAndPen]) then
+      PolylineFS(TargetCanvas.Bitmap, Polygons[i].Polygon,
+        Polygons[i].Pen.FillColor, True, Polygons[i].Pen.StrokeWidth);
   end;
 end;
 
@@ -3478,14 +3235,6 @@ begin
   inherited;
 end;
 
-procedure TChromeTabs32LookAndFeelScrollButton.Invalidate;
-begin
-  inherited;
-
-  FButton.Invalidate;
-  FArrow.Invalidate;
-end;
-
 procedure TChromeTabs32LookAndFeelScrollButton.SetArrow(
   const Value: TChromeTabs32LookAndFeelDisabledButton);
 begin
@@ -3501,6 +3250,7 @@ begin
 
   DoChanged;
 end;
+
 
 { TChromeTabModifiedDisplayOptions }
 
@@ -3575,47 +3325,26 @@ constructor TChromeTabs32LookAndFeelGlow.Create(AOwner: TPersistent);
 begin
   inherited;
 
-  FCentreColor := clWhite;
-  FOutsideColor := clWhite;
-  FCentreAlpha := 180;
-  FOutsideAlpha := 0;
+  FCenterColor := SetAlpha(clWhite32, 180);
+  FOutsideColor := SetAlpha(clWhite32, 0);
 end;
 
-procedure TChromeTabs32LookAndFeelGlow.SetCentreAlpha(const Value: Byte);
+procedure TChromeTabs32LookAndFeelGlow.SetCenterColor(const Value: TColor32);
 begin
-  FCentreAlpha := Value;
+  FCenterColor := Value;
 
   DoChanged;
 end;
 
-procedure TChromeTabs32LookAndFeelGlow.SetCentreColor(const Value: TColor);
-begin
-  FCentreColor := Value;
-
-  DoChanged;
-end;
-
-procedure TChromeTabs32LookAndFeelGlow.SetOutsideAlpha(const Value: Byte);
-begin
-  FOutsideAlpha := Value;
-
-  DoChanged;
-end;
-
-procedure TChromeTabs32LookAndFeelGlow.SetOutsideColor(const Value: TColor);
+procedure TChromeTabs32LookAndFeelGlow.SetOutsideColor(const Value: TColor32);
 begin
   FOutsideColor := Value;
 
   DoChanged;
 end;
 
+
 { TChromeTabs32ContainerOptions }
-
-constructor TChromeTabs32ContainerOptions.Create(AOwner: TPersistent);
-begin
-  inherited;
-
-end;
 
 procedure TChromeTabs32ContainerOptions.SetOverlayButtons(const Value: Boolean);
 begin
@@ -3653,20 +3382,11 @@ begin
   inherited;
 
   FName := 'Segoe UI';
-  FColor := clBlack;
+  FColor := clBlack32;
   FSize := 9;
-  FAlpha := 255;
-//  FTextRenderingMode := TextRenderingHintClearTypeGridFit;
 end;
 
-procedure TChromeTabs32LookAndFeelBaseFont.SetAlpha(const Value: Byte);
-begin
-  FAlpha := Value;
-
-  DoChanged;
-end;
-
-procedure TChromeTabs32LookAndFeelBaseFont.SetColor(const Value: TColor);
+procedure TChromeTabs32LookAndFeelBaseFont.SetColor(const Value: TColor32);
 begin
   FColor := Value;
 
@@ -3687,14 +3407,6 @@ begin
   DoChanged;
 end;
 
-(*
-procedure TChromeTabs32LookAndFeelBaseFont.SetTextRenderingMode(const Value: TTextRenderingHint);
-begin
-  FTextRenderingMode := Value;
-
-  DoChanged;
-end;
-*)
 
 { TChromeTabs32LookAndFeelFont }
 
@@ -3910,13 +3622,11 @@ begin
   FUpload := TChromeTabs32LookAndFeelPen.Create(Self);
   FDownload := TChromeTabs32LookAndFeelPen.Create(Self);
 
-  FUpload.Color := $00c2b3a7;
+  FUpload.Color := $FFA7B3C2;
   FUpload.Thickness := 2.5;
-  FUpload.Alpha := 255;
 
-  FDownload.Color := $00db8b48;
+  FDownload.Color := $FF488bdb;
   FDownload.Thickness := 2.5;
-  FDownload.Alpha := 255;
 end;
 
 destructor TChromeTabs32LookAndFeelSpinners.Destroy;
