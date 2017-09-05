@@ -3,13 +3,13 @@
         <ProjectGuid>{C2A5EE39-A05E-4F0E-9FF3-F200FE05B7E2}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="Demo\ChromeTabsDemoXE7.dproj">
+        <Projects Include="Packages\Delphi XE7\ChromeTabs32_R.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Packages\Delphi XE7\ChromeTabs_R.dproj">
+        <Projects Include="Packages\Delphi XE7\ChromeTabs32_D.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Packages\Delphi XE7\ChromeTabs_D.dproj">
+        <Projects Include="Demo\ChromeTabs32DemoXE7.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -20,41 +20,41 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="ChromeTabsDemoXE7">
-        <MSBuild Projects="Demo\ChromeTabsDemoXE7.dproj"/>
+    <Target Name="ChromeTabs32_R">
+        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs32_R.dproj"/>
     </Target>
-    <Target Name="ChromeTabsDemoXE7:Clean">
-        <MSBuild Projects="Demo\ChromeTabsDemoXE7.dproj" Targets="Clean"/>
+    <Target Name="ChromeTabs32_R:Clean">
+        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs32_R.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="ChromeTabsDemoXE7:Make">
-        <MSBuild Projects="Demo\ChromeTabsDemoXE7.dproj" Targets="Make"/>
+    <Target Name="ChromeTabs32_R:Make">
+        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs32_R.dproj" Targets="Make"/>
     </Target>
-    <Target Name="ChromeTabs_R">
-        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs_R.dproj"/>
+    <Target Name="ChromeTabs32_D">
+        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs32_D.dproj"/>
     </Target>
-    <Target Name="ChromeTabs_R:Clean">
-        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs_R.dproj" Targets="Clean"/>
+    <Target Name="ChromeTabs32_D:Clean">
+        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs32_D.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="ChromeTabs_R:Make">
-        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs_R.dproj" Targets="Make"/>
+    <Target Name="ChromeTabs32_D:Make">
+        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs32_D.dproj" Targets="Make"/>
     </Target>
-    <Target Name="ChromeTabs_D">
-        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs_D.dproj"/>
+    <Target Name="ChromeTabs32DemoXE7">
+        <MSBuild Projects="Demo\ChromeTabs32DemoXE7.dproj"/>
     </Target>
-    <Target Name="ChromeTabs_D:Clean">
-        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs_D.dproj" Targets="Clean"/>
+    <Target Name="ChromeTabs32DemoXE7:Clean">
+        <MSBuild Projects="Demo\ChromeTabs32DemoXE7.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="ChromeTabs_D:Make">
-        <MSBuild Projects="Packages\Delphi XE7\ChromeTabs_D.dproj" Targets="Make"/>
+    <Target Name="ChromeTabs32DemoXE7:Make">
+        <MSBuild Projects="Demo\ChromeTabs32DemoXE7.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="ChromeTabsDemoXE7;ChromeTabs_R;ChromeTabs_D"/>
+        <CallTarget Targets="ChromeTabs32_R;ChromeTabs32_D;ChromeTabs32DemoXE7"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ChromeTabsDemoXE7:Clean;ChromeTabs_R:Clean;ChromeTabs_D:Clean"/>
+        <CallTarget Targets="ChromeTabs32_R:Clean;ChromeTabs32_D:Clean;ChromeTabs32DemoXE7:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ChromeTabsDemoXE7:Make;ChromeTabs_R:Make;ChromeTabs_D:Make"/>
+        <CallTarget Targets="ChromeTabs32_R:Make;ChromeTabs32_D:Make;ChromeTabs32DemoXE7:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

@@ -41,23 +41,23 @@ uses
   Dialogs, StdCtrls, ActnList, ComCtrls, Spin, Contnrs,
   ExtCtrls, ImgList, Types, Menus, ClipBrd, AppEvnts,
 
-  GDIPObj, GDIPAPI,
+  frameChromeTabsStyleU,
 
-  frameChromeTabs32tyleU,
+  GR32, GR32_Paths,
 
   {$IFDEF USE_GLASS_FORM}ChromeTabs32GlassForm,{$ENDIF}
 
 (* NOTE - If you get "unit xxx is redeclared errors", comment out the IFDEF lines
-   below. This is due to a Delphi bug with the {$if CompilerVersion .. } *)
+   below. This is due to a Delphi bug with the {$if CompilerVersion .. } * )
   {$IFDEF USE_SYSTEM_ACTIONS}System.Actions,{$ENDIF}
-  {$IFDEF USE_SYSTEM_IMAGELIST}System.ImageList,{$ENDIF}
+  {$IFDEF USE_SYSTEM_IMAGELIST}System.ImageList,{$ENDIF}                   *)
 
   ChromeTabs32,
   ChromeTabs32Types,
   ChromeTabs32Utils,
   ChromeTabs32Controls,
   ChromeTabs32Classes,
-  ChromeTabs32Log;
+  ChromeTabs32Log, System.Actions;
 
 type
   TFormType = {$IFDEF USE_GLASS_FORM}
@@ -395,10 +395,7 @@ type
     procedure ChromeTabs32NeedDragImageControl(Sender: TObject; ATab: TChromeTab;
       var DragControl: TWinControl);
     procedure ChromeTabs32StateChange(Sender: TObject; PreviousState,
-      CurrentState: TChromeTabs32tates);
-    procedure ChromeTabs32BeforeDrawItem(Sender: TObject;
-      TargetCanvas: TGPGraphics; ItemRect: TRect; ItemType: TChromeTabItemType;
-      TabIndex: Integer; var Handled: Boolean);
+      CurrentState: TChromeTabs32States);
     procedure ChromeTabs32ActiveTabChanged(Sender: TObject; ATab: TChromeTab);
     procedure ChromeTabs32ActiveTabChanging(Sender: TObject; AOldTab,
       ANewTab: TChromeTab; var Allow: Boolean);
@@ -438,9 +435,6 @@ type
     procedure ChromeTabs32TabClientRectChanged(Sender: TObject);
     procedure ChromeTabs32ScrollWidthChanged(Sender: TObject);
     procedure btnOpenFormClick(Sender: TObject);
-    procedure ChromeTabs32AfterDrawItem(Sender: TObject;
-      const TargetCanvas: TGPGraphics; ItemRect: TRect;
-      ItemType: TChromeTabItemType; TabIndex: Integer);
     procedure chkEnableEventsClick(Sender: TObject);
     procedure cbSelectTabsChange(Sender: TObject);
     procedure btnHideTabClick(Sender: TObject);
@@ -449,7 +443,6 @@ type
     procedure actSaveLookandFeelExecute(Sender: TObject);
     procedure actLoadOptionsExecute(Sender: TObject);
     procedure actSaveOptionsExecute(Sender: TObject);
-    procedure ChromeTabs322AfterDrawItem(Sender: TObject; const TargetCanvas: TGPGraphics; ItemRect: TRect; ItemType: TChromeTabItemType; TabIndex: Integer);
     procedure ApplicationEvents1Deactivate(Sender: TObject);
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure actCopyOptionsAsCodeExecute(Sender: TObject);
@@ -472,13 +465,16 @@ type
     procedure ChromeTabs322TabDragDrop(Sender: TObject; X, Y: Integer;
       DragTabObject: IDragTabObject; Cancelled: Boolean;
       var TabDropOptions: TTabDropOptions);
+    procedure ChromeTabs32AfterDrawItem(Sender: TObject;
+      const TargetCanvas: TCanvas32; ItemRect: TRect;
+      ItemType: TChromeTabItemType; TabIndex: Integer);
   private
     FLastMouseX: Integer;
     FLastMouseY: Integer;
     FUpdatingProperties: Boolean;
     FCurrentTabs: TChromeTabs32;
     FUpdatingScrollbar: Boolean;
-    FCurrentColorPickerFrame: TframeChromeTabs32tyle;
+    FCurrentColorPickerFrame: TframeChromeTabs32Style;
 
     FLogMouseMove: TChromeTabs32Log;
     FLogDragOver: TChromeTabs32Log;
@@ -825,7 +821,7 @@ begin
       Tab.ImageIndexOverlay := edtImageOverlayIndex.Value;
       Tab.Pinned := chkPinned.Checked;
       Tab.Modified := chkModified.Checked;
-      Tab.SpinnerState := TChromeTabs32pinnerState(cbSpinnerState.ItemIndex);
+      Tab.SpinnerState := TChromeTabs32SpinnerState(cbSpinnerState.ItemIndex);
       Tab.HideCloseButton := chkHideClosebutton.Checked;
     finally
       FCurrentTabs.EndUpdate;
@@ -868,8 +864,8 @@ begin
   if FCurrentColorPickerFrame <> nil then
     FCurrentColorPickerFrame.StopColorPicking(TRUE);
 
-  if Sender is TframeChromeTabs32tyle then
-    FCurrentColorPickerFrame := TframeChromeTabs32tyle(Sender);
+  if Sender is TframeChromeTabs32Style then
+    FCurrentColorPickerFrame := TframeChromeTabs32Style(Sender);
 
   {$if CompilerVersion >= 18.0}
     FormStyle := fsStayOnTop; { TODO : This causes an exception in Delphi 7. Why? }
@@ -878,7 +874,7 @@ end;
 
 procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: Integer);
 
-  function NewStyleFrame(const Caption: String): TframeChromeTabs32tyle;
+  function NewStyleFrame(const Caption: String): TframeChromeTabs32Style;
   var
     GroupBox: TGroupBox;
   begin
@@ -888,7 +884,7 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
     GroupBox.Align := alLeft;
     GroupBox.Caption := Caption;
 
-    Result := TframeChromeTabs32tyle.Create(GroupBox, ChromeTabs32);
+    Result := TframeChromeTabs32Style.Create(GroupBox, ChromeTabs32);
     Result.Parent := GroupBox;
     Result.Align := alClient;
     Result.OnStartColorPicking := OnFrameSelectColorClick;
@@ -902,7 +898,7 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
 
   procedure AddChromeTabLookAndFeelStyle(const Caption: String; ChromeTabLookAndFeelStyle: TChromeTabs32LookAndFeelStyle);
   var
-    frameChromeTabs32tyle: TframeChromeTabs32tyle;
+    frameChromeTabs32tyle: TframeChromeTabs32Style;
   begin
     frameChromeTabs32tyle := NewStyleFrame(Caption);
 
@@ -911,7 +907,7 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
 
   procedure AddChromeTabLookAndFeelPen(const Caption: String; ChromeTabLookAndFeelPen: TChromeTabs32LookAndFeelPen);
   var
-    frameChromeTabs32tyle: TframeChromeTabs32tyle;
+    frameChromeTabs32tyle: TframeChromeTabs32Style;
   begin
     frameChromeTabs32tyle := NewStyleFrame(Caption);
 
@@ -920,7 +916,7 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
 
   procedure AddChromeTabLookAndFeelFont(const Caption: String; ChromeTabLookAndFeelFont: TChromeTabs32LookAndFeelBaseFont);
   var
-    frameChromeTabs32tyle: TframeChromeTabs32tyle;
+    frameChromeTabs32tyle: TframeChromeTabs32Style;
   begin
     frameChromeTabs32tyle := NewStyleFrame(Caption);
 
@@ -929,7 +925,7 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
 
   procedure AddChromeTabLookAndFeelStyleProperties(const Caption: String; ChromeTabLookAndFeelStyleProperties: TChromeTabs32LookAndFeelStyleProperties);
   var
-    frameChromeTabs32tyle: TframeChromeTabs32tyle;
+    frameChromeTabs32tyle: TframeChromeTabs32Style;
   begin
     frameChromeTabs32tyle := NewStyleFrame(Caption);
 
@@ -939,7 +935,7 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
 
   procedure AddChromeTabs32LookAndFeelTabModified(const Caption: String; ChromeTabs32LookAndFeelTabModified: TChromeTabs32LookAndFeelGlow);
   var
-    frameChromeTabs32tyle: TframeChromeTabs32tyle;
+    frameChromeTabs32tyle: TframeChromeTabs32Style;
   begin
     frameChromeTabs32tyle := NewStyleFrame(Caption);
 
@@ -1110,9 +1106,6 @@ begin
     ChromeTabControlPropertiesToGUI(FCurrentTabs);
     TabPropertiesToGUI(FCurrentTabs.ActiveTab);
 
-    ChromeTabs32.LookAndFeel.Tabs.NotActive.Style.StartAlpha := 210;
-    ChromeTabs32.LookAndFeel.Tabs.NotActive.Style.StopAlpha := 210;
-
     FixControls;
 
     BuildLookAndFeelTree;
@@ -1197,7 +1190,6 @@ begin
   FCurrentTabs.OnActiveTabChanged := ChromeTabs32ActiveTabChanged;
   FCurrentTabs.OnActiveTabChanging := ChromeTabs32ActiveTabChanging;
   FCurrentTabs.OnAfterDrawItem := ChromeTabs32AfterDrawItem;
-  FCurrentTabs.OnBeforeDrawItem := ChromeTabs32BeforeDrawItem;
   FCurrentTabs.OnButtonCloseTabClick := ChromeTabs32ButtonCloseTabClick;
   FCurrentTabs.OnCreateDragForm := ChromeTabs32CreateDragForm;
   FCurrentTabs.OnEnter := ChromeTabs32Enter;
@@ -1320,12 +1312,9 @@ begin
     edtTabOverlap.Value := ChromeTabs32.Options.Display.Tabs.TabOverlap;
     chkShowTextOnPinnedTabs.Checked := ChromeTabs32.Options.Display.Tabs.ShowPinnedTabText;
 
-    cbFontHintMode.ItemIndex := Integer(ChromeTabs32.LookAndFeel.Tabs.DefaultFont.TextRendoringMode);
-    cbCanvasSmoothingMode.ItemIndex := Integer(ChromeTabs32.Options.Display.Tabs.CanvasSmoothingMode);
     cbFontName.Text := ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Name;
     edtFontSize.Value := ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Size;
     edtFontColor.Selected := ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Color;
-    edtFontAlpha.Value := ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Alpha;
 
     chkBackgroundDoubleClickMaxmise.Checked := ChromeTabs32.Options.Behaviour.BackgroundDblClickMaximiseRestoreForm;
     chkDraggingBackgoundMovesForm.Checked := ChromeTabs32.Options.Behaviour.BackgroundDragMovesForm;
@@ -1474,13 +1463,9 @@ begin
 
       ChromeTabs32.BiDiMode := TBiDiMode(cbBidiMode.ItemIndex);
 
-      ChromeTabs32.LookAndFeel.Tabs.DefaultFont.TextRendoringMode := TTextRenderingHint(cbFontHintMode.ItemIndex);
       ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Name := cbFontName.Text;
       ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Size := edtFontSize.Value;
       ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Color := edtFontColor.Selected;
-      ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Alpha := edtFontAlpha.Value;
-
-      ChromeTabs32.Options.Display.Tabs.CanvasSmoothingMode := TSmoothingMode(cbCanvasSmoothingMode.ItemIndex);
 
       ChromeTabs32.Options.Behaviour.BackgroundDblClickMaximiseRestoreForm := chkBackgroundDoubleClickMaxmise.Checked;
       ChromeTabs32.Options.Behaviour.BackgroundDragMovesForm := chkDraggingBackgoundMovesForm.Checked;
@@ -1613,8 +1598,8 @@ begin
 end;
 
 procedure TfrmMain.ChromeTabs32AfterDrawItem(Sender: TObject;
-  const TargetCanvas: TGPGraphics; ItemRect: TRect;
-  ItemType: TChromeTabItemType; TabIndex: Integer);
+  const TargetCanvas: TCanvas32; ItemRect: TRect; ItemType: TChromeTabItemType;
+  TabIndex: Integer);
 begin
   if (cbSelectTabs.ItemIndex = 0) and (chkEnableEvents.Checked) then
   begin
@@ -1643,13 +1628,6 @@ begin
                                                                                                  TabDrawStateDescriptions[NewDrawState],
                                                                                                  AnimationTimeMS,
                                                                                                  ChromeTabs32EaseTypeDestriptions[EaseType]]);
-end;
-
-procedure TfrmMain.ChromeTabs32BeforeDrawItem(Sender: TObject;
-  TargetCanvas: TGPGraphics; ItemRect: TRect; ItemType: TChromeTabItemType;
-  TabIndex: Integer; var Handled: Boolean);
-begin
-  //Handled := (not (ItemType in [itTabText, itTabMouseGlow, itTabOutline, itAddButton])) and (TabIndex <> 2);
 end;
 
 procedure TfrmMain.ChromeTabs32BeginTabDrag(Sender: TObject; ATab: TChromeTab;
@@ -1780,10 +1758,10 @@ begin
         Inc(TabTop, 3);
 
       Polygons.AddPolygon(ChromeTabControl.NewPolygon(ChromeTabControl.BidiControlRect,
-                                                      [Point(0, RectHeight(ItemRect)),
-                                                       Point(0, TabTop),
-                                                       Point(RectWidth(ItemRect), TabTop),
-                                                       Point(RectWidth(ItemRect), RectHeight(ItemRect))],
+                                                      [FloatPoint(0, RectHeight(ItemRect)),
+                                                       FloatPoint(0, TabTop),
+                                                       FloatPoint(RectWidth(ItemRect), TabTop),
+                                                       FloatPoint(RectWidth(ItemRect), RectHeight(ItemRect))],
                                    Orientation),
                                    nil,
                                    nil);
@@ -1827,7 +1805,7 @@ begin
     FLastMouseX := X;
     FLastMouseY := Y;
 
-    HitTestResult := Tabs.HitTest(Point(X, Y));
+    HitTestResult := Tabs.HitTest(GR32.Point(X, Y));
 
     FLogMouseMove.BeginUpdate;
     try
@@ -1888,12 +1866,12 @@ begin
 end;
 
 procedure TfrmMain.ChromeTabs32StateChange(Sender: TObject; PreviousState,
-  CurrentState: TChromeTabs32tates);
+  CurrentState: TChromeTabs32States);
 begin
   if CurrentState = [] then
     edtStates.Text := 'None'
   else
-    edtStates.Text := ChromeTabs32tatesToString(CurrentState);
+    edtStates.Text := ChromeTabs32StatesToString(CurrentState);
 end;
 
 procedure TfrmMain.ChromeTabs32TabClientRectChanged(Sender: TObject);
@@ -1970,7 +1948,7 @@ var
 begin
   Tabs := TChromeTabs32(Sender);
 
-  HitTestResult := Tabs.HitTest(Point(X, Y));
+  HitTestResult := Tabs.HitTest(GR32.Point(X, Y));
 
   FLogDragOver.BeginUpdate;
   try
@@ -2003,59 +1981,6 @@ begin
   FLogOtherEvents.Log('OnTabDragStart [TabIndex = %d]', [ATab.Index]);
 
   Allow := TRUE;
-end;
-
-procedure TfrmMain.ChromeTabs322AfterDrawItem(Sender: TObject;
-  const TargetCanvas: TGPGraphics; ItemRect: TRect;
-  ItemType: TChromeTabItemType; TabIndex: Integer);
-var
-  TabsTxtBrush: TGPSolidBrush;
-  GPRect: TGPRect;
-  TxtFormat: TGPStringFormat;
-  TabsFont: TGPFont;
-begin
-  if (cbSelectTabs.ItemIndex = 1) and (chkEnableEvents.Checked) then
-  begin
-    IncrementEventListItemCount(8);
-
-    if ItemType = itTabContainer then
-      IncrementEventListItemCount(18);
-  end;
-
-  if (ChromeTabs322.Tabs.Count = 0) and (ItemType = itTabContainer) and (ChromeTabs322.ActiveDragTabObject = nil) then
-  begin
-    TabsFont := TGPFont.Create(ChromeTabs322.LookAndFeel.Tabs.DefaultFont.Name, 11);
-    TabsTxtBrush := TGPSolidBrush.Create(MakeGDIPColor(clWhite, 255));
-    try
-      TargetCanvas.SetSmoothingMode(ChromeTabs322.Options.Display.Tabs.CanvasSmoothingMode);
-
-      GPRect.X := ItemRect.Left;
-      GPRect.Y := ItemRect.Top;
-      GPRect.Width := RectWidth(ItemRect);
-      GPRect.Height := RectHeight(ItemRect);
-
-      TxtFormat := TGPStringFormat.Create();
-      try
-        TargetCanvas.SetTextRenderingHint(ChromeTabs322.LookAndFeel.Tabs.DefaultFont.TextRendoringMode);
-
-        TxtFormat.SetLineAlignment(StringAlignmentCenter);
-        TxtFormat.SetAlignment(StringAlignmentCenter);
-
-        // Draw the text
-        TargetCanvas.DrawString(PChar(StrDragAndDropTabs),
-                              Length(StrDragAndDropTabs),
-                              TabsFont,
-                              RectToGPRectF(Rect(0, 0, RectWidth(ItemRect), RectHeight(ItemRect))),
-                              TxtFormat,
-                              TabsTxtBrush);
-      finally
-        FreeAndNil(TxtFormat);
-      end;
-    finally
-      FreeAndNil(TabsFont);
-      FreeAndNil(TabsTxtBrush);
-    end;
-  end;
 end;
 
 procedure TfrmMain.ChromeTabs322TabDragDrop(Sender: TObject; X, Y: Integer;

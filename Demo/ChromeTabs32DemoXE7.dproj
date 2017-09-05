@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{c9ed9a5c-a15c-4d5c-af55-c6450d1b6687}</ProjectGuid>
         <MainSource>ChromeTabs32DemoXE7.dpr</MainSource>
@@ -15,6 +15,16 @@
         <Platform>Win32</Platform>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
+        <Base_Win32>true</Base_Win32>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
+        <Base_Win64>true</Base_Win64>
+        <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
@@ -51,6 +61,12 @@
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <DCC_UsePackage>rtl;GR32_D;ChromeTabs32_R;$(DCC_UsePackage)</DCC_UsePackage>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win64)'!=''">
+        <DCC_UsePackage>rtl;$(DCC_UsePackage)</DCC_UsePackage>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <Version>7.0</Version>
         <DCC_DebugInformation>0</DCC_DebugInformation>
@@ -59,8 +75,6 @@
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
-        <DCC_RangeChecking>true</DCC_RangeChecking>
         <DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
         <DCC_DebugInformation>true</DCC_DebugInformation>
@@ -116,17 +130,7 @@
                     <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
                     <VersionInfoKeys Name="Comments"/>
                 </VersionInfoKeys>
-                <Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\15.0\Bpl\EasyIP.NetTools.bpl">Easy-IP NetTools</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\15.0\Bpl\ChromeTabs32_D.210.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\15.0\Bpl\ChromeTabs32_D.210.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\15.0\Bpl\HKData_DesignTime.XE7.bpl">HK Data</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\15.0\Bpl\HKData_DesignTime280.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\15.0\Bpl\HKData_DesignTime280.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\15.0\Bpl\HKData_DesignTime.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\15.0\Bpl\HKData_DesignTime.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\15.0\Bpl\HKData_Runtime.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\15.0\Bpl\HKData_Runtime.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\DevExpress VCL\Library\RS21\dcldxSkinsdxBarsPaintersRS21.bpl">ExpressSkins Library Uses Clause Auto Fill Helper for Bars Painters by Developer Express Inc.</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k210.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp210.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-                </Excluded_Packages>
+                <Excluded_Packages/>
                 <Source>
                     <Source Name="MainSource">ChromeTabs32DemoXE7.dpr</Source>
                 </Source>
@@ -136,13 +140,13 @@
                 <Platform value="Win64">True</Platform>
             </Platforms>
             <Deployment>
-                <DeployFile LocalName="..\Bin\XE6\Debug\Win32\ChromeTabs32DemoXE7.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\Bin\XE6\Release\Win32\ChromeTabs32DemoXE7.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>ChromeTabs32DemoXE7.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\Bin\XE6\Release\Win32\ChromeTabs32DemoXE7.exe" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="..\Bin\XE6\Debug\Win32\ChromeTabs32DemoXE7.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>ChromeTabs32DemoXE7.exe</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -445,8 +449,8 @@
         <DCCReference Include="frmMainU.pas">
             <Form>frmMain</Form>
         </DCCReference>
-        <DCCReference Include="frameChromeTabs32tyleU.pas">
-            <Form>frameChromeTabs32tyle</Form>
+        <DCCReference Include="frameChromeTabsStyleU.pas">
+            <Form>frameChromeTabsStyleU</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="..\Lib\ChromeTabs32Classes.pas"/>
@@ -473,11 +477,3 @@
     <Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
     <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
 </Project>
-
-<!-- EurekaLog First Line
-[Exception Log]
-EurekaLog Version=7007
-Activate=0
-DeleteMapAfterCompile=1
-Encrypt Password=""
-EurekaLog Last Line -->

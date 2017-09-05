@@ -3,17 +3,15 @@ program ChromeTabsDemoXE7;
 uses
   Forms,
   frmMainU in 'frmMainU.pas' {frmMain},
-  frameChromeTabStyleU in 'frameChromeTabStyleU.pas' {frameChromeTabStyle: TFrame},
-  ChromeTabsClasses in '..\Lib\ChromeTabsClasses.pas',
-  ChromeTabsControls in '..\Lib\ChromeTabsControls.pas',
-  ChromeTabsGlassForm in '..\Lib\ChromeTabsGlassForm.pas',
-  ChromeTabsLog in '..\Lib\ChromeTabsLog.pas',
-  ChromeTabsThreadTimer in '..\Lib\ChromeTabsThreadTimer.pas',
-  ChromeTabsTypes in '..\Lib\ChromeTabsTypes.pas',
-  ChromeTabsUtils in '..\Lib\ChromeTabsUtils.pas',
-  ChromeTabs in '..\Lib\ChromeTabs.pas';
-
-{$R *.res}
+  frameChromeTabsStyleU in 'frameChromeTabsStyleU.pas' {frameChromeTabsStyleU: TFrame},
+  ChromeTabs32Classes in '..\Lib\ChromeTabs32Classes.pas',
+  ChromeTabs32Controls in '..\Lib\ChromeTabs32Controls.pas',
+  ChromeTabs32GlassForm in '..\Lib\ChromeTabs32GlassForm.pas',
+  ChromeTabs32Log in '..\Lib\ChromeTabs32Log.pas',
+  ChromeTabs32ThreadTimer in '..\Lib\ChromeTabs32ThreadTimer.pas',
+  ChromeTabs32Types in '..\Lib\ChromeTabs32Types.pas',
+  ChromeTabs32Utils in '..\Lib\ChromeTabs32Utils.pas',
+  ChromeTabs32 in '..\Lib\ChromeTabs32.pas';
 
 begin
   Application.Initialize;

@@ -525,7 +525,7 @@ type
 implementation
 
 uses
-  GR32_Polygons, GR32_VectorUtils;
+  GR32_Backends, GR32_Polygons, GR32_VectorUtils;
 
 const
   TabDragScaleFactor = 0.7;
@@ -2235,9 +2235,9 @@ begin
           begin
             case FOptions.Display.Tabs.Orientation of
               toTop:
-                Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, RectHeight(TabControls[ATab.Index].ControlRect) - 1));
+                Bitmap.FillRect(0, 0, Bitmap.Width, RectHeight(TabControls[ATab.Index].ControlRect) - 1, clBlack32);
               toBottom:
-                Bitmap.Canvas.FillRect(Rect(0, Bitmap.Height, Bitmap.Width, Bitmap.Height - RectHeight(TabControls[ATab.Index].ControlRect)));
+                Bitmap.FillRect(0, Bitmap.Height, Bitmap.Width, Bitmap.Height - RectHeight(TabControls[ATab.Index].ControlRect), clBlack32);
             end;
 
             // Do the painting...
@@ -2276,24 +2276,20 @@ begin
                 toTop:
                   begin
                     DragCanvas.Path.BeginPath;
-                    DragCanvas.Path.MoveTo(TabEndX, ControlTop);
-                    DragCanvas.Path.LineTo(Bitmap.Width - BorderOffset, ControlTop);
-                    DragCanvas.Path.LineTo(Bitmap.Width - BorderOffset, Bitmap.Height - BorderOffset);
-                    DragCanvas.Path.LineTo(0, Bitmap.Height - BorderOffset);
-                    DragCanvas.Path.LineTo(0, ControlTop);
-                    DragCanvas.Path.EndPath;
+                    DragCanvas.Path.Polygon(BuildPolygonF([TabEndX,
+                      ControlTop, Bitmap.Width - BorderOffset, ControlTop,
+                      Bitmap.Width - BorderOffset, Bitmap.Height - BorderOffset,
+                      0, Bitmap.Height - BorderOffset, 0, ControlTop]));
                   end;
 
                 toBottom:
                   begin
                     { TODO : Needs fixing for bottom tabs }
                     DragCanvas.Path.BeginPath;
-                    DragCanvas.Path.MoveTo(TabEndX, ControlTop);
-                    DragCanvas.Path.LineTo(Bitmap.Width - BorderOffset, ControlTop);
-                    DragCanvas.Path.LineTo(Bitmap.Width - BorderOffset, Bitmap.Height - BorderOffset);
-                    DragCanvas.Path.LineTo(0, Bitmap.Height - BorderOffset);
-                    DragCanvas.Path.LineTo(0, ControlTop);
-                    DragCanvas.Path.EndPath;
+                    DragCanvas.Path.Polygon(BuildPolygonF([TabEndX, ControlTop,
+                      Bitmap.Width - BorderOffset, ControlTop,
+                      Bitmap.Width - BorderOffset, Bitmap.Height - BorderOffset,
+                      0, Bitmap.Height - BorderOffset, 0, ControlTop]));
                   end;
               end;
             finally
@@ -4027,7 +4023,6 @@ end;
 procedure TCustomChromeTabs32.DrawBackgroundTo(Targets: array of TCanvas32);
 var
   Bitmap32: TBitmap32;
-  i: Integer;
   MemStream: TMemoryStream;
 begin
   PaintControlToCanvas(Self, FCanvasBmp.Canvas);

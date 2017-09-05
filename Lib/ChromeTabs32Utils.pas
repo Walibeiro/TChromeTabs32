@@ -446,21 +446,11 @@ begin
 end;
 
 function IconToBitmap32(Icon: TIcon): TBitmap32;
-var
-  MemStream: TMemoryStream;
 begin
-  MemStream := TMemoryStream.Create;
-  try
-    Icon.SaveToStream(MemStream);
-
-    MemStream.Position := 0;
-  except
-    FreeAndNil(MemStream);
-
-    raise;
-  end;
-
-// TODO  Result := TBitmap32.Create(TStreamAdapter.Create(MemStream, soOwned));
+  Result := TBitmap32.Create;
+  Result.SetSize(Icon.Width, Icon.Height);
+  Result.Canvas.Draw (0, 0, Icon);
+//  BitBlt(Result.Handle, 0, 0, Icon.Width, Icon.Height, Icon.Handle, 0, 0, 0);
 end;
 
 function ImageListToBitmap32(ImageList: TCustomImageList; ImageIndex: Integer): TBitmap32;
