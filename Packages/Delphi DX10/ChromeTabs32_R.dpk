@@ -33,7 +33,8 @@ package ChromeTabs32_R;
 requires
   rtl,
   vcl,
-  vclimg;
+  vclimg,
+  GR32_R;
 
 contains
   ChromeTabs32Utils in '..\..\Lib\ChromeTabs32Utils.pas',
@@ -42,9 +43,6 @@ contains
   ChromeTabs32 in '..\..\Lib\ChromeTabs32.pas',
   ChromeTabs32Controls in '..\..\Lib\ChromeTabs32Controls.pas',
   ChromeTabs32Classes in '..\..\Lib\ChromeTabs32Classes.pas',
-  ChromeTabs32GlassForm in '..\..\Lib\ChromeTabs32GlassForm.pas',
-  DirectDraw in '..\..\GDIPlus\DirectDraw.pas',
-  GDIPAPI in '..\..\GDIPlus\GDIPAPI.pas',
-  GDIPOBJ in '..\..\GDIPlus\GDIPOBJ.pas';
+  ChromeTabs32GlassForm in '..\..\Lib\ChromeTabs32GlassForm.pas';
 
 end.

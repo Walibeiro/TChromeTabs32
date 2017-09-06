@@ -28,8 +28,9 @@ package ChromeTabs32_D7_D;
 
 requires
   rtl,
-  ChromeTabs32_D7_R,
-  DesignIDE;
+  DesignIDE,
+  GR32_D,
+  ChromeTabs32_D7_R;
 
 contains
   ChromeTabs32Design in '..\..\Lib\ChromeTabs32Design.pas',

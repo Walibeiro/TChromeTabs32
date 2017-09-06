@@ -31,10 +31,10 @@ package ChromeTabs32_R;
 {$IMPLICITBUILD ON}
 
 requires
-  GR32_R,
   rtl,
   vcl,
-  vclimg;
+  vclimg,
+  GR32_R;
 
 contains
   ChromeTabs32Utils in '..\..\Lib\ChromeTabs32Utils.pas',

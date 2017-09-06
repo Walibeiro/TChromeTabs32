@@ -28,7 +28,8 @@ package ChromeTabs32_D6_R;
 
 requires
   rtl,
-  vcl;
+  vcl,
+  GR32_R;
 
 contains
   ChromeTabs32 in '..\..\Lib\ChromeTabs32.pas',
@@ -36,9 +37,6 @@ contains
   ChromeTabs32Controls in '..\..\Lib\ChromeTabs32Controls.pas',
   ChromeTabs32ThreadTimer in '..\..\Lib\ChromeTabs32ThreadTimer.pas',
   ChromeTabs32Types in '..\..\Lib\ChromeTabs32Types.pas',
-  ChromeTabs32Utils in '..\..\Lib\ChromeTabs32Utils.pas',
-  GDIPAPI in '..\..\GDIPlus\GDIPAPI.pas',
-  GDIPOBJ in '..\..\GDIPlus\GDIPOBJ.pas',
-  DirectDraw in '..\..\GDIPlus\DirectDraw.pas';
+  ChromeTabs32Utils in '..\..\Lib\ChromeTabs32Utils.pas';
 
 end.

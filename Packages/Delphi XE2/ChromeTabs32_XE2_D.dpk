@@ -32,6 +32,7 @@ package ChromeTabs32_XE2_D;
 requires
   rtl,
   DesignIDE,
+  GR32_D,
   ChromeTabs32_XE2_R;
 
 contains

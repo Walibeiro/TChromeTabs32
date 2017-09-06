@@ -35,7 +35,8 @@ package ChromeTabs32_R;
 requires
   rtl,
   vcl,
-  vclimg;
+  vclimg,
+  GR32_R;
 
 contains
   ChromeTabs32Utils in '..\..\Lib\ChromeTabs32Utils.pas',

@@ -32,9 +32,9 @@ package ChromeTabs32_D;
 {$R 'Icon.dcr'}
 
 requires
-  GR32_D,
   rtl,
   DesignIDE,
+  GR32_D,
   ChromeTabs32_R;
 
 contains
