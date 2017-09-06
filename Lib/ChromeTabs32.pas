@@ -3817,13 +3817,11 @@ end;
 procedure TCustomChromeTabs32.DrawCanvas;
 var
   TabCanvas, BackgroundCanvas: TCanvas32;
-
-var
   i: Integer;
   Handled: Boolean;
   Targets: array of TCanvas32;
   DrawTicks: Cardinal;
-  Pen: TStrokeBrush;
+  Pen: TChromeTabs32LookAndFeelPen;
   PenColor: TColor32;
   PrevVisibleIndex: Integer;
   ClipPolygons: IChromeTabPolygons;
@@ -3929,10 +3927,10 @@ begin
         end;
 
         // Draw the bottom line
-        Pen := FLookAndFeel.Tabs.BaseLine.Pen;
-        if Pen.StrokeWidth = 1 then
+        Pen := FLookAndFeel.Tabs.BaseLine;
+        if Pen.Thickness = 1 then
         begin
-          PenColor := Pen.FillColor;
+          PenColor := Pen.Color;
           case FOptions.Display.Tabs.Orientation of
             toTop:
               TabCanvas.Bitmap.HorzLine(0, TabContainerRect.Bottom - 1, CorrectedClientWidth, PenColor);
@@ -3943,9 +3941,9 @@ begin
         else
         case FOptions.Display.Tabs.Orientation of
           toTop:
-            PolygonFS(TabCanvas.Bitmap, BuildPolyLine(HorzLine(0, TabContainerRect.Bottom - 1, CorrectedClientWidth), Pen.StrokeWidth), Pen.FillColor);
+            PolygonFS(TabCanvas.Bitmap, BuildPolyLine(HorzLine(0, TabContainerRect.Bottom - 1, CorrectedClientWidth), Pen.Thickness), Pen.Color);
           toBottom:
-            PolygonFS(TabCanvas.Bitmap, BuildPolyLine(HorzLine(0, TabContainerRect.Top - 1, CorrectedClientWidth), Pen.StrokeWidth), Pen.FillColor);
+            PolygonFS(TabCanvas.Bitmap, BuildPolyLine(HorzLine(0, TabContainerRect.Top - 1, CorrectedClientWidth), Pen.Thickness), Pen.Color);
         end;
 
         // Draw the active tab
@@ -4022,37 +4020,23 @@ end;
 
 procedure TCustomChromeTabs32.DrawBackgroundTo(Targets: array of TCanvas32);
 var
-  Bitmap32: TBitmap32;
-  MemStream: TMemoryStream;
+  Contour: TArrayOfFloatPoint;
+  Index: Integer;
 begin
   PaintControlToCanvas(Self, FCanvasBmp.Canvas);
   PaintControlToCanvas(Self, FBackgroundBmp.Canvas);
 
-(* TODO
-  MemStream := TMemoryStream.Create;
-  try
-    FCanvasBmp.SaveToStream(MemStream);
-
-    MemStream.Position := 0;
-
-    Bitmap32 := TBitmap32.Create(TStreamAdapter.Create(MemStream));
-    try
-      for i := low(Targets) to high(Targets) do
-      begin
-        // Draw the background if required
-        if not FOptions.Display.TabContainer.TransparentBackground then
-        begin
-          Targets[i].FillRectangle(FLookAndFeel.TabsContainer.GetBrush(ControlRect), RectToGPRectF(ControlRect));
-          Targets[i].DrawRectangle(FLookAndFeel.TabsContainer.GetPen, RectToGPRectF(ControlRect));
-        end;
-      end;
-    finally
-      FreeAndNil(Bitmap32);
+  for Index := Low(Targets) to High(Targets) do
+  begin
+    // Draw the background if required
+    if not FOptions.Display.TabContainer.TransparentBackground then
+    begin
+      Contour := Rectangle(FloatRect(ControlRect));
+      PolygonFS(Targets[Index].Bitmap, Contour, FLookAndFeel.TabsContainer.GetPolygonFiller(ControlRect));
+      Contour := BuildPolyline(Contour, FLookAndFeel.TabsContainer.OutlineSize);
+      PolygonFS(Targets[Index].Bitmap, Contour, FLookAndFeel.TabsContainer.OutlineColor);
     end;
-  finally
-    FreeAndNil(MemStream);
   end;
-*)
 end;
 
 procedure TCustomChromeTabs32.SetDefaultOptions;

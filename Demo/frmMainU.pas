@@ -1568,7 +1568,7 @@ begin
     end;
   end;
 
-  PanelTop.Color := ChromeTabsTop.LookAndFeel.Tabs.Active.Style.StopColor;
+  PanelTop.Color := WinColor(ChromeTabsTop.LookAndFeel.Tabs.Active.Style.StopColor);
 
   {$IFDEF USE_GLASS_FORM}
   if not CheckBoxDisplayTopTabsInTitleBar.Checked then

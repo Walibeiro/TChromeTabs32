@@ -449,8 +449,8 @@ function IconToBitmap32(Icon: TIcon): TBitmap32;
 begin
   Result := TBitmap32.Create;
   Result.SetSize(Icon.Width, Icon.Height);
-  Result.Canvas.Draw (0, 0, Icon);
-//  BitBlt(Result.Handle, 0, 0, Icon.Width, Icon.Height, Icon.Handle, 0, 0, 0);
+  Result.Canvas.Draw(0, 0, Icon);
+  Result.DrawMode := dmBlend;
 end;
 
 function ImageListToBitmap32(ImageList: TCustomImageList; ImageIndex: Integer): TBitmap32;
@@ -461,7 +461,6 @@ begin
   try
     ImageList.GetIcon(ImageIndex, Icon);
     Icon.Transparent := True;
-
     Result := IconToBitmap32(Icon);
   finally
     FreeAndNil(Icon);

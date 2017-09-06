@@ -1158,22 +1158,20 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
 
   procedure DrawImage(Images: TCustomImageList; ImageIndex: Integer; ImageRect: TRect; ChromeTabItemType: TChromeTabItemType);
   var
-// TODO    ImageBitmap: TGPImage;
+    ImageBitmap: TBitmap32;
     Handled: Boolean;
   begin
     ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ImageRect, ChromeTabItemType, ChromeTab.GetIndex, Handled);
 
-(* TODO
     if not Handled then
     begin
-      ImageBitmap := ImageListToTGPImage(Images, ImageIndex);
+      ImageBitmap := ImageListToBitmap32(Images, ImageIndex);
       try
-        TabCanvas.DrawImage(ImageBitmap, ImageRect.Left, ImageRect.Top);
+        TabCanvas.Bitmap.Draw(ImageRect.Left, ImageRect.Top, ImageBitmap);
       finally
         FreeAndNil(ImageBitmap);
       end;
     end;
-*)
 
     ChromeTabs32.DoOnAfterDrawItem(TabCanvas, ImageRect, ChromeTabItemType, ChromeTab.GetIndex);
   end;
@@ -1243,7 +1241,7 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
 
 var
   CloseButtonStyle: TChromeTabs32LookAndFeelStyle;
-  CloseButtonCrossPen: TStrokeBrush;
+  CloseButtonCross: TChromeTabs32LookAndFeelPen;
   ImageRect, TextRect, ButtonRect, CrossRect: TRect;
   NormalImageVisible, OverlayImageVisible, SpinnerVisible, TextVisible: Boolean;
   Handled: Boolean;
@@ -1341,19 +1339,19 @@ begin
           dsDown:
             begin
               CloseButtonStyle := ChromeTabs32.GetLookAndFeel.CloseButton.Circle.Down;
-              CloseButtonCrossPen := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Down.Pen;
+              CloseButtonCross := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Down;
             end;
 
           dsHot:
             begin
               CloseButtonStyle := ChromeTabs32.GetLookAndFeel.CloseButton.Circle.Hot;
-              CloseButtonCrossPen := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Hot.Pen;
+              CloseButtonCross := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Hot;
             end;
 
           else
             begin
               CloseButtonStyle := ChromeTabs32.GetLookAndFeel.CloseButton.Circle.Normal;
-              CloseButtonCrossPen := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Normal.Pen;
+              CloseButtonCross := ChromeTabs32.GetLookAndFeel.CloseButton.Cross.Normal;
             end;
         end;
 
@@ -1362,8 +1360,8 @@ begin
         PolylineFS(TabCanvas.Bitmap, CirclePoly, CloseButtonStyle.OutlineColor,
           True, CloseButtonStyle.OutlineSize);
 
-        PolygonFS(TabCanvas.Bitmap, BuildPolyLine(Line(CrossRect.Left, CrossRect.Top, CrossRect.Right, CrossRect.Bottom), CloseButtonCrossPen.StrokeWidth), CloseButtonCrossPen.FillColor);
-        PolygonFS(TabCanvas.Bitmap, BuildPolyLine(Line(CrossRect.Left, CrossRect.Bottom, CrossRect.Right, CrossRect.Top), CloseButtonCrossPen.StrokeWidth), CloseButtonCrossPen.FillColor);
+        PolygonFS(TabCanvas.Bitmap, BuildPolyLine(Line(CrossRect.Left, CrossRect.Top, CrossRect.Right, CrossRect.Bottom), CloseButtonCross.Thickness), CloseButtonCross.Color);
+        PolygonFS(TabCanvas.Bitmap, BuildPolyLine(Line(CrossRect.Left, CrossRect.Bottom, CrossRect.Right, CrossRect.Top), CloseButtonCross.Thickness), CloseButtonCross.Color);
       end;
 
       ChromeTabs32.DoOnAfterDrawItem(TabCanvas, ButtonRect, itTabCloseButton, ChromeTab.GetIndex);
@@ -1407,7 +1405,8 @@ begin
   end;
 end;
 
-procedure TChromeTabControl.SetDrawState(const Value: TDrawState; AnimationTimeMS: Integer; EaseType: TChromeTabs32EaseType; ForceUpdate: Boolean);
+procedure TChromeTabControl.SetDrawState(const Value: TDrawState;
+  AnimationTimeMS: Integer; EaseType: TChromeTabs32EaseType; ForceUpdate: Boolean);
 var
   DefaultFont: TChromeTabs32LookAndFeelBaseFont;
 begin

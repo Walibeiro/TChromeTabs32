@@ -224,15 +224,14 @@ type
 
   TChromeTabs32LookAndFeelStyle = class(TChromeTabs32Persistent)
   private
+    FOutlineColor: TColor32;
+    FOutlineSize: Single;
     FFiller: TLinearGradientPolygonFiller;
-    FPen: TStrokeBrush;
 
     procedure SetStartColor(const Value: TColor32);
     procedure SetStopColor(const Value: TColor32);
     procedure SetOutlineColor(const Value: TColor32);
     procedure SetOutlineSize(const Value: Single);
-    function GetOutlineColor: TColor32;
-    function GetOutlineSize: Single;
     function GetStartColor: TColor32;
     function GetStopColor: TColor32;
   public
@@ -243,25 +242,21 @@ type
 
     property StartColor: TColor32 read GetStartColor write SetStartColor;
     property StopColor: TColor32 read GetStopColor write SetStopColor;
-    property OutlineColor: TColor32 read GetOutlineColor write SetOutlineColor;
-    property OutlineSize: Single read GetOutlineSize write SetOutlineSize;
+    property OutlineColor: TColor32 read FOutlineColor write SetOutlineColor;
+    property OutlineSize: Single read FOutlineSize write SetOutlineSize;
   end;
 
   TChromeTabs32LookAndFeelPen = class(TChromeTabs32Persistent)
   private
-    FPen: TStrokeBrush;
-  private
+    FColor: TColor32;
+    FThickness: Single;
     procedure SetColor(const Value: TColor32);
     procedure SetThickness(const Value: Single);
-    function GetThickness: Single;
-    function GetColor: TColor32;
   public
     constructor Create(AOwner: TPersistent); override;
-    destructor Destroy; override;
   published
-    property Color: TColor32 read GetColor write SetColor;
-    property Thickness: Single read GetThickness write SetThickness;
-    property Pen: TStrokeBrush read FPen;
+    property Color: TColor32 read FColor write SetColor;
+    property Thickness: Single read FThickness write SetThickness;
   end;
 
   TChromeTabs32LookAndFeelBaseFont = class(TChromeTabs32Persistent)
@@ -1968,14 +1963,12 @@ begin
     FloatPoint(0, 0), StartColor,
     FloatPoint(0, 9), StopColor);
 
-  FPen := TStrokeBrush.Create(nil);
-  FPen.FillColor := clGray32;
-  FPen.StrokeWidth := 1;
+  FOutlineColor := clGray32;
+  FOutlineSize := 1;
 end;
 
 destructor TChromeTabs32LookAndFeelStyle.Destroy;
 begin
-  FreeAndNil(FPen);
   FreeAndNil(FFiller);
 
   inherited;
@@ -2003,26 +1996,16 @@ end;
 
 procedure TChromeTabs32LookAndFeelStyle.SetOutlineColor(const Value: TColor32);
 begin
-  FPen.FillColor := Value;
+  FOutlineColor := Value;
 
   DoChanged;
-end;
-
-function TChromeTabs32LookAndFeelStyle.GetOutlineColor: TColor32;
-begin
-  Result := FPen.FillColor;
 end;
 
 procedure TChromeTabs32LookAndFeelStyle.SetOutlineSize(const Value: Single);
 begin
-  FPen.StrokeWidth := Value;
+  FOutlineSize := Value;
 
   DoChanged;
-end;
-
-function TChromeTabs32LookAndFeelStyle.GetOutlineSize: Single;
-begin
-  Result := FPen.StrokeWidth;
 end;
 
 procedure TChromeTabs32LookAndFeelStyle.SetStartColor(const Value: TColor32);
@@ -2986,38 +2969,20 @@ constructor TChromeTabs32LookAndFeelPen.Create(AOwner: TPersistent);
 begin
   inherited;
 
-  FPen := TStrokeBrush.Create(nil);
-  FPen.FillColor := clBlack32;
-  FPen.StrokeWidth := 1;
-end;
-
-destructor TChromeTabs32LookAndFeelPen.Destroy;
-begin
-  FreeAndNil(FPen);
-
-  inherited;
-end;
-
-function TChromeTabs32LookAndFeelPen.GetColor: TColor32;
-begin
-  Result := FPen.FillColor;
-end;
-
-function TChromeTabs32LookAndFeelPen.GetThickness: Single;
-begin
-  Result := FPen.StrokeWidth;
+  FColor := clGray32;
+  FThickness := 1;
 end;
 
 procedure TChromeTabs32LookAndFeelPen.SetColor(const Value: TColor32);
 begin
-  FPen.FillColor := Value;
+  FColor := Value;
 
   DoChanged;
 end;
 
 procedure TChromeTabs32LookAndFeelPen.SetThickness(const Value: Single);
 begin
-  FPen.StrokeWidth := Value;
+  FThickness := Value;
 
   DoChanged;
 end;
