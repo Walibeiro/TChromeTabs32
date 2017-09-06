@@ -1193,11 +1193,14 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
   procedure DrawSpinner(ImageRect: TRect);
   var
     SpinnerImages: TCustomImageList;
-    SpinPen: TStrokeBrush;
     SpinnerOptions: TChromeTabs32SpinnerOptions;
     SpinnerLookAndFeel: TChromeTabs32LookAndFeelPen;
-    Offset: Real;
+    ArcPoly: TArrayOfFloatPoint;
+    Offset: Single;
+    RadSize: TFloatPoint;
     Handled: Boolean;
+  const
+    CDegToRad = Pi / 180;
   begin
     ChromeTabs32.DoOnBeforeDrawItem(TabCanvas, ImageRect, itTabImageSpinner, ChromeTab.GetIndex, Handled);
 
@@ -1217,21 +1220,16 @@ procedure TChromeTabControl.DrawTo(TabCanvas: TCanvas32; MouseX, MouseY: Integer
         end;
 
         Offset := SpinnerLookAndFeel.Thickness * 0.5;
+        RadSize := FloatPoint(0.5 * SpinnerOptions.Position.Width, 0.5 * SpinnerOptions.Position.Height);
 
-(* TODO
-        SpinPen := TStrokeBrush.Create(MakeGDIPColor(SpinnerLookAndFeel.Color, SpinnerLookAndFeel.Alpha), SpinnerLookAndFeel.Thickness);
-        try
-          TabCanvas.DrawArc(SpinPen,
-            ImageRect.Left + Offset + SpinnerOptions.Position.Offsets.Horizontal,
-            ImageRect.Top + Offset + SpinnerOptions.Position.Offsets.Vertical,
-            SpinnerOptions.Position.Width - (Offset * 2),
-            SpinnerOptions.Position.Height - (Offset * 2),
-            FSpinnerRenderedDegrees,
-            SpinnerOptions.SweepAngle);
-        finally
-          FreeAndNil(SpinPen);
-        end;
-*)
+        ArcPoly := BuildPolyline(BuildArc(FloatPoint(
+          ImageRect.Left + Offset + SpinnerOptions.Position.Offsets.Horizontal + RadSize.X,
+          ImageRect.Top + Offset + SpinnerOptions.Position.Offsets.Vertical + RadSize.Y),
+          CDegToRad * FSpinnerRenderedDegrees,
+          CDegToRad * (FSpinnerRenderedDegrees + SpinnerOptions.SweepAngle),
+          RadSize.X - Offset), SpinnerLookAndFeel.Thickness);
+
+        PolygonFS(TabCanvas.Bitmap, ArcPoly, SpinnerLookAndFeel.Color);
       end
       else
       begin

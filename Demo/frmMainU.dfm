@@ -14,7 +14,7 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 15
-  object ChromeTabs32: TChromeTabs32
+  object ChromeTabsTop: TChromeTabs32
     Left = 0
     Top = 0
     Width = 1017
@@ -27,7 +27,7 @@ object frmMain: TfrmMain
     OnNeedDragImageControl = ChromeTabs32NeedDragImageControl
     OnAfterDrawItem = ChromeTabs32AfterDrawItem
     OnGetControlPolygons = ChromeTabs32GetControlPolygons
-    OnTabDragDrop = ChromeTabs32TabDragDrop
+    OnTabDragDrop = ChromeTabsTopTabDragDrop
     OnTabDragDropped = ChromeTabs32TabDragDropped
     OnScroll = ChromeTabs32ScrollWidthChanged
     OnScrollWidthChanged = ChromeTabs32ScrollWidthChanged
@@ -302,7 +302,7 @@ object frmMain: TfrmMain
     OnMouseEnter = ChromeTabs32MouseEnter
     OnMouseLeave = ChromeTabs32MouseLeave
   end
-  object ChromeTabs322: TChromeTabs32
+  object ChromeTabsBottom: TChromeTabs32
     Left = 0
     Top = 575
     Width = 1017
@@ -314,7 +314,7 @@ object frmMain: TfrmMain
     OnButtonCloseTabClick = ChromeTabs32ButtonCloseTabClick
     OnNeedDragImageControl = ChromeTabs32NeedDragImageControl
     OnShowHint = ChromeTabs32ShowHint
-    OnTabDragDrop = ChromeTabs322TabDragDrop
+    OnTabDragDrop = ChromeTabsBottomTabDragDrop
     ActiveTabIndex = -1
     Images = ImageList1
     ImagesOverlay = ImageList2
@@ -559,7 +559,7 @@ object frmMain: TfrmMain
     Align = alBottom
     TabOrder = 2
   end
-  object Panel1: TPanel
+  object PanelMain: TPanel
     Left = 0
     Top = 27
     Width = 1017
@@ -567,7 +567,7 @@ object frmMain: TfrmMain
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    object pnlTop: TPanel
+    object PanelTop: TPanel
       Left = 0
       Top = 0
       Width = 1017
@@ -576,14 +576,14 @@ object frmMain: TfrmMain
       BevelOuter = bvNone
       Color = clMoneyGreen
       TabOrder = 0
-      object Label19: TLabel
+      object LabelShowOptionsAndEventsFor: TLabel
         Left = 7
         Top = 7
         Width = 155
         Height = 15
         Caption = 'Show Options and Events for:'
       end
-      object cbSelectTabs: TComboBox
+      object ComboBoxSelectTabs: TComboBox
         Left = 167
         Top = 4
         Width = 128
@@ -592,12 +592,12 @@ object frmMain: TfrmMain
         ItemIndex = 0
         TabOrder = 1
         Text = 'Top Tabs'
-        OnChange = cbSelectTabsChange
+        OnChange = ComboBoxSelectTabsChange
         Items.Strings = (
           'Top Tabs'
           'Bottom Tabs')
       end
-      object Panel11: TPanel
+      object PanelOpenNewForm: TPanel
         Left = 873
         Top = 0
         Width = 144
@@ -605,28 +605,28 @@ object frmMain: TfrmMain
         Align = alRight
         BevelOuter = bvNone
         TabOrder = 0
-        object btnOpenForm: TButton
+        object ButtonOpenForm: TButton
           Left = 0
           Top = 1
           Width = 141
           Height = 26
           Caption = 'Open New Form'
           TabOrder = 0
-          OnClick = btnOpenFormClick
+          OnClick = ButtonOpenFormClick
         end
       end
     end
-    object pcMain: TPageControl
+    object PageControlMain: TPageControl
       Left = 0
       Top = 29
       Width = 1017
       Height = 519
-      ActivePage = TabSheet1
+      ActivePage = TabSheetOptions
       Align = alClient
       TabOrder = 1
-      object TabSheet1: TTabSheet
+      object TabSheetOptions: TTabSheet
         Caption = 'Options'
-        object GroupBox1: TGroupBox
+        object GroupBoxNewActiveTab: TGroupBox
           Left = 0
           Top = 0
           Width = 270
@@ -634,39 +634,39 @@ object frmMain: TfrmMain
           Align = alLeft
           Caption = 'New/Active Tab'
           TabOrder = 0
-          object Label1: TLabel
+          object LabelNewTabText: TLabel
             Left = 11
             Top = 22
             Width = 25
             Height = 15
             Caption = 'Text:'
-            FocusControl = edtTabCaption
+            FocusControl = EditTabCaption
           end
-          object Label2: TLabel
+          object LabelNewTabImageIndex: TLabel
             Left = 11
             Top = 70
             Width = 67
             Height = 15
             Caption = 'Image Index:'
-            FocusControl = edtImageIndex
+            FocusControl = EditImageIndex
           end
-          object Label3: TLabel
+          object LabelNewTabImageOverlayIndex: TLabel
             Left = 135
             Top = 70
             Width = 110
             Height = 15
             Caption = 'Image Overlay Index:'
-            FocusControl = edtImageOverlayIndex
+            FocusControl = EditImageOverlayIndex
           end
-          object Label81: TLabel
+          object LabelNewTabSpinner: TLabel
             Left = 11
             Top = 115
             Width = 43
             Height = 15
             Caption = 'Spinner:'
-            FocusControl = cbSpinnerState
+            FocusControl = ComboBoxSpinnerState
           end
-          object edtTabCaption: TEdit
+          object EditTabCaption: TEdit
             Left = 11
             Top = 37
             Width = 246
@@ -675,7 +675,7 @@ object frmMain: TfrmMain
             Text = 'New Tab'
             OnChange = CommonTabPropertyChange
           end
-          object edtImageIndex: TSpinEdit
+          object EditImageIndex: TSpinEdit
             Left = 11
             Top = 85
             Width = 118
@@ -686,7 +686,7 @@ object frmMain: TfrmMain
             Value = 0
             OnChange = CommonTabPropertyChange
           end
-          object edtImageOverlayIndex: TSpinEdit
+          object EditImageOverlayIndex: TSpinEdit
             Left = 135
             Top = 85
             Width = 122
@@ -697,7 +697,7 @@ object frmMain: TfrmMain
             Value = -1
             OnChange = CommonTabPropertyChange
           end
-          object chkPinned: TCheckBox
+          object CheckBoxPinned: TCheckBox
             Left = 11
             Top = 163
             Width = 67
@@ -706,16 +706,16 @@ object frmMain: TfrmMain
             TabOrder = 4
             OnClick = CommonTabPropertyChange
           end
-          object btnMakeAllTabsVisible: TButton
+          object ButtonMakeAllTabsVisible: TButton
             Left = 135
             Top = 193
             Width = 122
             Height = 25
             Caption = 'Make All Tabs Visible'
             TabOrder = 8
-            OnClick = btnMakeAllTabsVisibleClick
+            OnClick = ButtonMakeAllTabsVisibleClick
           end
-          object chkModified: TCheckBox
+          object CheckBoxModified: TCheckBox
             Left = 75
             Top = 163
             Width = 66
@@ -724,16 +724,16 @@ object frmMain: TfrmMain
             TabOrder = 5
             OnClick = CommonTabPropertyChange
           end
-          object btnHideTab: TButton
+          object ButtonHideTab: TButton
             Left = 11
             Top = 193
             Width = 118
             Height = 25
             Caption = 'Hide Tab'
             TabOrder = 7
-            OnClick = btnHideTabClick
+            OnClick = ButtonHideTabClick
           end
-          object cbSpinnerState: TComboBox
+          object ComboBoxSpinnerState: TComboBox
             Left = 11
             Top = 131
             Width = 246
@@ -750,16 +750,16 @@ object frmMain: TfrmMain
               'Upload-Image'
               'Download-Image')
           end
-          object Button2: TButton
+          object ButtonDeleteActiveTab: TButton
             Left = 11
             Top = 224
             Width = 118
             Height = 25
             Caption = 'Delete Active Tab'
             TabOrder = 9
-            OnClick = Button2Click
+            OnClick = ButtonDeleteActiveTabClick
           end
-          object chkHideClosebutton: TCheckBox
+          object CheckBoxHideClosebutton: TCheckBox
             Left = 151
             Top = 163
             Width = 117
@@ -769,17 +769,17 @@ object frmMain: TfrmMain
             OnClick = CommonTabPropertyChange
           end
         end
-        object pcOptions: TPageControl
+        object PageControlOptions: TPageControl
           Left = 270
           Top = 0
           Width = 739
           Height = 456
-          ActivePage = TabSheet5
+          ActivePage = TabSheetInternationalization
           Align = alClient
           TabOrder = 1
-          object TabSheet5: TTabSheet
+          object TabSheetTabs: TTabSheet
             Caption = 'Tabs'
-            object GroupBox3: TGroupBox
+            object GroupBoxTabs: TGroupBox
               Left = 0
               Top = 0
               Width = 731
@@ -787,55 +787,55 @@ object frmMain: TfrmMain
               Align = alTop
               Caption = 'Tabs'
               TabOrder = 0
-              object Label6: TLabel
+              object LabelPinnedWidth: TLabel
                 Left = 8
                 Top = 76
                 Width = 75
                 Height = 15
                 Caption = 'Pinned Width:'
-                FocusControl = edtPinnedWidth
+                FocusControl = EditPinnedWidth
               end
-              object Label12: TLabel
+              object LabelMaxTabWidth: TLabel
                 Left = 108
                 Top = 20
                 Width = 83
                 Height = 15
                 Caption = 'Max Tab Width:'
-                FocusControl = edtMaxTabWidth
+                FocusControl = EditMaxTabWidth
               end
-              object lblMinTabWidth: TLabel
+              object LabelMinTabWidth: TLabel
                 Left = 8
                 Top = 21
                 Width = 82
                 Height = 15
                 Caption = 'Min Tab Width:'
-                FocusControl = edtMinTabWidth
+                FocusControl = EditMinTabWidth
               end
-              object Label17: TLabel
+              object LabelTabOffset: TLabel
                 Left = 278
                 Top = 20
                 Width = 120
                 Height = 15
                 Caption = 'Tab/Container Offsets:'
-                FocusControl = edtTabOffsetTop
+                FocusControl = EditTabOffsetTop
               end
-              object Label51: TLabel
+              object LabelTabContentMargins: TLabel
                 Left = 283
                 Top = 131
                 Width = 115
                 Height = 15
                 Caption = 'Tab Content Margins:'
-                FocusControl = edtTabOffsetTop
+                FocusControl = EditTabOffsetTop
               end
-              object Label71: TLabel
+              object LabelTabOverlay: TLabel
                 Left = 108
                 Top = 76
                 Width = 67
                 Height = 15
                 Caption = 'Tab Overlap:'
-                FocusControl = edtTabOverlap
+                FocusControl = EditTabOverlap
               end
-              object edtPinnedWidth: TSpinEdit
+              object EditPinnedWidth: TSpinEdit
                 Left = 8
                 Top = 92
                 Width = 94
@@ -846,7 +846,7 @@ object frmMain: TfrmMain
                 Value = 39
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtMaxTabWidth: TSpinEdit
+              object EditMaxTabWidth: TSpinEdit
                 Left = 108
                 Top = 37
                 Width = 94
@@ -857,7 +857,7 @@ object frmMain: TfrmMain
                 Value = 200
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtMinTabWidth: TSpinEdit
+              object EditMinTabWidth: TSpinEdit
                 Left = 8
                 Top = 37
                 Width = 94
@@ -868,7 +868,7 @@ object frmMain: TfrmMain
                 Value = 150
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtTabOffsetTop: TSpinEdit
+              object EditTabOffsetTop: TSpinEdit
                 Left = 312
                 Top = 37
                 Width = 53
@@ -886,7 +886,7 @@ object frmMain: TfrmMain
                 Value = 4
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtTabOffsetLeft: TSpinEdit
+              object EditTabOffsetLeft: TSpinEdit
                 Left = 280
                 Top = 67
                 Width = 53
@@ -904,7 +904,7 @@ object frmMain: TfrmMain
                 Value = 0
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtTabOffsetRight: TSpinEdit
+              object EditTabOffsetRight: TSpinEdit
                 Left = 352
                 Top = 67
                 Width = 53
@@ -922,7 +922,7 @@ object frmMain: TfrmMain
                 Value = 0
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtTabOffsetBottom: TSpinEdit
+              object EditTabOffsetBottom: TSpinEdit
                 Left = 312
                 Top = 97
                 Width = 53
@@ -940,7 +940,7 @@ object frmMain: TfrmMain
                 Value = 0
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtContainerOffsetLeft: TSpinEdit
+              object EditContainerOffsetLeft: TSpinEdit
                 Left = 221
                 Top = 67
                 Width = 53
@@ -958,7 +958,7 @@ object frmMain: TfrmMain
                 Value = 0
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtContainerOffsetRight: TSpinEdit
+              object EditContainerOffsetRight: TSpinEdit
                 Left = 411
                 Top = 67
                 Width = 53
@@ -976,7 +976,7 @@ object frmMain: TfrmMain
                 Value = 0
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtTabContentMarginLeft: TSpinEdit
+              object EditTabContentMarginLeft: TSpinEdit
                 Left = 285
                 Top = 148
                 Width = 53
@@ -993,7 +993,7 @@ object frmMain: TfrmMain
                 Value = 18
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtTabContentMarginRight: TSpinEdit
+              object EditTabContentMarginRight: TSpinEdit
                 Left = 344
                 Top = 148
                 Width = 53
@@ -1010,7 +1010,7 @@ object frmMain: TfrmMain
                 Value = 16
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtTabOverlap: TSpinEdit
+              object EditTabOverlap: TSpinEdit
                 Left = 108
                 Top = 92
                 Width = 94
@@ -1021,7 +1021,7 @@ object frmMain: TfrmMain
                 Value = 15
                 OnChange = OnCommonControlPropertyChange
               end
-              object chkSeeThroughTabs: TCheckBox
+              object CheckBoxSeeThroughTabs: TCheckBox
                 Left = 8
                 Top = 122
                 Width = 129
@@ -1030,7 +1030,7 @@ object frmMain: TfrmMain
                 TabOrder = 10
                 OnClick = OnCommonControlPropertyChange
               end
-              object chkSetTabWidthsFromCaptions: TCheckBox
+              object CheckBoxSetTabWidthsFromCaptions: TCheckBox
                 Left = 8
                 Top = 142
                 Width = 182
@@ -1039,7 +1039,7 @@ object frmMain: TfrmMain
                 TabOrder = 13
                 OnClick = OnCommonControlPropertyChange
               end
-              object chkCustomTabShapes: TCheckBox
+              object CheckBoxCustomTabShapes: TCheckBox
                 Left = 9
                 Top = 162
                 Width = 270
@@ -1049,73 +1049,73 @@ object frmMain: TfrmMain
                 OnClick = OnCommonControlPropertyChange
               end
             end
-            object pcTabExtras: TPageControl
+            object PageControlTabExtras: TPageControl
               Left = 0
               Top = 185
               Width = 731
               Height = 216
-              ActivePage = TabSheet17
+              ActivePage = TabSheetSpinners
               Align = alTop
               TabOrder = 1
-              object TabSheet16: TTabSheet
+              object TabSheetModifiedGlow: TTabSheet
                 Caption = 'Modified Glow'
-                object Label15: TLabel
+                object LabelModifiedGlowAnimationStyle: TLabel
                   Left = 3
                   Top = 4
                   Width = 87
                   Height = 15
                   Caption = 'Animation Style:'
-                  FocusControl = cbModifiedGlowStyle
+                  FocusControl = ComboBoxModifiedGlowStyle
                 end
-                object Label54: TLabel
+                object LabelModifiedGlowVerticalOffset: TLabel
                   Left = 227
                   Top = 50
                   Width = 77
                   Height = 15
                   Caption = 'Vertical Offset:'
-                  FocusControl = edtModifiedGlowVerticalOffset
+                  FocusControl = EditModifiedGlowVerticalOffset
                 end
-                object Label55: TLabel
+                object LabelModifiedGlowAnimationPeriod: TLabel
                   Left = 335
                   Top = 50
                   Width = 96
                   Height = 15
                   Caption = 'Animation Period:'
-                  FocusControl = edtModifiedGlowAnimationPeriod
+                  FocusControl = EditModifiedGlowAnimationPeriod
                 end
-                object Label56: TLabel
+                object LabelModifiedGlowHeight: TLabel
                   Left = 3
                   Top = 50
                   Width = 39
                   Height = 15
                   Caption = 'Height:'
-                  FocusControl = edtModifiedGlowHeight
+                  FocusControl = EditModifiedGlowHeight
                 end
-                object Label57: TLabel
+                object LabelModifiedGlowWidth: TLabel
                   Left = 111
                   Top = 50
                   Width = 35
                   Height = 15
                   Caption = 'Width:'
-                  FocusControl = edtModifiedGlowWidth
+                  FocusControl = EditModifiedGlowWidth
                 end
-                object Label78: TLabel
+                object LabelModifiedGlowAnimationEaseType: TLabel
                   Left = 163
                   Top = 2
                   Width = 114
                   Height = 15
                   Caption = 'Animation Ease Type:'
-                  FocusControl = cbModifiedGlowEaseType
+                  FocusControl = ComboBoxModifiedGlowEaseType
                 end
-                object Label79: TLabel
+                object LabelModifiedGlowAnimationUpdate: TLabel
                   Left = 447
                   Top = 50
                   Width = 100
                   Height = 15
                   Caption = 'Animation Update:'
-                  FocusControl = edtModifiedGlowAnimationUpdate
+                  FocusControl = EditModifiedGlowAnimationUpdate
                 end
-                object cbModifiedGlowStyle: TComboBox
+                object ComboBoxModifiedGlowStyle: TComboBox
                   Left = 3
                   Top = 19
                   Width = 143
@@ -1131,7 +1131,7 @@ object frmMain: TfrmMain
                     'Right to Left'
                     'Knight Rider')
                 end
-                object edtModifiedGlowVerticalOffset: TSpinEdit
+                object EditModifiedGlowVerticalOffset: TSpinEdit
                   Left = 227
                   Top = 67
                   Width = 94
@@ -1142,7 +1142,7 @@ object frmMain: TfrmMain
                   Value = -2
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtModifiedGlowAnimationPeriod: TSpinEdit
+                object EditModifiedGlowAnimationPeriod: TSpinEdit
                   Left = 335
                   Top = 67
                   Width = 106
@@ -1153,7 +1153,7 @@ object frmMain: TfrmMain
                   Value = 4000
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtModifiedGlowHeight: TSpinEdit
+                object EditModifiedGlowHeight: TSpinEdit
                   Left = 3
                   Top = 67
                   Width = 94
@@ -1164,7 +1164,7 @@ object frmMain: TfrmMain
                   Value = 20
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtModifiedGlowWidth: TSpinEdit
+                object EditModifiedGlowWidth: TSpinEdit
                   Left = 111
                   Top = 67
                   Width = 94
@@ -1175,7 +1175,7 @@ object frmMain: TfrmMain
                   Value = 50
                   OnChange = OnCommonControlPropertyChange
                 end
-                object cbModifiedGlowEaseType: TComboBox
+                object ComboBoxModifiedGlowEaseType: TComboBox
                   Left = 163
                   Top = 19
                   Width = 165
@@ -1210,7 +1210,7 @@ object frmMain: TfrmMain
                     'Out Circ'
                     'In Out Circ')
                 end
-                object edtModifiedGlowAnimationUpdate: TSpinEdit
+                object EditModifiedGlowAnimationUpdate: TSpinEdit
                   Left = 447
                   Top = 67
                   Width = 106
@@ -1222,49 +1222,49 @@ object frmMain: TfrmMain
                   OnChange = OnCommonControlPropertyChange
                 end
               end
-              object TabSheet17: TTabSheet
+              object TabSheetMouseGlow: TTabSheet
                 Caption = 'Mouse Glow'
                 ImageIndex = 1
-                object pnlMouseGlow: TPanel
+                object PanelMouseGlow: TPanel
                   Left = -5
                   Top = 27
                   Width = 521
                   Height = 41
                   BevelOuter = bvNone
                   TabOrder = 1
-                  object Label9: TLabel
+                  object LabelMouseGlowVerticalOffset: TLabel
                     Left = 233
                     Top = -1
                     Width = 77
                     Height = 15
                     Caption = 'Vertical Offset:'
-                    FocusControl = edtMouseGlowVerticalOffset
+                    FocusControl = EditMouseGlowVerticalOffset
                   end
-                  object Label10: TLabel
+                  object LabelMouseGlowHorrizontalOffset: TLabel
                     Left = 341
                     Top = -1
                     Width = 93
                     Height = 15
                     Caption = 'Horizontal Offset:'
-                    FocusControl = edtMouseGlowHorzOffset
+                    FocusControl = EditMouseGlowHorzOffset
                   end
-                  object Label11: TLabel
+                  object LabelMouseGlowHeight: TLabel
                     Left = 9
                     Top = -1
                     Width = 39
                     Height = 15
                     Caption = 'Height:'
-                    FocusControl = edtMouseGlowHeight
+                    FocusControl = EditMouseGlowHeight
                   end
-                  object Label16: TLabel
+                  object LabelMouseGlowWidth: TLabel
                     Left = 117
                     Top = -1
                     Width = 35
                     Height = 15
                     Caption = 'Width:'
-                    FocusControl = edtMouseGlowWidth
+                    FocusControl = EditMouseGlowWidth
                   end
-                  object edtMouseGlowVerticalOffset: TSpinEdit
+                  object EditMouseGlowVerticalOffset: TSpinEdit
                     Left = 233
                     Top = 14
                     Width = 94
@@ -1275,7 +1275,7 @@ object frmMain: TfrmMain
                     Value = 0
                     OnChange = OnCommonControlPropertyChange
                   end
-                  object edtMouseGlowHorzOffset: TSpinEdit
+                  object EditMouseGlowHorzOffset: TSpinEdit
                     Left = 341
                     Top = 14
                     Width = 94
@@ -1286,7 +1286,7 @@ object frmMain: TfrmMain
                     Value = 0
                     OnChange = OnCommonControlPropertyChange
                   end
-                  object edtMouseGlowHeight: TSpinEdit
+                  object EditMouseGlowHeight: TSpinEdit
                     Left = 9
                     Top = 14
                     Width = 94
@@ -1297,7 +1297,7 @@ object frmMain: TfrmMain
                     Value = 100
                     OnChange = OnCommonControlPropertyChange
                   end
-                  object edtMouseGlowWidth: TSpinEdit
+                  object EditMouseGlowWidth: TSpinEdit
                     Left = 117
                     Top = 14
                     Width = 94
@@ -1309,7 +1309,7 @@ object frmMain: TfrmMain
                     OnChange = OnCommonControlPropertyChange
                   end
                 end
-                object chkMouseGlowVisible: TCheckBox
+                object CheckBoxMouseGlowVisible: TCheckBox
                   Left = 4
                   Top = 5
                   Width = 84
@@ -1321,18 +1321,18 @@ object frmMain: TfrmMain
                   OnClick = OnCommonControlPropertyChange
                 end
               end
-              object Spinners: TTabSheet
+              object TabSheetSpinners: TTabSheet
                 Caption = 'Spinners'
                 ImageIndex = 2
-                object Label82: TLabel
+                object LabelSpinnersAnimationUpdate: TLabel
                   Left = 3
                   Top = 2
                   Width = 100
                   Height = 15
                   Caption = 'Animation Update:'
-                  FocusControl = edtSpinnerAnimationUpdate
+                  FocusControl = EditSpinnerAnimationUpdate
                 end
-                object edtSpinnerAnimationUpdate: TSpinEdit
+                object EditSpinnerAnimationUpdate: TSpinEdit
                   Left = 3
                   Top = 19
                   Width = 106
@@ -1343,7 +1343,7 @@ object frmMain: TfrmMain
                   Value = 50
                   OnChange = OnCommonControlPropertyChange
                 end
-                object chkHideImagesWhenSpinnerActive: TCheckBox
+                object CheckBoxHideImagesWhenSpinnerActive: TCheckBox
                   Left = 132
                   Top = 21
                   Width = 229
@@ -1354,66 +1354,66 @@ object frmMain: TfrmMain
                   TabOrder = 1
                   OnClick = OnCommonControlPropertyChange
                 end
-                object pcTabSpinners: TPageControl
+                object PageControlTabSpinners: TPageControl
                   Left = 0
                   Top = 49
                   Width = 723
                   Height = 137
-                  ActivePage = TabSheet18
+                  ActivePage = TabSheetDownload
                   Align = alBottom
                   TabOrder = 2
-                  object TabSheet19: TTabSheet
+                  object TabSheetUpload: TTabSheet
                     Caption = 'Upload'
                     ImageIndex = 1
-                    object Label86: TLabel
+                    object LabelUploadAnimationStep: TLabel
                       Left = 3
                       Top = 5
                       Width = 85
                       Height = 15
                       Caption = 'Animation Step:'
-                      FocusControl = edtSpinnerUploadAnimationStep
+                      FocusControl = EditSpinnerUploadAnimationStep
                     end
-                    object Label87: TLabel
+                    object LabelUploadWidth: TLabel
                       Left = 3
                       Top = 53
                       Width = 35
                       Height = 15
                       Caption = 'Width:'
-                      FocusControl = edtSpinnerUploadWidth
+                      FocusControl = EditSpinnerUploadWidth
                     end
-                    object Label88: TLabel
+                    object LabelUploadSweepAngle: TLabel
                       Left = 127
                       Top = 5
                       Width = 71
                       Height = 15
                       Caption = 'Sweep Angle:'
-                      FocusControl = edtSpinnerUploadSweepAngle
+                      FocusControl = EditSpinnerUploadSweepAngle
                     end
-                    object Label92: TLabel
+                    object LabelUploadHeight: TLabel
                       Left = 127
                       Top = 53
                       Width = 39
                       Height = 15
                       Caption = 'Height:'
-                      FocusControl = edtSpinnerUploadHeight
+                      FocusControl = EditSpinnerUploadHeight
                     end
-                    object Label93: TLabel
+                    object LabelUploadOffsetX: TLabel
                       Left = 250
                       Top = 53
                       Width = 45
                       Height = 15
                       Caption = 'Offset X:'
-                      FocusControl = edtSpinnerUploadOffsetX
+                      FocusControl = EditSpinnerUploadOffsetX
                     end
-                    object Label94: TLabel
+                    object LabelUploadOffsetY: TLabel
                       Left = 370
                       Top = 53
                       Width = 42
                       Height = 15
                       Caption = 'OffsetY:'
-                      FocusControl = edtSpinnerUploadOffsetY
+                      FocusControl = EditSpinnerUploadOffsetY
                     end
-                    object edtSpinnerUploadAnimationStep: TSpinEdit
+                    object EditSpinnerUploadAnimationStep: TSpinEdit
                       Left = 3
                       Top = 22
                       Width = 106
@@ -1424,7 +1424,7 @@ object frmMain: TfrmMain
                       Value = 50
                       OnChange = OnCommonControlPropertyChange
                     end
-                    object edtSpinnerUploadWidth: TSpinEdit
+                    object EditSpinnerUploadWidth: TSpinEdit
                       Left = 3
                       Top = 70
                       Width = 106
@@ -1435,7 +1435,7 @@ object frmMain: TfrmMain
                       Value = 50
                       OnChange = OnCommonControlPropertyChange
                     end
-                    object edtSpinnerUploadSweepAngle: TSpinEdit
+                    object EditSpinnerUploadSweepAngle: TSpinEdit
                       Left = 127
                       Top = 22
                       Width = 106
@@ -1446,7 +1446,7 @@ object frmMain: TfrmMain
                       Value = 50
                       OnChange = OnCommonControlPropertyChange
                     end
-                    object chkSpinnerUploadReverseDirection: TCheckBox
+                    object CheckBoxSpinnerUploadReverseDirection: TCheckBox
                       Left = 250
                       Top = 25
                       Width = 164
@@ -1457,7 +1457,7 @@ object frmMain: TfrmMain
                       TabOrder = 2
                       OnClick = OnCommonControlPropertyChange
                     end
-                    object edtSpinnerUploadHeight: TSpinEdit
+                    object EditSpinnerUploadHeight: TSpinEdit
                       Left = 127
                       Top = 70
                       Width = 106
@@ -1468,7 +1468,7 @@ object frmMain: TfrmMain
                       Value = 50
                       OnChange = OnCommonControlPropertyChange
                     end
-                    object edtSpinnerUploadOffsetX: TSpinEdit
+                    object EditSpinnerUploadOffsetX: TSpinEdit
                       Left = 250
                       Top = 70
                       Width = 106
@@ -1479,7 +1479,7 @@ object frmMain: TfrmMain
                       Value = 50
                       OnChange = OnCommonControlPropertyChange
                     end
-                    object edtSpinnerUploadOffsetY: TSpinEdit
+                    object EditSpinnerUploadOffsetY: TSpinEdit
                       Left = 370
                       Top = 70
                       Width = 106
@@ -1491,57 +1491,57 @@ object frmMain: TfrmMain
                       OnChange = OnCommonControlPropertyChange
                     end
                   end
-                  object TabSheet18: TTabSheet
+                  object TabSheetDownload: TTabSheet
                     Caption = 'Download'
-                    object Label83: TLabel
+                    object LabelSpinnersDownloadAnimationStep: TLabel
                       Left = 3
                       Top = 5
                       Width = 85
                       Height = 15
                       Caption = 'Animation Step:'
-                      FocusControl = edtSpinnerDownloadAnimationStep
+                      FocusControl = EditSpinnerDownloadAnimationStep
                     end
-                    object Label84: TLabel
+                    object LabelSpinnersDownloadWidth: TLabel
                       Left = 3
                       Top = 53
                       Width = 35
                       Height = 15
                       Caption = 'Width:'
-                      FocusControl = edtSpinnerDownloadWidth
+                      FocusControl = EditSpinnerDownloadWidth
                     end
-                    object Label85: TLabel
+                    object LabelSpinnersDownloadSweepAngle: TLabel
                       Left = 127
                       Top = 5
                       Width = 71
                       Height = 15
                       Caption = 'Sweep Angle:'
-                      FocusControl = edtSpinnerDownloadSweepAngle
+                      FocusControl = EditSpinnerDownloadSweepAngle
                     end
-                    object Label89: TLabel
+                    object LabelSpinnersDownloadHeight: TLabel
                       Left = 127
                       Top = 53
                       Width = 39
                       Height = 15
                       Caption = 'Height:'
-                      FocusControl = edtSpinnerDownloadHeight
+                      FocusControl = EditSpinnerDownloadHeight
                     end
-                    object Label90: TLabel
+                    object LabelSpinnersDownloadOffsetX: TLabel
                       Left = 250
                       Top = 53
                       Width = 45
                       Height = 15
                       Caption = 'Offset X:'
-                      FocusControl = edtSpinnerDownloadOffsetX
+                      FocusControl = EditSpinnerDownloadOffsetX
                     end
-                    object Label91: TLabel
+                    object LabelSpinnersDownloadOffsetY: TLabel
                       Left = 370
                       Top = 53
                       Width = 42
                       Height = 15
                       Caption = 'OffsetY:'
-                      FocusControl = edtSpinnerDownloadOffsetY
+                      FocusControl = EditSpinnerDownloadOffsetY
                     end
-                    object edtSpinnerDownloadAnimationStep: TSpinEdit
+                    object EditSpinnerDownloadAnimationStep: TSpinEdit
                       Left = 3
                       Top = 22
                       Width = 106
@@ -1552,7 +1552,7 @@ object frmMain: TfrmMain
                       Value = 50
                       OnChange = OnCommonControlPropertyChange
                     end
-                    object edtSpinnerDownloadWidth: TSpinEdit
+                    object EditSpinnerDownloadWidth: TSpinEdit
                       Left = 3
                       Top = 70
                       Width = 106
@@ -1563,7 +1563,7 @@ object frmMain: TfrmMain
                       Value = 50
                       OnChange = OnCommonControlPropertyChange
                     end
-                    object edtSpinnerDownloadSweepAngle: TSpinEdit
+                    object EditSpinnerDownloadSweepAngle: TSpinEdit
                       Left = 127
                       Top = 22
                       Width = 106
@@ -1574,7 +1574,7 @@ object frmMain: TfrmMain
                       Value = 50
                       OnChange = OnCommonControlPropertyChange
                     end
-                    object chkSpinnerDownloadReverseDirection: TCheckBox
+                    object CheckBoxSpinnerDownloadReverseDirection: TCheckBox
                       Left = 250
                       Top = 25
                       Width = 164
@@ -1585,7 +1585,7 @@ object frmMain: TfrmMain
                       TabOrder = 2
                       OnClick = OnCommonControlPropertyChange
                     end
-                    object edtSpinnerDownloadHeight: TSpinEdit
+                    object EditSpinnerDownloadHeight: TSpinEdit
                       Left = 127
                       Top = 70
                       Width = 106
@@ -1596,7 +1596,7 @@ object frmMain: TfrmMain
                       Value = 50
                       OnChange = OnCommonControlPropertyChange
                     end
-                    object edtSpinnerDownloadOffsetX: TSpinEdit
+                    object EditSpinnerDownloadOffsetX: TSpinEdit
                       Left = 250
                       Top = 70
                       Width = 106
@@ -1607,7 +1607,7 @@ object frmMain: TfrmMain
                       Value = 50
                       OnChange = OnCommonControlPropertyChange
                     end
-                    object edtSpinnerDownloadOffsetY: TSpinEdit
+                    object EditSpinnerDownloadOffsetY: TSpinEdit
                       Left = 370
                       Top = 70
                       Width = 106
@@ -1623,10 +1623,10 @@ object frmMain: TfrmMain
               end
             end
           end
-          object TabSheet7: TTabSheet
+          object TabSheetText: TTabSheet
             Caption = 'Text'
             ImageIndex = 6
-            object GroupBox4: TGroupBox
+            object GroupBoxDefaultFont: TGroupBox
               Left = 0
               Top = 0
               Width = 731
@@ -1634,47 +1634,47 @@ object frmMain: TfrmMain
               Align = alTop
               Caption = 'Default Font'
               TabOrder = 0
-              object Label14: TLabel
+              object LabelDefaultRenderingMode: TLabel
                 Left = 8
                 Top = 20
-                Width = 158
+                Width = 157
                 Height = 15
-                Caption = 'Default Text Rendoring Mode:'
-                FocusControl = cbFontHintMode
+                Caption = 'Default Text Rendering Mode:'
+                FocusControl = ComboBoxFontHintMode
               end
-              object Label63: TLabel
+              object LabelTextFontName: TLabel
                 Left = 8
                 Top = 73
                 Width = 62
                 Height = 15
                 Caption = 'Font Name:'
-                FocusControl = edtDragImageAapha
+                FocusControl = EditDragImageAapha
               end
-              object Label64: TLabel
+              object LabelTextFontSize: TLabel
                 Left = 184
                 Top = 72
                 Width = 23
                 Height = 15
                 Caption = 'Size:'
-                FocusControl = edtFontSize
+                FocusControl = EditFontSize
               end
-              object Label65: TLabel
+              object LabelTextFontAlpha: TLabel
                 Left = 184
                 Top = 120
                 Width = 34
                 Height = 15
                 Caption = 'Alpha:'
-                FocusControl = edtFontAlpha
+                FocusControl = EditFontAlpha
               end
-              object Label66: TLabel
+              object LabelTextFontColor: TLabel
                 Left = 8
                 Top = 124
                 Width = 66
                 Height = 15
                 Caption = 'Font Colour:'
-                FocusControl = edtFontColor
+                FocusControl = EditFontColor
               end
-              object cbFontHintMode: TComboBox
+              object ComboBoxFontHintMode: TComboBox
                 Left = 8
                 Top = 36
                 Width = 170
@@ -1692,7 +1692,7 @@ object frmMain: TfrmMain
                   'Anti Alias'
                   'ClearType Grid Fit')
               end
-              object cbFontName: TComboBox
+              object ComboBoxFontName: TComboBox
                 Left = 8
                 Top = 89
                 Width = 170
@@ -1701,7 +1701,7 @@ object frmMain: TfrmMain
                 Text = 'Segoe UI'
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtFontSize: TSpinEdit
+              object EditFontSize: TSpinEdit
                 Left = 184
                 Top = 89
                 Width = 94
@@ -1712,7 +1712,7 @@ object frmMain: TfrmMain
                 Value = 9
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtFontAlpha: TSpinEdit
+              object EditFontAlpha: TSpinEdit
                 Left = 184
                 Top = 137
                 Width = 94
@@ -1723,7 +1723,7 @@ object frmMain: TfrmMain
                 Value = 255
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtFontColor: TColorBox
+              object EditFontColor: TColorBox
                 Left = 8
                 Top = 139
                 Width = 170
@@ -1733,7 +1733,7 @@ object frmMain: TfrmMain
                 OnChange = OnCommonControlPropertyChange
               end
             end
-            object GroupBox10: TGroupBox
+            object GroupBoxDisplay: TGroupBox
               Left = 0
               Top = 172
               Width = 731
@@ -1741,31 +1741,31 @@ object frmMain: TfrmMain
               Align = alTop
               Caption = 'Display'
               TabOrder = 1
-              object Label67: TLabel
+              object LabelTextDisplayTrimmingMode: TLabel
                 Left = 13
                 Top = 99
                 Width = 90
                 Height = 15
                 Caption = 'Trimming Mode:'
-                FocusControl = cbTextTrimming
+                FocusControl = ComboBoxTextTrimming
               end
-              object Label18: TLabel
+              object LabelTextDisplayHorizontalAlignment: TLabel
                 Left = 13
                 Top = 51
                 Width = 122
                 Height = 15
                 Caption = 'Horzizontal Alignment:'
-                FocusControl = cbTextAlignment
+                FocusControl = ComboBoxTextAlignment
               end
-              object Label52: TLabel
+              object LabelTextDisplayVerticalAlignment: TLabel
                 Left = 174
                 Top = 51
                 Width = 101
                 Height = 15
                 Caption = 'Vertical Alignment:'
-                FocusControl = cbTextVerticalAlignment
+                FocusControl = ComboBoxTextVerticalAlignment
               end
-              object cbTextTrimming: TComboBox
+              object ComboBoxTextTrimming: TComboBox
                 Left = 13
                 Top = 115
                 Width = 152
@@ -1784,7 +1784,7 @@ object frmMain: TfrmMain
                   'Ellipsis Path'
                   'Fade')
               end
-              object chkTabWordWrap: TCheckBox
+              object CheckBoxTabWordWrap: TCheckBox
                 Tag = 1
                 Left = 13
                 Top = 24
@@ -1794,7 +1794,7 @@ object frmMain: TfrmMain
                 TabOrder = 0
                 OnClick = OnCommonControlPropertyChange
               end
-              object cbTextAlignment: TComboBox
+              object ComboBoxTextAlignment: TComboBox
                 Left = 13
                 Top = 66
                 Width = 150
@@ -1809,7 +1809,7 @@ object frmMain: TfrmMain
                   'Right'
                   'Centre')
               end
-              object cbTextVerticalAlignment: TComboBox
+              object ComboBoxTextVerticalAlignment: TComboBox
                 Left = 174
                 Top = 66
                 Width = 139
@@ -1824,7 +1824,7 @@ object frmMain: TfrmMain
                   'Bottom'
                   'Centre')
               end
-              object chkShowTextOnPinnedTabs: TCheckBox
+              object CheckBoxShowTextOnPinnedTabs: TCheckBox
                 Tag = 1
                 Left = 173
                 Top = 26
@@ -1836,77 +1836,77 @@ object frmMain: TfrmMain
               end
             end
           end
-          object TabSheet4: TTabSheet
+          object TabSheetButtons: TTabSheet
             Caption = 'Buttons'
             ImageIndex = 5
-            object pcButtons: TPageControl
+            object PageControlButtons: TPageControl
               Left = 0
               Top = 19
               Width = 731
               Height = 407
-              ActivePage = TabSheet11
+              ActivePage = TabSheetAddButton
               Align = alClient
               TabOrder = 1
-              object TabSheet11: TTabSheet
+              object TabSheetCloseButtons: TTabSheet
                 Caption = 'Close Buttons'
                 ImageIndex = 1
-                object Label4: TLabel
+                object LabelCloseButtonsVisibility: TLabel
                   Left = 11
                   Top = 6
                   Width = 47
                   Height = 15
                   Caption = 'Visibility:'
-                  FocusControl = cbCloseButtonVisibility
+                  FocusControl = ComboBoxCloseButtonVisibility
                 end
-                object Label39: TLabel
+                object LabelCloseButtonsAutoHideTabWidth: TLabel
                   Left = 207
                   Top = 6
                   Width = 108
                   Height = 15
                   Caption = 'Auto hide tab width:'
-                  FocusControl = edtCloseButtonAutoHideWidth
+                  FocusControl = EditCloseButtonAutoHideWidth
                 end
-                object Label42: TLabel
+                object LabelCloseButtonsVerticalOffset: TLabel
                   Left = 235
                   Top = 56
                   Width = 77
                   Height = 15
                   Caption = 'Vertical Offset:'
-                  FocusControl = edtCloseButtonVerticalOffset
+                  FocusControl = EditCloseButtonVerticalOffset
                 end
-                object Label43: TLabel
+                object LabelCloseButtonsHorizontalOffset: TLabel
                   Left = 343
                   Top = 56
                   Width = 63
                   Height = 15
                   Caption = 'Horz Offset:'
-                  FocusControl = edtCloseButtonHorzOffset
+                  FocusControl = EditCloseButtonHorzOffset
                 end
-                object Label44: TLabel
+                object LabelCloseButtonsHeight: TLabel
                   Left = 11
                   Top = 56
                   Width = 39
                   Height = 15
                   Caption = 'Height:'
-                  FocusControl = edtCloseButtonHeight
+                  FocusControl = EditCloseButtonHeight
                 end
-                object Label45: TLabel
+                object LabelCloseButtonsWidth: TLabel
                   Left = 119
                   Top = 56
                   Width = 35
                   Height = 15
                   Caption = 'Width:'
-                  FocusControl = edtCloseButtonWidth
+                  FocusControl = EditCloseButtonWidth
                 end
-                object Label50: TLabel
+                object LabelCloseButtonsCrossOffset: TLabel
                   Left = 11
                   Top = 112
                   Width = 67
                   Height = 15
                   Caption = 'Cross Offset:'
-                  FocusControl = edtCrossOffset
+                  FocusControl = EditCrossOffset
                 end
-                object cbCloseButtonVisibility: TComboBox
+                object ComboBoxCloseButtonVisibility: TComboBox
                   Left = 11
                   Top = 21
                   Width = 94
@@ -1921,7 +1921,7 @@ object frmMain: TfrmMain
                     'All Tabs'
                     'Active Tab')
                 end
-                object chkCloseButtonAutoHide: TCheckBox
+                object CheckBoxCloseButtonAutoHide: TCheckBox
                   Left = 115
                   Top = 24
                   Width = 84
@@ -1930,7 +1930,7 @@ object frmMain: TfrmMain
                   TabOrder = 2
                   OnClick = OnCommonControlPropertyChange
                 end
-                object edtCloseButtonAutoHideWidth: TSpinEdit
+                object EditCloseButtonAutoHideWidth: TSpinEdit
                   Left = 206
                   Top = 21
                   Width = 114
@@ -1941,7 +1941,7 @@ object frmMain: TfrmMain
                   Value = 20
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtCloseButtonVerticalOffset: TSpinEdit
+                object EditCloseButtonVerticalOffset: TSpinEdit
                   Left = 235
                   Top = 73
                   Width = 94
@@ -1952,7 +1952,7 @@ object frmMain: TfrmMain
                   Value = 6
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtCloseButtonHorzOffset: TSpinEdit
+                object EditCloseButtonHorzOffset: TSpinEdit
                   Left = 343
                   Top = 73
                   Width = 94
@@ -1963,7 +1963,7 @@ object frmMain: TfrmMain
                   Value = 2
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtCloseButtonHeight: TSpinEdit
+                object EditCloseButtonHeight: TSpinEdit
                   Left = 11
                   Top = 73
                   Width = 94
@@ -1974,7 +1974,7 @@ object frmMain: TfrmMain
                   Value = 14
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtCloseButtonWidth: TSpinEdit
+                object EditCloseButtonWidth: TSpinEdit
                   Left = 119
                   Top = 73
                   Width = 94
@@ -1985,7 +1985,7 @@ object frmMain: TfrmMain
                   Value = 14
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtCrossOffset: TSpinEdit
+                object EditCrossOffset: TSpinEdit
                   Left = 11
                   Top = 129
                   Width = 94
@@ -1997,58 +1997,58 @@ object frmMain: TfrmMain
                   OnChange = OnCommonControlPropertyChange
                 end
               end
-              object TabSheet12: TTabSheet
+              object TabSheetAddButton: TTabSheet
                 Caption = 'Add Button'
                 ImageIndex = 2
-                object Label29: TLabel
+                object LabelAddButtonVisibility: TLabel
                   Left = 11
                   Top = 6
                   Width = 47
                   Height = 15
                   Caption = 'Visibility:'
-                  FocusControl = cbAddButtonVisibility
+                  FocusControl = ComboBoxAddButtonVisibility
                 end
-                object Label37: TLabel
+                object LabelAddButtonVerticalOffset: TLabel
                   Left = 235
                   Top = 56
                   Width = 77
                   Height = 15
                   Caption = 'Vertical Offset:'
-                  FocusControl = edtAddButtonVerticalOffset
+                  FocusControl = EditAddButtonVerticalOffset
                 end
-                object Label38: TLabel
+                object LabelAddButtonHorizontalOffset: TLabel
                   Left = 343
                   Top = 56
                   Width = 63
                   Height = 15
                   Caption = 'Horz Offset:'
-                  FocusControl = edtAddButtonHorzOffset
+                  FocusControl = EditAddButtonHorzOffset
                 end
-                object Label46: TLabel
+                object LabelAddButtonHeight: TLabel
                   Left = 11
                   Top = 56
                   Width = 39
                   Height = 15
                   Caption = 'Height:'
-                  FocusControl = edtAddButtonHeight
+                  FocusControl = EditAddButtonHeight
                 end
-                object Label47: TLabel
+                object LabelAddButtonWidth: TLabel
                   Left = 119
                   Top = 56
                   Width = 35
                   Height = 15
                   Caption = 'Width:'
-                  FocusControl = edtAddButtonWidth
+                  FocusControl = EditAddButtonWidth
                 end
-                object Label68: TLabel
+                object LabelAddButtonFloatingOffset: TLabel
                   Left = 443
                   Top = 56
                   Width = 109
                   Height = 15
                   Caption = 'Floating Horz Offset:'
-                  FocusControl = edtAddButtonFloatingHorzOffset
+                  FocusControl = EditAddButtonFloatingHorzOffset
                 end
-                object cbAddButtonVisibility: TComboBox
+                object ComboBoxAddButtonVisibility: TComboBox
                   Left = 11
                   Top = 21
                   Width = 118
@@ -2064,7 +2064,7 @@ object frmMain: TfrmMain
                     'Floating Right'
                     'Fixed Right')
                 end
-                object edtAddButtonVerticalOffset: TSpinEdit
+                object EditAddButtonVerticalOffset: TSpinEdit
                   Left = 235
                   Top = 73
                   Width = 94
@@ -2075,7 +2075,7 @@ object frmMain: TfrmMain
                   Value = 9
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtAddButtonHorzOffset: TSpinEdit
+                object EditAddButtonHorzOffset: TSpinEdit
                   Left = 343
                   Top = 73
                   Width = 94
@@ -2086,7 +2086,7 @@ object frmMain: TfrmMain
                   Value = 2
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtAddButtonHeight: TSpinEdit
+                object EditAddButtonHeight: TSpinEdit
                   Left = 11
                   Top = 73
                   Width = 94
@@ -2097,7 +2097,7 @@ object frmMain: TfrmMain
                   Value = 14
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtAddButtonWidth: TSpinEdit
+                object EditAddButtonWidth: TSpinEdit
                   Left = 119
                   Top = 73
                   Width = 94
@@ -2108,7 +2108,7 @@ object frmMain: TfrmMain
                   Value = 25
                   OnChange = OnCommonControlPropertyChange
                 end
-                object chkShowPlus: TCheckBox
+                object CheckBoxShowPlus: TCheckBox
                   Left = 147
                   Top = 24
                   Width = 118
@@ -2119,7 +2119,7 @@ object frmMain: TfrmMain
                   TabOrder = 1
                   OnClick = OnCommonControlPropertyChange
                 end
-                object edtAddButtonFloatingHorzOffset: TSpinEdit
+                object EditAddButtonFloatingHorzOffset: TSpinEdit
                   Left = 443
                   Top = 73
                   Width = 118
@@ -2131,18 +2131,18 @@ object frmMain: TfrmMain
                   OnChange = OnCommonControlPropertyChange
                 end
               end
-              object TabSheet13: TTabSheet
+              object TabSheetScrollButtons: TTabSheet
                 Caption = 'Scroll Buttons'
                 ImageIndex = 3
-                object Label25: TLabel
+                object LabelButtonsScrollButtons: TLabel
                   Left = 11
                   Top = 7
                   Width = 76
                   Height = 15
                   Caption = 'Scroll Buttons:'
-                  FocusControl = cbScrollButtons
+                  FocusControl = ComboBoxScrollButtons
                 end
-                object cbScrollButtons: TComboBox
+                object ComboBoxScrollButtons: TComboBox
                   Left = 11
                   Top = 23
                   Width = 144
@@ -2158,7 +2158,7 @@ object frmMain: TfrmMain
                     'Right'
                     'LeftAndRight')
                 end
-                object chkAutoHideScrollButtons: TCheckBox
+                object CheckBoxAutoHideScrollButtons: TCheckBox
                   Left = 161
                   Top = 26
                   Width = 138
@@ -2169,46 +2169,46 @@ object frmMain: TfrmMain
                   TabOrder = 1
                   OnClick = OnCommonControlPropertyChange
                 end
-                object GroupBox2: TGroupBox
+                object GroupBoxLeftButton: TGroupBox
                   Left = 13
                   Top = 63
                   Width = 508
                   Height = 74
                   Caption = 'Left Button'
                   TabOrder = 2
-                  object Label40: TLabel
+                  object LabelButtonsScrollLeftVerticalOffset: TLabel
                     Left = 235
                     Top = 20
                     Width = 77
                     Height = 15
                     Caption = 'Vertical Offset:'
-                    FocusControl = edtLeftScrollButtonsVerticalOffset
+                    FocusControl = EditLeftScrollButtonsVerticalOffset
                   end
-                  object Label41: TLabel
+                  object LabelButtonsScrollLeftHorizontalOffset: TLabel
                     Left = 343
                     Top = 20
                     Width = 63
                     Height = 15
                     Caption = 'Horz Offset:'
-                    FocusControl = edtLeftScrollButtonsHorzOffset
+                    FocusControl = EditLeftScrollButtonsHorzOffset
                   end
-                  object Label48: TLabel
+                  object LabelButtonsScrollLeftHeight: TLabel
                     Left = 11
                     Top = 20
                     Width = 39
                     Height = 15
                     Caption = 'Height:'
-                    FocusControl = edtLeftScrollButtonHeight
+                    FocusControl = EditLeftScrollButtonHeight
                   end
-                  object Label49: TLabel
+                  object LabelButtonsScrollLeftWidth: TLabel
                     Left = 119
                     Top = 20
                     Width = 35
                     Height = 15
                     Caption = 'Width:'
-                    FocusControl = edtLeftScrollButtonWidth
+                    FocusControl = EditLeftScrollButtonWidth
                   end
-                  object edtLeftScrollButtonsVerticalOffset: TSpinEdit
+                  object EditLeftScrollButtonsVerticalOffset: TSpinEdit
                     Left = 235
                     Top = 37
                     Width = 94
@@ -2219,7 +2219,7 @@ object frmMain: TfrmMain
                     Value = 10
                     OnChange = OnCommonControlPropertyChange
                   end
-                  object edtLeftScrollButtonsHorzOffset: TSpinEdit
+                  object EditLeftScrollButtonsHorzOffset: TSpinEdit
                     Left = 343
                     Top = 37
                     Width = 94
@@ -2230,7 +2230,7 @@ object frmMain: TfrmMain
                     Value = 0
                     OnChange = OnCommonControlPropertyChange
                   end
-                  object edtLeftScrollButtonHeight: TSpinEdit
+                  object EditLeftScrollButtonHeight: TSpinEdit
                     Left = 11
                     Top = 37
                     Width = 94
@@ -2241,7 +2241,7 @@ object frmMain: TfrmMain
                     Value = 15
                     OnChange = OnCommonControlPropertyChange
                   end
-                  object edtLeftScrollButtonWidth: TSpinEdit
+                  object EditLeftScrollButtonWidth: TSpinEdit
                     Left = 119
                     Top = 37
                     Width = 94
@@ -2253,46 +2253,46 @@ object frmMain: TfrmMain
                     OnChange = OnCommonControlPropertyChange
                   end
                 end
-                object GroupBox7: TGroupBox
+                object GroupBoxRightButton: TGroupBox
                   Left = 13
                   Top = 143
                   Width = 508
                   Height = 74
                   Caption = 'Right Button'
                   TabOrder = 3
-                  object Label58: TLabel
+                  object LabelButtonsScrollRightVerticalOffset: TLabel
                     Left = 235
                     Top = 20
                     Width = 77
                     Height = 15
                     Caption = 'Vertical Offset:'
-                    FocusControl = edtRightScrollButtonVerticalOffset
+                    FocusControl = EditRightScrollButtonVerticalOffset
                   end
-                  object Label59: TLabel
+                  object LabelButtonsScrollRightHorizontalOffset: TLabel
                     Left = 343
                     Top = 20
                     Width = 63
                     Height = 15
                     Caption = 'Horz Offset:'
-                    FocusControl = edtRightScrollButtonHorzOffset
+                    FocusControl = EditRightScrollButtonHorzOffset
                   end
-                  object Label60: TLabel
+                  object LabelButtonsScrollRightHeight: TLabel
                     Left = 11
                     Top = 20
                     Width = 39
                     Height = 15
                     Caption = 'Height:'
-                    FocusControl = edtRightScrollButtonHeight
+                    FocusControl = EditRightScrollButtonHeight
                   end
-                  object Label61: TLabel
+                  object LabelButtonsScrollRightWidth: TLabel
                     Left = 119
                     Top = 20
                     Width = 35
                     Height = 15
                     Caption = 'Width:'
-                    FocusControl = edtRightScrollButtonWidth
+                    FocusControl = EditRightScrollButtonWidth
                   end
-                  object edtRightScrollButtonVerticalOffset: TSpinEdit
+                  object EditRightScrollButtonVerticalOffset: TSpinEdit
                     Left = 235
                     Top = 37
                     Width = 94
@@ -2303,7 +2303,7 @@ object frmMain: TfrmMain
                     Value = 10
                     OnChange = OnCommonControlPropertyChange
                   end
-                  object edtRightScrollButtonHorzOffset: TSpinEdit
+                  object EditRightScrollButtonHorzOffset: TSpinEdit
                     Left = 343
                     Top = 37
                     Width = 94
@@ -2314,7 +2314,7 @@ object frmMain: TfrmMain
                     Value = 0
                     OnChange = OnCommonControlPropertyChange
                   end
-                  object edtRightScrollButtonHeight: TSpinEdit
+                  object EditRightScrollButtonHeight: TSpinEdit
                     Left = 11
                     Top = 37
                     Width = 94
@@ -2325,7 +2325,7 @@ object frmMain: TfrmMain
                     Value = 15
                     OnChange = OnCommonControlPropertyChange
                   end
-                  object edtRightScrollButtonWidth: TSpinEdit
+                  object EditRightScrollButtonWidth: TSpinEdit
                     Left = 119
                     Top = 37
                     Width = 94
@@ -2339,7 +2339,7 @@ object frmMain: TfrmMain
                 end
               end
             end
-            object Panel8: TPanel
+            object PanelOverlayButtons: TPanel
               Left = 0
               Top = 0
               Width = 731
@@ -2347,7 +2347,7 @@ object frmMain: TfrmMain
               Align = alTop
               BevelOuter = bvNone
               TabOrder = 0
-              object chkScrollOverlayButtons: TCheckBox
+              object CheckBoxScrollOverlayButtons: TCheckBox
                 Left = 0
                 Top = 0
                 Width = 728
@@ -2358,18 +2358,18 @@ object frmMain: TfrmMain
               end
             end
           end
-          object TabSheet10: TTabSheet
+          object TabSheetInternationalization: TTabSheet
             Caption = 'Internationlization'
             ImageIndex = 8
-            object Label69: TLabel
+            object LabelBiDiMode: TLabel
               Left = 3
               Top = 6
               Width = 57
               Height = 15
               Caption = 'Bidi Mode:'
-              FocusControl = cbBidiMode
+              FocusControl = ComboBoxBidiMode
             end
-            object cbBidiMode: TComboBox
+            object ComboBoxBidiMode: TComboBox
               Left = 3
               Top = 21
               Width = 206
@@ -2386,10 +2386,10 @@ object frmMain: TfrmMain
                 'Right to Left Reading Only')
             end
           end
-          object Scrolling: TTabSheet
+          object TabSheetScrolling: TTabSheet
             Caption = 'Scrolling'
             ImageIndex = 4
-            object chkScrolling: TCheckBox
+            object CheckBoxScrolling: TCheckBox
               Left = 3
               Top = 3
               Width = 1057
@@ -2400,7 +2400,7 @@ object frmMain: TfrmMain
               TabOrder = 1
               OnClick = OnCommonControlPropertyChange
             end
-            object pnlScroll: TPanel
+            object PanelScroll: TPanel
               Left = 0
               Top = 0
               Width = 731
@@ -2408,46 +2408,46 @@ object frmMain: TfrmMain
               Align = alClient
               BevelOuter = bvNone
               TabOrder = 0
-              object Label26: TLabel
+              object LabelScrollingScrollStep: TLabel
                 Left = 17
                 Top = 60
                 Width = 60
                 Height = 15
                 Caption = 'Scroll Steps'
-                FocusControl = edtScrollSteps
+                FocusControl = EditScrollSteps
               end
-              object Label27: TLabel
+              object LabelScrollingRepeatDelay: TLabel
                 Left = 172
                 Top = 60
                 Width = 95
                 Height = 15
                 Caption = 'Repeat Delay (ms)'
-                FocusControl = edtScrollRepeatDelay
+                FocusControl = EditScrollRepeatDelay
               end
-              object Label24: TLabel
+              object LabelScrollingScrollOffset: TLabel
                 Left = 17
                 Top = 8
                 Width = 67
                 Height = 15
                 Caption = 'Scroll Offset:'
-                FocusControl = sbScrollOffset
+                FocusControl = ScrollBarScrollOffset
               end
-              object lblScrollOffset: TLabel
-                Left = 321
+              object LabelScrollingScrollOffsetValue: TLabel
+                Left = 319
                 Top = 26
                 Width = 6
                 Height = 15
                 Caption = '0'
               end
-              object Label28: TLabel
+              object LabelScrollingScrollEdgeDistance: TLabel
                 Left = 172
                 Top = 110
                 Width = 109
                 Height = 15
                 Caption = 'Scroll Edge Distance:'
-                FocusControl = edtDragScrollEdge
+                FocusControl = EditDragScrollEdge
               end
-              object edtScrollSteps: TSpinEdit
+              object EditScrollSteps: TSpinEdit
                 Left = 17
                 Top = 77
                 Width = 144
@@ -2458,7 +2458,7 @@ object frmMain: TfrmMain
                 Value = 20
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtScrollRepeatDelay: TSpinEdit
+              object EditScrollRepeatDelay: TSpinEdit
                 Left = 172
                 Top = 77
                 Width = 141
@@ -2469,16 +2469,16 @@ object frmMain: TfrmMain
                 Value = 20
                 OnChange = OnCommonControlPropertyChange
               end
-              object sbScrollOffset: TScrollBar
+              object ScrollBarScrollOffset: TScrollBar
                 Left = 17
                 Top = 26
                 Width = 296
                 Height = 17
                 PageSize = 1
                 TabOrder = 0
-                OnChange = sbScrollOffsetChange
+                OnChange = ScrollBarScrollOffsetChange
               end
-              object chkScrollWhileDragging: TCheckBox
+              object CheckBoxScrollWhileDragging: TCheckBox
                 Left = 17
                 Top = 130
                 Width = 149
@@ -2489,7 +2489,7 @@ object frmMain: TfrmMain
                 TabOrder = 4
                 OnClick = OnCommonControlPropertyChange
               end
-              object edtDragScrollEdge: TSpinEdit
+              object EditDragScrollEdge: TSpinEdit
                 Left = 172
                 Top = 127
                 Width = 141
@@ -2500,7 +2500,7 @@ object frmMain: TfrmMain
                 Value = 50
                 OnChange = OnCommonControlPropertyChange
               end
-              object chkMouseWheelScrolling: TCheckBox
+              object CheckBoxMouseWheelScrolling: TCheckBox
                 Left = 17
                 Top = 170
                 Width = 149
@@ -2511,29 +2511,29 @@ object frmMain: TfrmMain
                 TabOrder = 5
                 OnClick = OnCommonControlPropertyChange
               end
-              object Button1: TButton
+              object ButtonScrollActiveTabIntoView: TButton
                 Left = 17
                 Top = 208
                 Width = 184
                 Height = 25
                 Caption = 'Scroll Active Tab into View'
                 TabOrder = 6
-                OnClick = Button1Click
+                OnClick = ButtonScrollActiveTabIntoViewClick
               end
             end
           end
-          object TabSheet6: TTabSheet
+          object TabSheetTabContainer: TTabSheet
             Caption = 'Tab Container'
             ImageIndex = 1
-            object Label20: TLabel
+            object LabelCanvasSmoothingMode: TLabel
               Left = 3
               Top = 4
               Width = 137
               Height = 15
               Caption = 'Canvas Smoothing Mode:'
-              FocusControl = cbCanvasSmoothingMode
+              FocusControl = ComboBoxCanvasSmoothingMode
             end
-            object chkTransparentBackground: TCheckBox
+            object CheckBoxTransparentBackground: TCheckBox
               Left = 3
               Top = 50
               Width = 198
@@ -2544,7 +2544,7 @@ object frmMain: TfrmMain
               TabOrder = 1
               OnClick = OnCommonControlPropertyChange
             end
-            object cbCanvasSmoothingMode: TComboBox
+            object ComboBoxCanvasSmoothingMode: TComboBox
               Left = 3
               Top = 21
               Width = 170
@@ -2562,26 +2562,26 @@ object frmMain: TfrmMain
                 'Anti Alias')
             end
           end
-          object TabSheet2: TTabSheet
+          object TabSheetBehaviour: TTabSheet
             Caption = 'Behaviour'
             ImageIndex = 2
-            object Label53: TLabel
+            object LabelBehaviourDelay: TLabel
               Left = 24
               Top = 166
               Width = 240
               Height = 15
               Alignment = taRightJustify
               Caption = 'Delay before resizing tabs when cursor leaves:'
-              FocusControl = edtCloseButtonMouseLeaveDelay
+              FocusControl = EditCloseButtonMouseLeaveDelay
             end
-            object Label62: TLabel
+            object LabelBehaviourUnit: TLabel
               Left = 348
               Top = 166
               Width = 16
               Height = 15
               Caption = 'ms'
             end
-            object Label80: TLabel
+            object LabelFeature: TLabel
               Left = 16
               Top = 26
               Width = 308
@@ -2594,18 +2594,18 @@ object frmMain: TfrmMain
               Font.Style = []
               ParentFont = False
             end
-            object chkBackgroundDoubleClickMaxmise: TCheckBox
+            object CheckBoxBackgroundDoubleClickMaximise: TCheckBox
               Left = 3
               Top = 54
               Width = 371
               Height = 17
-              Caption = 'Double click background to minimise/maxmise form'
+              Caption = 'Double click background to minimise/maximise form'
               Checked = True
               State = cbChecked
               TabOrder = 1
               OnClick = OnCommonControlPropertyChange
             end
-            object chkDraggingBackgoundMovesForm: TCheckBox
+            object CheckBoxDraggingBackgoundMovesForm: TCheckBox
               Left = 3
               Top = 77
               Width = 371
@@ -2616,7 +2616,7 @@ object frmMain: TfrmMain
               TabOrder = 2
               OnClick = OnCommonControlPropertyChange
             end
-            object chkSmartResize: TCheckBox
+            object CheckBoxSmartResize: TCheckBox
               Left = 3
               Top = 142
               Width = 371
@@ -2627,7 +2627,7 @@ object frmMain: TfrmMain
               TabOrder = 4
               OnClick = OnCommonControlPropertyChange
             end
-            object edtCloseButtonMouseLeaveDelay: TSpinEdit
+            object EditCloseButtonMouseLeaveDelay: TSpinEdit
               Left = 270
               Top = 163
               Width = 75
@@ -2639,7 +2639,7 @@ object frmMain: TfrmMain
               Value = 700
               OnChange = OnCommonControlPropertyChange
             end
-            object chkRightClickSelect: TCheckBox
+            object CheckBoxRightClickSelect: TCheckBox
               Left = 3
               Top = 108
               Width = 371
@@ -2650,7 +2650,7 @@ object frmMain: TfrmMain
               TabOrder = 3
               OnClick = OnCommonControlPropertyChange
             end
-            object chkDisplayTopTabsInTitleBar: TCheckBox
+            object CheckBoxDisplayTopTabsInTitleBar: TCheckBox
               Left = 3
               Top = 6
               Width = 371
@@ -2662,10 +2662,10 @@ object frmMain: TfrmMain
               OnClick = OnCommonControlPropertyChange
             end
           end
-          object TabSheet8: TTabSheet
+          object TabSheetAnimation: TTabSheet
             Caption = 'Animation'
             ImageIndex = 3
-            object GroupBox8: TGroupBox
+            object GroupBoxDefaultAnimationProperties: TGroupBox
               Left = 0
               Top = 0
               Width = 731
@@ -2673,47 +2673,47 @@ object frmMain: TfrmMain
               Align = alTop
               Caption = 'Default Animation Properties'
               TabOrder = 0
-              object Label21: TLabel
+              object LabelDefaultAnimationPropertiesDefaultMovement: TLabel
                 Left = 8
                 Top = 76
                 Width = 122
                 Height = 15
                 Caption = 'Default Movement MS:'
-                FocusControl = edtAnimationStepsMovement
+                FocusControl = EditAnimationStepsMovement
               end
-              object Label22: TLabel
+              object LabelDefaultAnimationPropertiesDefaultStyle: TLabel
                 Left = 8
                 Top = 127
                 Width = 89
                 Height = 15
                 Caption = 'Default Style MS:'
-                FocusControl = edtAnimationStepsStyle
+                FocusControl = EditAnimationStepsStyle
               end
-              object Label23: TLabel
+              object LabelDefaultAnimationPropertiesUpdateTimer: TLabel
                 Left = 8
                 Top = 23
                 Width = 102
                 Height = 15
                 Caption = 'Update Timer (ms):'
-                FocusControl = edtAnimationUpdate
+                FocusControl = EditAnimationUpdate
               end
-              object Label70: TLabel
+              object LabelDefaultAnimationPropertiesDefaultMovementEaseType: TLabel
                 Left = 164
                 Top = 76
                 Width = 157
                 Height = 15
                 Caption = 'Default Movement Ease Type:'
-                FocusControl = cbMovementEaseType
+                FocusControl = ComboBoxMovementEaseType
               end
-              object Label72: TLabel
+              object LabelDefaultAnimationPropertiesDefaultStyleEaseType: TLabel
                 Left = 164
                 Top = 127
                 Width = 124
                 Height = 15
                 Caption = 'Default Style Ease Type:'
-                FocusControl = cbStyleEaseType
+                FocusControl = ComboBoxStyleEaseType
               end
-              object edtAnimationStepsMovement: TSpinEdit
+              object EditAnimationStepsMovement: TSpinEdit
                 Left = 8
                 Top = 93
                 Width = 148
@@ -2724,7 +2724,7 @@ object frmMain: TfrmMain
                 Value = 500
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtAnimationStepsStyle: TSpinEdit
+              object EditAnimationStepsStyle: TSpinEdit
                 Left = 8
                 Top = 144
                 Width = 148
@@ -2735,7 +2735,7 @@ object frmMain: TfrmMain
                 Value = 300
                 OnChange = OnCommonControlPropertyChange
               end
-              object edtAnimationUpdate: TSpinEdit
+              object EditAnimationUpdate: TSpinEdit
                 Left = 8
                 Top = 40
                 Width = 148
@@ -2746,7 +2746,7 @@ object frmMain: TfrmMain
                 Value = 30
                 OnChange = OnCommonControlPropertyChange
               end
-              object cbMovementEaseType: TComboBox
+              object ComboBoxMovementEaseType: TComboBox
                 Left = 164
                 Top = 93
                 Width = 165
@@ -2781,7 +2781,7 @@ object frmMain: TfrmMain
                   'Out Circ'
                   'In Out Circ')
               end
-              object cbStyleEaseType: TComboBox
+              object ComboBoxStyleEaseType: TComboBox
                 Left = 164
                 Top = 144
                 Width = 165
@@ -2817,7 +2817,7 @@ object frmMain: TfrmMain
                   'In Out Circ')
               end
             end
-            object GroupBox9: TGroupBox
+            object GroupBoxSpecificAnimations: TGroupBox
               Left = 0
               Top = 177
               Width = 731
@@ -2825,7 +2825,7 @@ object frmMain: TfrmMain
               Align = alTop
               Caption = 'Specific Animations'
               TabOrder = 1
-              object GroupBox11: TGroupBox
+              object GroupBoxMoveTab: TGroupBox
                 Left = 336
                 Top = 17
                 Width = 168
@@ -2833,23 +2833,23 @@ object frmMain: TfrmMain
                 Align = alLeft
                 Caption = 'Move Tab'
                 TabOrder = 2
-                object Label30: TLabel
+                object LabelMoveTabMovement: TLabel
                   Left = 24
                   Top = 52
                   Width = 81
                   Height = 15
                   Caption = 'Movement MS:'
-                  FocusControl = edtMoveTabTime
+                  FocusControl = EditMoveTabTime
                 end
-                object Label73: TLabel
+                object LabelMoveTabMovementEaseType: TLabel
                   Left = 24
                   Top = 103
                   Width = 116
                   Height = 15
                   Caption = 'Movement Ease Type:'
-                  FocusControl = cbMoveTabEase
+                  FocusControl = ComboBoxMoveTabEase
                 end
-                object chkMoveTabDefaults: TCheckBox
+                object CheckBoxMoveTabDefaults: TCheckBox
                   Left = 8
                   Top = 24
                   Width = 97
@@ -2858,7 +2858,7 @@ object frmMain: TfrmMain
                   TabOrder = 0
                   OnClick = OnCommonControlPropertyChange
                 end
-                object edtMoveTabTime: TSpinEdit
+                object EditMoveTabTime: TSpinEdit
                   Left = 24
                   Top = 69
                   Width = 118
@@ -2869,7 +2869,7 @@ object frmMain: TfrmMain
                   Value = 500
                   OnChange = OnCommonControlPropertyChange
                 end
-                object cbMoveTabEase: TComboBox
+                object ComboBoxMoveTabEase: TComboBox
                   Left = 24
                   Top = 120
                   Width = 129
@@ -2905,7 +2905,7 @@ object frmMain: TfrmMain
                     'In Out Circ')
                 end
               end
-              object GroupBox12: TGroupBox
+              object GroupBoxDeleteTab: TGroupBox
                 Left = 168
                 Top = 17
                 Width = 168
@@ -2913,23 +2913,23 @@ object frmMain: TfrmMain
                 Align = alLeft
                 Caption = 'Delete Tab'
                 TabOrder = 1
-                object Label74: TLabel
+                object LabelDeleteTabMovement: TLabel
                   Left = 24
                   Top = 52
                   Width = 81
                   Height = 15
                   Caption = 'Movement MS:'
-                  FocusControl = edtDeleteTabTime
+                  FocusControl = EditDeleteTabTime
                 end
-                object Label75: TLabel
+                object LabelDeleteTabMovementEaseType: TLabel
                   Left = 24
                   Top = 103
                   Width = 116
                   Height = 15
                   Caption = 'Movement Ease Type:'
-                  FocusControl = cbDeleteTabEase
+                  FocusControl = ComboBoxDeleteTabEase
                 end
-                object chkDeleteTabDefaults: TCheckBox
+                object CheckBoxDeleteTabDefaults: TCheckBox
                   Left = 8
                   Top = 24
                   Width = 97
@@ -2938,7 +2938,7 @@ object frmMain: TfrmMain
                   TabOrder = 0
                   OnClick = OnCommonControlPropertyChange
                 end
-                object edtDeleteTabTime: TSpinEdit
+                object EditDeleteTabTime: TSpinEdit
                   Left = 24
                   Top = 69
                   Width = 118
@@ -2949,7 +2949,7 @@ object frmMain: TfrmMain
                   Value = 500
                   OnChange = OnCommonControlPropertyChange
                 end
-                object cbDeleteTabEase: TComboBox
+                object ComboBoxDeleteTabEase: TComboBox
                   Left = 24
                   Top = 120
                   Width = 129
@@ -2985,7 +2985,7 @@ object frmMain: TfrmMain
                     'In Out Circ')
                 end
               end
-              object GroupBox13: TGroupBox
+              object GroupBoxAddTab: TGroupBox
                 Left = 2
                 Top = 17
                 Width = 166
@@ -2993,23 +2993,23 @@ object frmMain: TfrmMain
                 Align = alLeft
                 Caption = 'Add Tab'
                 TabOrder = 0
-                object Label76: TLabel
+                object LabelAddTabMovement: TLabel
                   Left = 24
                   Top = 52
                   Width = 81
                   Height = 15
                   Caption = 'Movement MS:'
-                  FocusControl = edtAddTabTime
+                  FocusControl = EditAddTabTime
                 end
-                object Label77: TLabel
+                object LabelAddTabMovementEaseType: TLabel
                   Left = 24
                   Top = 103
                   Width = 116
                   Height = 15
                   Caption = 'Movement Ease Type:'
-                  FocusControl = cbAddTabEase
+                  FocusControl = ComboBoxAddTabEase
                 end
-                object chkAddTabDefaults: TCheckBox
+                object CheckBoxAddTabDefaults: TCheckBox
                   Left = 8
                   Top = 24
                   Width = 97
@@ -3018,7 +3018,7 @@ object frmMain: TfrmMain
                   TabOrder = 0
                   OnClick = OnCommonControlPropertyChange
                 end
-                object edtAddTabTime: TSpinEdit
+                object EditAddTabTime: TSpinEdit
                   Left = 24
                   Top = 69
                   Width = 118
@@ -3029,7 +3029,7 @@ object frmMain: TfrmMain
                   Value = 500
                   OnChange = OnCommonControlPropertyChange
                 end
-                object cbAddTabEase: TComboBox
+                object ComboBoxAddTabEase: TComboBox
                   Left = 24
                   Top = 120
                   Width = 129
@@ -3067,10 +3067,10 @@ object frmMain: TfrmMain
               end
             end
           end
-          object TabSheet9: TTabSheet
+          object TabSheetDragAndDrop: TTabSheet
             Caption = 'Drag Drop'
             ImageIndex = 7
-            object cbDragType: TComboBox
+            object ComboBoxDragType: TComboBox
               Left = 3
               Top = 21
               Width = 200
@@ -3087,7 +3087,7 @@ object frmMain: TfrmMain
                 'Drag within container'
                 'Drag between containers')
             end
-            object pnlDragDrop: TPanel
+            object PanelDragDrop: TPanel
               Left = 0
               Top = 0
               Width = 731
@@ -3095,39 +3095,39 @@ object frmMain: TfrmMain
               Align = alClient
               BevelOuter = bvNone
               TabOrder = 0
-              object Label31: TLabel
+              object LabelDragDropDragCursor: TLabel
                 Left = 6
                 Top = 6
                 Width = 63
                 Height = 15
                 Caption = 'Drag Cursor'
-                FocusControl = cbDragCursor
+                FocusControl = ComboBoxDragCursor
               end
-              object Label32: TLabel
+              object LabelDragDropDragPixels: TLabel
                 Left = 140
                 Top = 5
                 Width = 87
                 Height = 15
                 Caption = 'Drag Start Pixels:'
-                FocusControl = edtDragStartPixels
+                FocusControl = EditDragStartPixels
               end
-              object Label33: TLabel
+              object LabelDragDropExternalDisplay: TLabel
                 Left = 6
                 Top = 62
                 Width = 113
                 Height = 15
                 Caption = 'External Drag Display:'
-                FocusControl = cbExternalDragDisplay
+                FocusControl = ComboBoxExternalDragDisplay
               end
-              object Label34: TLabel
+              object LabelDragDropDragAwayDistance: TLabel
                 Left = 274
                 Top = 5
                 Width = 105
                 Height = 15
                 Caption = 'Drag away distance:'
-                FocusControl = edtDragAwayDistance
+                FocusControl = EditDragAwayDistance
               end
-              object cbDragCursor: TComboBox
+              object ComboBoxDragCursor: TComboBox
                 Left = 6
                 Top = 22
                 Width = 126
@@ -3141,7 +3141,7 @@ object frmMain: TfrmMain
                   'Default'
                   'Drag')
               end
-              object edtDragStartPixels: TSpinEdit
+              object EditDragStartPixels: TSpinEdit
                 Left = 140
                 Top = 22
                 Width = 128
@@ -3152,7 +3152,7 @@ object frmMain: TfrmMain
                 Value = 2
                 OnChange = OnCommonControlPropertyChange
               end
-              object cbExternalDragDisplay: TComboBox
+              object ComboBoxExternalDragDisplay: TComboBox
                 Left = 6
                 Top = 78
                 Width = 126
@@ -3168,30 +3168,30 @@ object frmMain: TfrmMain
                   'Control'
                   'Tab and Control')
               end
-              object pnlDragDisplay: TPanel
+              object PanelDragDisplay: TPanel
                 Left = 6
                 Top = 107
                 Width = 470
                 Height = 62
                 BevelOuter = bvNone
                 TabOrder = 4
-                object Label35: TLabel
+                object LabelDragDropImageAlpha: TLabel
                   Left = 1
                   Top = 3
                   Width = 98
                   Height = 15
                   Caption = 'Drag Image Alpha:'
-                  FocusControl = edtDragImageAapha
+                  FocusControl = EditDragImageAapha
                 end
-                object Label36: TLabel
+                object LabelDragDropImageResize: TLabel
                   Left = 135
                   Top = 3
                   Width = 99
                   Height = 15
                   Caption = 'Drag Image Resize:'
-                  FocusControl = edtDragImageAapha
+                  FocusControl = EditDragImageAapha
                 end
-                object edtDragImageAapha: TSpinEdit
+                object EditDragImageAapha: TSpinEdit
                   Left = 0
                   Top = 19
                   Width = 128
@@ -3202,7 +3202,7 @@ object frmMain: TfrmMain
                   Value = 220
                   OnChange = OnCommonControlPropertyChange
                 end
-                object edtDragImageResize: TEdit
+                object EditDragImageResize: TEdit
                   Left = 135
                   Top = 20
                   Width = 121
@@ -3212,7 +3212,7 @@ object frmMain: TfrmMain
                   OnChange = OnCommonControlPropertyChange
                 end
               end
-              object edtDragAwayDistance: TSpinEdit
+              object EditDragAwayDistance: TSpinEdit
                 Left = 274
                 Top = 22
                 Width = 130
@@ -3223,7 +3223,7 @@ object frmMain: TfrmMain
                 Value = 30
                 OnChange = OnCommonControlPropertyChange
               end
-              object chkContrainDraggedTab: TCheckBox
+              object CheckBoxContrainDraggedTab: TCheckBox
                 Left = 7
                 Top = 165
                 Width = 397
@@ -3237,7 +3237,7 @@ object frmMain: TfrmMain
             end
           end
         end
-        object Panel7: TPanel
+        object Panel3: TPanel
           Left = 0
           Top = 456
           Width = 1009
@@ -3245,36 +3245,36 @@ object frmMain: TfrmMain
           Align = alBottom
           BevelOuter = bvNone
           TabOrder = 2
-          object btnSaveOptions: TButton
+          object ButtonSaveOptions: TButton
             Left = 133
             Top = 0
             Width = 133
             Height = 33
-            Action = actSaveOptions
+            Action = ActionSaveOptions
             TabOrder = 1
           end
-          object btnLoadOptions: TButton
+          object ButtonLoadOptions: TButton
             Left = 0
             Top = 0
             Width = 133
             Height = 33
-            Action = actLoadOptions
+            Action = ActionLoadOptions
             TabOrder = 0
           end
-          object btnCopyOptions: TButton
+          object ButtonCopyOptions: TButton
             Left = 266
             Top = 0
             Width = 170
             Height = 33
-            Action = actCopyOptionsAsCode
+            Action = ActionCopyOptionsAsCode
             TabOrder = 2
           end
         end
       end
-      object TabSheet14: TTabSheet
+      object TabSheetLookAndFeel: TTabSheet
         Caption = 'Look and Feel'
         ImageIndex = 3
-        object tvLookAndFeelItems: TTreeView
+        object TreeViewLookAndFeelItems: TTreeView
           Left = 0
           Top = 0
           Width = 169
@@ -3285,9 +3285,9 @@ object frmMain: TfrmMain
           ReadOnly = True
           RowSelect = True
           TabOrder = 0
-          OnChange = tvLookAndFeelItemsChange
+          OnChange = TreeViewLookAndFeelItemsChange
         end
-        object Panel5: TPanel
+        object Panel1: TPanel
           Left = 169
           Top = 0
           Width = 840
@@ -3295,7 +3295,7 @@ object frmMain: TfrmMain
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          object pnlLookAndFeelPath: TPanel
+          object PanelLookAndFeelPath: TPanel
             Left = 0
             Top = 0
             Width = 840
@@ -3303,7 +3303,7 @@ object frmMain: TfrmMain
             Align = alTop
             Alignment = taLeftJustify
             BevelOuter = bvNone
-            Caption = 'pnlLookAndFeelPath'
+            Caption = 'PanelLookAndFeelPath'
             Font.Charset = ANSI_CHARSET
             Font.Color = clBlue
             Font.Height = -15
@@ -3329,7 +3329,7 @@ object frmMain: TfrmMain
             TabOrder = 1
           end
         end
-        object Panel6: TPanel
+        object Panel2: TPanel
           Left = 0
           Top = 456
           Width = 1009
@@ -3337,62 +3337,62 @@ object frmMain: TfrmMain
           Align = alBottom
           BevelOuter = bvNone
           TabOrder = 2
-          object btnSaveLookAndFeel: TButton
+          object ButtonSaveLookAndFeel: TButton
             Left = 133
             Top = 0
             Width = 133
             Height = 33
-            Action = actSaveLookandFeel
+            Action = ActionSaveLookandFeel
             TabOrder = 1
           end
-          object btnLoadLookAndFeel: TButton
+          object ButtonLoadLookAndFeel: TButton
             Left = 0
             Top = 0
             Width = 133
             Height = 33
-            Action = actLoadLookAndFeel
+            Action = ActionLoadLookAndFeel
             TabOrder = 0
           end
-          object btnCopyLookAndFeel: TButton
+          object ButtonCopyLookAndFeel: TButton
             Left = 266
             Top = 0
             Width = 170
             Height = 33
-            Action = actCopyLookAndFeelAsCode
+            Action = ActionCopyLookAndFeelAsCode
             TabOrder = 2
           end
         end
       end
-      object TabSheet15: TTabSheet
+      object TabSheetGeneral: TTabSheet
         Caption = 'General'
         ImageIndex = 4
-        object Label7: TLabel
+        object LabelTabContainerHeight: TLabel
           Left = 16
           Top = 8
           Width = 117
           Height = 15
           Caption = 'Tab Container Height:'
-          FocusControl = edtTabHeight
+          FocusControl = EditTabHeight
         end
-        object Label5: TLabel
+        object LabelGlassHeightTop: TLabel
           Left = 30
           Top = 88
           Width = 90
           Height = 15
           Alignment = taRightJustify
           Caption = 'Glass Height Top'
-          FocusControl = edtGlassHeightTop
+          FocusControl = EditGlassHeightTop
         end
-        object Label8: TLabel
+        object LabelGlassHeightButton: TLabel
           Left = 11
           Top = 115
           Width = 109
           Height = 15
           Alignment = taRightJustify
           Caption = 'Glass Height Bottom'
-          FocusControl = edtGlassHeightBottom
+          FocusControl = EditGlassHeightBottom
         end
-        object edtTabHeight: TSpinEdit
+        object EditTabHeight: TSpinEdit
           Left = 16
           Top = 25
           Width = 129
@@ -3403,7 +3403,7 @@ object frmMain: TfrmMain
           Value = 65
           OnChange = OnCommonControlPropertyChange
         end
-        object edtGlassHeightTop: TSpinEdit
+        object EditGlassHeightTop: TSpinEdit
           Left = 126
           Top = 85
           Width = 74
@@ -3414,7 +3414,7 @@ object frmMain: TfrmMain
           Value = 25
           OnChange = OnCommonControlPropertyChange
         end
-        object chkUseGlass: TCheckBox
+        object CheckBoxUseGlass: TCheckBox
           Left = 14
           Top = 63
           Width = 155
@@ -3425,7 +3425,7 @@ object frmMain: TfrmMain
           TabOrder = 1
           OnClick = OnCommonControlPropertyChange
         end
-        object edtGlassHeightBottom: TSpinEdit
+        object EditGlassHeightBottom: TSpinEdit
           Left = 126
           Top = 112
           Width = 74
@@ -3437,10 +3437,10 @@ object frmMain: TfrmMain
           OnChange = OnCommonControlPropertyChange
         end
       end
-      object TabSheet3: TTabSheet
+      object TabSheetEvents: TTabSheet
         Caption = 'Events'
         ImageIndex = 2
-        object Panel2: TPanel
+        object PanelEvents: TPanel
           Left = 0
           Top = 63
           Width = 1009
@@ -3448,7 +3448,7 @@ object frmMain: TfrmMain
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          object gbOtherEvents: TGroupBox
+          object GroupBoxOtherEvents: TGroupBox
             Left = 685
             Top = 0
             Width = 324
@@ -3457,7 +3457,7 @@ object frmMain: TfrmMain
             Caption = 'Other Events'
             TabOrder = 3
           end
-          object gbChange: TGroupBox
+          object GroupBoxChange: TGroupBox
             Left = 241
             Top = 0
             Width = 222
@@ -3465,7 +3465,7 @@ object frmMain: TfrmMain
             Align = alLeft
             Caption = 'OnChange'
             TabOrder = 1
-            object Panel9: TPanel
+            object PanelIgnorePropertyUpdatedEvents: TPanel
               Left = 2
               Top = 407
               Width = 218
@@ -3473,7 +3473,7 @@ object frmMain: TfrmMain
               Align = alBottom
               BevelOuter = bvNone
               TabOrder = 0
-              object chkIgnorePropertyUpdated: TCheckBox
+              object CheckBoxIgnorePropertyUpdated: TCheckBox
                 Left = 4
                 Top = 0
                 Width = 218
@@ -3485,7 +3485,7 @@ object frmMain: TfrmMain
               end
             end
           end
-          object Panel3: TPanel
+          object PanelEventsLeft: TPanel
             Left = 0
             Top = 0
             Width = 241
@@ -3493,7 +3493,7 @@ object frmMain: TfrmMain
             Align = alLeft
             BevelOuter = bvNone
             TabOrder = 0
-            object gbMouseMove: TGroupBox
+            object GroupBoxMouseMove: TGroupBox
               Left = 0
               Top = 0
               Width = 241
@@ -3502,7 +3502,7 @@ object frmMain: TfrmMain
               Caption = 'OnMouseMove'
               TabOrder = 0
             end
-            object gbDragOver: TGroupBox
+            object GroupBoxDragOver: TGroupBox
               Left = 0
               Top = 169
               Width = 241
@@ -3510,7 +3510,7 @@ object frmMain: TfrmMain
               Align = alClient
               Caption = 'OnTabDragOver'
               TabOrder = 1
-              object lbTabDragOver: TListBox
+              object ListBoxTabDragOver: TListBox
                 Left = 2
                 Top = 17
                 Width = 237
@@ -3522,7 +3522,7 @@ object frmMain: TfrmMain
               end
             end
           end
-          object gbEvents: TGroupBox
+          object GroupBoxEvents: TGroupBox
             Left = 463
             Top = 0
             Width = 222
@@ -3532,7 +3532,7 @@ object frmMain: TfrmMain
             TabOrder = 2
           end
         end
-        object Panel4: TPanel
+        object PanelEvent: TPanel
           Left = 0
           Top = 0
           Width = 1009
@@ -3543,23 +3543,23 @@ object frmMain: TfrmMain
           DesignSize = (
             1009
             63)
-          object Label13: TLabel
+          object LabelEventsCurrentStates: TLabel
             Left = 1
             Top = 21
             Width = 77
             Height = 15
             Caption = 'Current States:'
           end
-          object chkEnableEvents: TCheckBox
+          object CheckBoxEnableEvents: TCheckBox
             Left = 1
             Top = 1
             Width = 191
             Height = 19
             Caption = 'Enable Events'
             TabOrder = 0
-            OnClick = chkEnableEventsClick
+            OnClick = CheckBoxEnableEventsClick
           end
-          object edtStates: TEdit
+          object EditStates: TEdit
             Left = 1
             Top = 36
             Width = 1007
@@ -3570,10 +3570,10 @@ object frmMain: TfrmMain
           end
         end
       end
-      object tabDebug: TTabSheet
+      object TabSheetDebug: TTabSheet
         Caption = 'Debug'
         ImageIndex = 2
-        object Panel10: TPanel
+        object PanelDebug: TPanel
           Left = 0
           Top = 0
           Width = 1009
@@ -3581,7 +3581,7 @@ object frmMain: TfrmMain
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 0
-          object chkDebugLog: TCheckBox
+          object CheckBoxDebugLog: TCheckBox
             Left = 0
             Top = 0
             Width = 145
@@ -4014,7 +4014,7 @@ object frmMain: TfrmMain
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000}
   end
-  object SaveDialog1: TSaveDialog
+  object SaveDialogLookAndFeel: TSaveDialog
     DefaultExt = '.ctlf'
     Filter = 'Chrome Tabs Look and Feel (*.ctlf)|*.ctlf|All Files (*.*)|*.*'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
@@ -4022,49 +4022,49 @@ object frmMain: TfrmMain
     Left = 128
     Top = 376
   end
-  object OpenDialog1: TOpenDialog
+  object OpenDialogLookAndFeel: TOpenDialog
     DefaultExt = '.ctlf'
     Filter = 'Chrome Tabs Look and Feel (*.ctlf)|*.ctlf|All Files (*.*)|*.*'
     Title = 'Load Look and Feel'
     Left = 48
     Top = 376
   end
-  object ActionList1: TActionList
+  object ActionList: TActionList
     Left = 48
     Top = 328
-    object actLoadLookAndFeel: TAction
+    object ActionLoadLookAndFeel: TAction
       Caption = 'Load Look and Feel'
-      OnExecute = actLoadLookAndFeelExecute
+      OnExecute = ActionLoadLookAndFeelExecute
     end
-    object actSaveLookandFeel: TAction
+    object ActionSaveLookandFeel: TAction
       Caption = 'Save Look and Feel'
-      OnExecute = actSaveLookandFeelExecute
+      OnExecute = ActionSaveLookandFeelExecute
     end
-    object actLoadOptions: TAction
+    object ActionLoadOptions: TAction
       Caption = 'Load Options'
-      OnExecute = actLoadOptionsExecute
+      OnExecute = ActionLoadOptionsExecute
     end
-    object actSaveOptions: TAction
+    object ActionSaveOptions: TAction
       Caption = 'Save Options'
-      OnExecute = actSaveOptionsExecute
+      OnExecute = ActionSaveOptionsExecute
     end
-    object actCopyOptionsAsCode: TAction
+    object ActionCopyOptionsAsCode: TAction
       Caption = 'Copy Options as Code'
-      OnExecute = actCopyOptionsAsCodeExecute
+      OnExecute = ActionCopyOptionsAsCodeExecute
     end
-    object actCopyLookAndFeelAsCode: TAction
+    object ActionCopyLookAndFeelAsCode: TAction
       Caption = 'Copy Look and Feel as Code'
-      OnExecute = actCopyLookAndFeelAsCodeExecute
+      OnExecute = ActionCopyLookAndFeelAsCodeExecute
     end
   end
-  object OpenDialog2: TOpenDialog
+  object OpenDialogTabOptions: TOpenDialog
     DefaultExt = '.ctop'
     Filter = 'Chrome Tabs Options (*.ctop)|*.ctop|All Files (*.*)|*.*'
     Title = 'Load Look and Feel'
     Left = 48
     Top = 424
   end
-  object SaveDialog2: TSaveDialog
+  object SaveDialogTabOptions: TSaveDialog
     DefaultExt = '.ctop'
     Filter = 'Chrome Tabs Options (*.ctop)|*.ctop|All Files (*.*)|*.*'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
@@ -4072,9 +4072,9 @@ object frmMain: TfrmMain
     Left = 128
     Top = 424
   end
-  object ApplicationEvents1: TApplicationEvents
-    OnDeactivate = ApplicationEvents1Deactivate
-    OnMessage = ApplicationEvents1Message
+  object ApplicationEvents: TApplicationEvents
+    OnDeactivate = ApplicationEventsDeactivate
+    OnMessage = ApplicationEventsMessage
     Left = 128
     Top = 328
   end

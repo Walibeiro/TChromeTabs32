@@ -13,7 +13,7 @@ unit frmMainU;
 // WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the
 // specific language governing rights and limitations under the License.
 //
-// The original code is ChromeTabs32.pas, released December 2012.
+// The original code is ChromeTabsTop.pas, released December 2012.
 //
 // The initial developer of the original code is Easy-IP AS (Oslo, Norway, www.easy-ip.net),
 // written by Paul Spencer Thornton (paul.thornton@easy-ip.net, www.easy-ip.net).
@@ -67,407 +67,412 @@ type
               {$ENDIF};
 
   TfrmMain = class(TFormType)
-    ChromeTabs32: TChromeTabs32;
-    ChromeTabs322: TChromeTabs32;
+    ChromeTabsTop: TChromeTabs32;
+    ChromeTabsBottom: TChromeTabs32;
+    ActionCopyLookAndFeelAsCode: TAction;
+    ActionCopyOptionsAsCode: TAction;
+    ActionList: TActionList;
+    ActionLoadLookAndFeel: TAction;
+    ActionLoadOptions: TAction;
+    ActionSaveLookandFeel: TAction;
+    ActionSaveOptions: TAction;
+    ApplicationEvents: TApplicationEvents;
+    ButtonCopyLookAndFeel: TButton;
+    ButtonCopyOptions: TButton;
+    ButtonDeleteActiveTab: TButton;
+    ButtonHideTab: TButton;
+    ButtonLoadLookAndFeel: TButton;
+    ButtonLoadOptions: TButton;
+    ButtonMakeAllTabsVisible: TButton;
+    ButtonOpenForm: TButton;
+    ButtonSaveLookAndFeel: TButton;
+    ButtonSaveOptions: TButton;
+    ButtonScrollActiveTabIntoView: TButton;
+    CheckBoxAddTabDefaults: TCheckBox;
+    CheckBoxAutoHideScrollButtons: TCheckBox;
+    CheckBoxBackgroundDoubleClickMaximise: TCheckBox;
+    CheckBoxCloseButtonAutoHide: TCheckBox;
+    CheckBoxContrainDraggedTab: TCheckBox;
+    CheckBoxCustomTabShapes: TCheckBox;
+    CheckBoxDebugLog: TCheckBox;
+    CheckBoxDeleteTabDefaults: TCheckBox;
+    CheckBoxDisplayTopTabsInTitleBar: TCheckBox;
+    CheckBoxDraggingBackgoundMovesForm: TCheckBox;
+    CheckBoxEnableEvents: TCheckBox;
+    CheckBoxHideClosebutton: TCheckBox;
+    CheckBoxHideImagesWhenSpinnerActive: TCheckBox;
+    CheckBoxIgnorePropertyUpdated: TCheckBox;
+    CheckBoxModified: TCheckBox;
+    CheckBoxMouseGlowVisible: TCheckBox;
+    CheckBoxMouseWheelScrolling: TCheckBox;
+    CheckBoxMoveTabDefaults: TCheckBox;
+    CheckBoxPinned: TCheckBox;
+    CheckBoxRightClickSelect: TCheckBox;
+    CheckBoxScrolling: TCheckBox;
+    CheckBoxScrollOverlayButtons: TCheckBox;
+    CheckBoxScrollWhileDragging: TCheckBox;
+    CheckBoxSeeThroughTabs: TCheckBox;
+    CheckBoxSetTabWidthsFromCaptions: TCheckBox;
+    CheckBoxShowPlus: TCheckBox;
+    CheckBoxShowTextOnPinnedTabs: TCheckBox;
+    CheckBoxSmartResize: TCheckBox;
+    CheckBoxSpinnerDownloadReverseDirection: TCheckBox;
+    CheckBoxSpinnerUploadReverseDirection: TCheckBox;
+    CheckBoxTabWordWrap: TCheckBox;
+    CheckBoxTransparentBackground: TCheckBox;
+    CheckBoxUseGlass: TCheckBox;
+    ComboBoxAddButtonVisibility: TComboBox;
+    ComboBoxAddTabEase: TComboBox;
+    ComboBoxBidiMode: TComboBox;
+    ComboBoxCanvasSmoothingMode: TComboBox;
+    ComboBoxCloseButtonVisibility: TComboBox;
+    ComboBoxDeleteTabEase: TComboBox;
+    ComboBoxDragCursor: TComboBox;
+    ComboBoxDragType: TComboBox;
+    ComboBoxExternalDragDisplay: TComboBox;
+    ComboBoxFontHintMode: TComboBox;
+    ComboBoxFontName: TComboBox;
+    ComboBoxModifiedGlowEaseType: TComboBox;
+    ComboBoxModifiedGlowStyle: TComboBox;
+    ComboBoxMovementEaseType: TComboBox;
+    ComboBoxMoveTabEase: TComboBox;
+    ComboBoxScrollButtons: TComboBox;
+    ComboBoxSelectTabs: TComboBox;
+    ComboBoxSpinnerState: TComboBox;
+    ComboBoxStyleEaseType: TComboBox;
+    ComboBoxTextAlignment: TComboBox;
+    ComboBoxTextTrimming: TComboBox;
+    ComboBoxTextVerticalAlignment: TComboBox;
+    EditAddButtonFloatingHorzOffset: TSpinEdit;
+    EditAddButtonHeight: TSpinEdit;
+    EditAddButtonHorzOffset: TSpinEdit;
+    EditAddButtonVerticalOffset: TSpinEdit;
+    EditAddButtonWidth: TSpinEdit;
+    EditAddTabTime: TSpinEdit;
+    EditAnimationStepsMovement: TSpinEdit;
+    EditAnimationStepsStyle: TSpinEdit;
+    EditAnimationUpdate: TSpinEdit;
+    EditCloseButtonAutoHideWidth: TSpinEdit;
+    EditCloseButtonHeight: TSpinEdit;
+    EditCloseButtonHorzOffset: TSpinEdit;
+    EditCloseButtonMouseLeaveDelay: TSpinEdit;
+    EditCloseButtonVerticalOffset: TSpinEdit;
+    EditCloseButtonWidth: TSpinEdit;
+    EditContainerOffsetLeft: TSpinEdit;
+    EditContainerOffsetRight: TSpinEdit;
+    EditCrossOffset: TSpinEdit;
+    EditDeleteTabTime: TSpinEdit;
+    EditDragAwayDistance: TSpinEdit;
+    EditDragImageAapha: TSpinEdit;
+    EditDragImageResize: TEdit;
+    EditDragScrollEdge: TSpinEdit;
+    EditDragStartPixels: TSpinEdit;
+    EditFontAlpha: TSpinEdit;
+    EditFontColor: TColorBox;
+    EditFontSize: TSpinEdit;
+    EditGlassHeightBottom: TSpinEdit;
+    EditGlassHeightTop: TSpinEdit;
+    EditImageIndex: TSpinEdit;
+    EditImageOverlayIndex: TSpinEdit;
+    EditLeftScrollButtonHeight: TSpinEdit;
+    EditLeftScrollButtonsHorzOffset: TSpinEdit;
+    EditLeftScrollButtonsVerticalOffset: TSpinEdit;
+    EditLeftScrollButtonWidth: TSpinEdit;
+    EditMaxTabWidth: TSpinEdit;
+    EditMinTabWidth: TSpinEdit;
+    EditModifiedGlowAnimationPeriod: TSpinEdit;
+    EditModifiedGlowAnimationUpdate: TSpinEdit;
+    EditModifiedGlowHeight: TSpinEdit;
+    EditModifiedGlowVerticalOffset: TSpinEdit;
+    EditModifiedGlowWidth: TSpinEdit;
+    EditMouseGlowHeight: TSpinEdit;
+    EditMouseGlowHorzOffset: TSpinEdit;
+    EditMouseGlowVerticalOffset: TSpinEdit;
+    EditMouseGlowWidth: TSpinEdit;
+    EditMoveTabTime: TSpinEdit;
+    EditPinnedWidth: TSpinEdit;
+    EditRightScrollButtonHeight: TSpinEdit;
+    EditRightScrollButtonHorzOffset: TSpinEdit;
+    EditRightScrollButtonVerticalOffset: TSpinEdit;
+    EditRightScrollButtonWidth: TSpinEdit;
+    EditScrollRepeatDelay: TSpinEdit;
+    EditScrollSteps: TSpinEdit;
+    EditSpinnerAnimationUpdate: TSpinEdit;
+    EditSpinnerDownloadAnimationStep: TSpinEdit;
+    EditSpinnerDownloadHeight: TSpinEdit;
+    EditSpinnerDownloadOffsetX: TSpinEdit;
+    EditSpinnerDownloadOffsetY: TSpinEdit;
+    EditSpinnerDownloadSweepAngle: TSpinEdit;
+    EditSpinnerDownloadWidth: TSpinEdit;
+    EditSpinnerUploadAnimationStep: TSpinEdit;
+    EditSpinnerUploadHeight: TSpinEdit;
+    EditSpinnerUploadOffsetX: TSpinEdit;
+    EditSpinnerUploadOffsetY: TSpinEdit;
+    EditSpinnerUploadSweepAngle: TSpinEdit;
+    EditSpinnerUploadWidth: TSpinEdit;
+    EditStates: TEdit;
+    EditTabCaption: TEdit;
+    EditTabContentMarginLeft: TSpinEdit;
+    EditTabContentMarginRight: TSpinEdit;
+    EditTabHeight: TSpinEdit;
+    EditTabOffsetBottom: TSpinEdit;
+    EditTabOffsetLeft: TSpinEdit;
+    EditTabOffsetRight: TSpinEdit;
+    EditTabOffsetTop: TSpinEdit;
+    EditTabOverlap: TSpinEdit;
+    GroupBoxAddTab: TGroupBox;
+    GroupBoxChange: TGroupBox;
+    GroupBoxDefaultAnimationProperties: TGroupBox;
+    GroupBoxDefaultFont: TGroupBox;
+    GroupBoxDeleteTab: TGroupBox;
+    GroupBoxDisplay: TGroupBox;
+    GroupBoxDragOver: TGroupBox;
+    GroupBoxEvents: TGroupBox;
+    GroupBoxLeftButton: TGroupBox;
+    GroupBoxMouseMove: TGroupBox;
+    GroupBoxMoveTab: TGroupBox;
+    GroupBoxNewActiveTab: TGroupBox;
+    GroupBoxOtherEvents: TGroupBox;
+    GroupBoxRightButton: TGroupBox;
+    GroupBoxTabs: TGroupBox;
     ImageList1: TImageList;
     ImageList2: TImageList;
-    Panel1: TPanel;
-    pnlTop: TPanel;
-    Label19: TLabel;
-    pcMain: TPageControl;
-    TabSheet1: TTabSheet;
-    GroupBox1: TGroupBox;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    edtTabCaption: TEdit;
-    edtImageIndex: TSpinEdit;
-    edtImageOverlayIndex: TSpinEdit;
-    chkPinned: TCheckBox;
-    btnMakeAllTabsVisible: TButton;
-    chkModified: TCheckBox;
-    pcOptions: TPageControl;
-    TabSheet5: TTabSheet;
-    GroupBox3: TGroupBox;
-    Label6: TLabel;
-    Label12: TLabel;
-    lblMinTabWidth: TLabel;
-    Label17: TLabel;
-    Label51: TLabel;
-    edtPinnedWidth: TSpinEdit;
-    edtMaxTabWidth: TSpinEdit;
-    edtMinTabWidth: TSpinEdit;
-    edtTabOffsetTop: TSpinEdit;
-    edtTabOffsetLeft: TSpinEdit;
-    edtTabOffsetRight: TSpinEdit;
-    edtTabOffsetBottom: TSpinEdit;
-    edtContainerOffsetLeft: TSpinEdit;
-    edtContainerOffsetRight: TSpinEdit;
-    edtTabContentMarginLeft: TSpinEdit;
-    edtTabContentMarginRight: TSpinEdit;
-    TabSheet4: TTabSheet;
-    pcButtons: TPageControl;
-    TabSheet11: TTabSheet;
-    Label4: TLabel;
-    Label39: TLabel;
-    Label42: TLabel;
-    Label43: TLabel;
-    Label44: TLabel;
-    Label45: TLabel;
-    Label50: TLabel;
-    cbCloseButtonVisibility: TComboBox;
-    chkCloseButtonAutoHide: TCheckBox;
-    edtCloseButtonAutoHideWidth: TSpinEdit;
-    edtCloseButtonVerticalOffset: TSpinEdit;
-    edtCloseButtonHorzOffset: TSpinEdit;
-    edtCloseButtonHeight: TSpinEdit;
-    edtCloseButtonWidth: TSpinEdit;
-    edtCrossOffset: TSpinEdit;
-    TabSheet12: TTabSheet;
-    Label29: TLabel;
-    Label37: TLabel;
-    Label38: TLabel;
-    Label46: TLabel;
-    Label47: TLabel;
-    cbAddButtonVisibility: TComboBox;
-    edtAddButtonVerticalOffset: TSpinEdit;
-    edtAddButtonHorzOffset: TSpinEdit;
-    edtAddButtonHeight: TSpinEdit;
-    edtAddButtonWidth: TSpinEdit;
-    chkShowPlus: TCheckBox;
-    TabSheet13: TTabSheet;
-    Label25: TLabel;
-    cbScrollButtons: TComboBox;
-    chkAutoHideScrollButtons: TCheckBox;
-    GroupBox2: TGroupBox;
-    Label40: TLabel;
-    Label41: TLabel;
-    Label48: TLabel;
-    Label49: TLabel;
-    edtLeftScrollButtonsVerticalOffset: TSpinEdit;
-    edtLeftScrollButtonsHorzOffset: TSpinEdit;
-    edtLeftScrollButtonHeight: TSpinEdit;
-    edtLeftScrollButtonWidth: TSpinEdit;
-    GroupBox7: TGroupBox;
-    Label58: TLabel;
-    Label59: TLabel;
-    Label60: TLabel;
-    Label61: TLabel;
-    edtRightScrollButtonVerticalOffset: TSpinEdit;
-    edtRightScrollButtonHorzOffset: TSpinEdit;
-    edtRightScrollButtonHeight: TSpinEdit;
-    edtRightScrollButtonWidth: TSpinEdit;
-    Scrolling: TTabSheet;
-    chkScrolling: TCheckBox;
-    pnlScroll: TPanel;
-    Label26: TLabel;
-    Label27: TLabel;
-    Label24: TLabel;
-    lblScrollOffset: TLabel;
-    Label28: TLabel;
-    edtScrollSteps: TSpinEdit;
-    edtScrollRepeatDelay: TSpinEdit;
-    sbScrollOffset: TScrollBar;
-    chkScrollWhileDragging: TCheckBox;
-    edtDragScrollEdge: TSpinEdit;
-    chkMouseWheelScrolling: TCheckBox;
-    TabSheet6: TTabSheet;
-    chkTransparentBackground: TCheckBox;
-    TabSheet2: TTabSheet;
-    chkBackgroundDoubleClickMaxmise: TCheckBox;
-    chkDraggingBackgoundMovesForm: TCheckBox;
-    TabSheet8: TTabSheet;
-    GroupBox8: TGroupBox;
-    Label21: TLabel;
-    Label22: TLabel;
-    Label23: TLabel;
-    edtAnimationStepsMovement: TSpinEdit;
-    edtAnimationStepsStyle: TSpinEdit;
-    edtAnimationUpdate: TSpinEdit;
-    TabSheet7: TTabSheet;
-    GroupBox4: TGroupBox;
-    Label14: TLabel;
-    cbFontHintMode: TComboBox;
-    TabSheet9: TTabSheet;
-    cbDragType: TComboBox;
-    pnlDragDrop: TPanel;
-    Label31: TLabel;
-    Label32: TLabel;
-    Label33: TLabel;
-    Label34: TLabel;
-    cbDragCursor: TComboBox;
-    edtDragStartPixels: TSpinEdit;
-    cbExternalDragDisplay: TComboBox;
-    pnlDragDisplay: TPanel;
-    Label35: TLabel;
-    Label36: TLabel;
-    edtDragImageAapha: TSpinEdit;
-    edtDragImageResize: TEdit;
-    edtDragAwayDistance: TSpinEdit;
-    TabSheet3: TTabSheet;
-    Panel2: TPanel;
-    gbOtherEvents: TGroupBox;
-    gbChange: TGroupBox;
-    Panel3: TPanel;
-    gbMouseMove: TGroupBox;
-    gbDragOver: TGroupBox;
-    lbTabDragOver: TListBox;
-    gbEvents: TGroupBox;
-    tabDebug: TTabSheet;
-    cbSelectTabs: TComboBox;
-    Label20: TLabel;
-    cbCanvasSmoothingMode: TComboBox;
-    Label63: TLabel;
-    cbFontName: TComboBox;
-    Label64: TLabel;
-    edtFontSize: TSpinEdit;
-    Label65: TLabel;
-    edtFontAlpha: TSpinEdit;
-    Label66: TLabel;
-    edtFontColor: TColorBox;
-    btnHideTab: TButton;
-    TabSheet14: TTabSheet;
-    tvLookAndFeelItems: TTreeView;
-    Panel5: TPanel;
-    SaveDialog1: TSaveDialog;
-    OpenDialog1: TOpenDialog;
-    ActionList1: TActionList;
-    actLoadLookAndFeel: TAction;
-    actSaveLookandFeel: TAction;
-    actLoadOptions: TAction;
-    actSaveOptions: TAction;
-    OpenDialog2: TOpenDialog;
-    SaveDialog2: TSaveDialog;
-    Panel6: TPanel;
-    btnSaveLookAndFeel: TButton;
-    btnLoadLookAndFeel: TButton;
-    Panel7: TPanel;
-    btnSaveOptions: TButton;
-    btnLoadOptions: TButton;
-    pnlLookAndFeelPath: TPanel;
-    ScrollBox1: TScrollBox;
-    ApplicationEvents1: TApplicationEvents;
-    btnCopyOptions: TButton;
-    actCopyOptionsAsCode: TAction;
-    btnCopyLookAndFeel: TButton;
-    actCopyLookAndFeelAsCode: TAction;
-    TabSheet15: TTabSheet;
-    Label7: TLabel;
-    edtTabHeight: TSpinEdit;
-    Label5: TLabel;
-    Label8: TLabel;
-    edtGlassHeightTop: TSpinEdit;
-    chkUseGlass: TCheckBox;
-    edtGlassHeightBottom: TSpinEdit;
-    GroupBox10: TGroupBox;
-    Label67: TLabel;
-    cbTextTrimming: TComboBox;
-    Label18: TLabel;
-    Label52: TLabel;
-    chkTabWordWrap: TCheckBox;
-    cbTextAlignment: TComboBox;
-    cbTextVerticalAlignment: TComboBox;
-    chkSmartResize: TCheckBox;
-    Label53: TLabel;
-    edtCloseButtonMouseLeaveDelay: TSpinEdit;
-    chkRightClickSelect: TCheckBox;
-    Label62: TLabel;
-    Panel8: TPanel;
-    chkScrollOverlayButtons: TCheckBox;
-    Panel9: TPanel;
-    chkIgnorePropertyUpdated: TCheckBox;
-    Panel4: TPanel;
-    Label13: TLabel;
-    chkEnableEvents: TCheckBox;
-    edtStates: TEdit;
-    Panel10: TPanel;
-    chkDebugLog: TCheckBox;
-    Label68: TLabel;
-    edtAddButtonFloatingHorzOffset: TSpinEdit;
-    TabSheet10: TTabSheet;
-    cbBidiMode: TComboBox;
-    Label69: TLabel;
-    Button1: TButton;
-    Label70: TLabel;
-    cbMovementEaseType: TComboBox;
-    edtTabOverlap: TSpinEdit;
-    Label71: TLabel;
-    cbStyleEaseType: TComboBox;
-    Label72: TLabel;
-    GroupBox11: TGroupBox;
-    chkMoveTabDefaults: TCheckBox;
-    Label30: TLabel;
-    edtMoveTabTime: TSpinEdit;
-    cbMoveTabEase: TComboBox;
-    Label73: TLabel;
-    GroupBox12: TGroupBox;
-    Label74: TLabel;
-    Label75: TLabel;
-    chkDeleteTabDefaults: TCheckBox;
-    edtDeleteTabTime: TSpinEdit;
-    cbDeleteTabEase: TComboBox;
-    GroupBox13: TGroupBox;
-    Label76: TLabel;
-    Label77: TLabel;
-    chkAddTabDefaults: TCheckBox;
-    edtAddTabTime: TSpinEdit;
-    cbAddTabEase: TComboBox;
-    chkSeeThroughTabs: TCheckBox;
-    chkDisplayTopTabsInTitleBar: TCheckBox;
-    chkContrainDraggedTab: TCheckBox;
-    chkSetTabWidthsFromCaptions: TCheckBox;
-    Label80: TLabel;
     ImageList3: TImageList;
-    Label81: TLabel;
-    cbSpinnerState: TComboBox;
-    pcTabExtras: TPageControl;
-    TabSheet16: TTabSheet;
-    TabSheet17: TTabSheet;
-    Spinners: TTabSheet;
-    Label15: TLabel;
-    Label54: TLabel;
-    Label55: TLabel;
-    Label56: TLabel;
-    Label57: TLabel;
-    Label78: TLabel;
-    Label79: TLabel;
-    cbModifiedGlowStyle: TComboBox;
-    edtModifiedGlowVerticalOffset: TSpinEdit;
-    edtModifiedGlowAnimationPeriod: TSpinEdit;
-    edtModifiedGlowHeight: TSpinEdit;
-    edtModifiedGlowWidth: TSpinEdit;
-    cbModifiedGlowEaseType: TComboBox;
-    edtModifiedGlowAnimationUpdate: TSpinEdit;
-    pnlMouseGlow: TPanel;
-    Label9: TLabel;
-    Label10: TLabel;
-    Label11: TLabel;
-    Label16: TLabel;
-    edtMouseGlowVerticalOffset: TSpinEdit;
-    edtMouseGlowHorzOffset: TSpinEdit;
-    edtMouseGlowHeight: TSpinEdit;
-    edtMouseGlowWidth: TSpinEdit;
-    chkMouseGlowVisible: TCheckBox;
-    Label82: TLabel;
-    edtSpinnerAnimationUpdate: TSpinEdit;
-    chkHideImagesWhenSpinnerActive: TCheckBox;
-    pcTabSpinners: TPageControl;
-    TabSheet18: TTabSheet;
-    TabSheet19: TTabSheet;
-    Label83: TLabel;
-    edtSpinnerDownloadAnimationStep: TSpinEdit;
-    Label84: TLabel;
-    edtSpinnerDownloadWidth: TSpinEdit;
-    Label85: TLabel;
-    edtSpinnerDownloadSweepAngle: TSpinEdit;
-    chkSpinnerDownloadReverseDirection: TCheckBox;
-    Label86: TLabel;
-    edtSpinnerUploadAnimationStep: TSpinEdit;
-    Label87: TLabel;
-    edtSpinnerUploadWidth: TSpinEdit;
-    Label88: TLabel;
-    edtSpinnerUploadSweepAngle: TSpinEdit;
-    chkSpinnerUploadReverseDirection: TCheckBox;
-    Panel11: TPanel;
-    btnOpenForm: TButton;
     ImageList4: TImageList;
-    edtSpinnerDownloadHeight: TSpinEdit;
-    Label89: TLabel;
-    edtSpinnerDownloadOffsetX: TSpinEdit;
-    Label90: TLabel;
-    edtSpinnerDownloadOffsetY: TSpinEdit;
-    Label91: TLabel;
-    edtSpinnerUploadHeight: TSpinEdit;
-    Label92: TLabel;
-    edtSpinnerUploadOffsetX: TSpinEdit;
-    Label93: TLabel;
-    edtSpinnerUploadOffsetY: TSpinEdit;
-    Label94: TLabel;
-    Button2: TButton;
-    chkCustomTabShapes: TCheckBox;
-    chkShowTextOnPinnedTabs: TCheckBox;
-    chkHideClosebutton: TCheckBox;
+    LabelAddButtonFloatingOffset: TLabel;
+    LabelAddButtonHeight: TLabel;
+    LabelAddButtonHorizontalOffset: TLabel;
+    LabelAddButtonVerticalOffset: TLabel;
+    LabelAddButtonVisibility: TLabel;
+    LabelAddButtonWidth: TLabel;
+    LabelAddTabMovement: TLabel;
+    LabelAddTabMovementEaseType: TLabel;
+    LabelBehaviourDelay: TLabel;
+    LabelBehaviourUnit: TLabel;
+    LabelBiDiMode: TLabel;
+    LabelButtonsScrollButtons: TLabel;
+    LabelButtonsScrollLeftHeight: TLabel;
+    LabelButtonsScrollLeftHorizontalOffset: TLabel;
+    LabelButtonsScrollLeftVerticalOffset: TLabel;
+    LabelButtonsScrollLeftWidth: TLabel;
+    LabelButtonsScrollRightHeight: TLabel;
+    LabelButtonsScrollRightHorizontalOffset: TLabel;
+    LabelButtonsScrollRightVerticalOffset: TLabel;
+    LabelButtonsScrollRightWidth: TLabel;
+    LabelCanvasSmoothingMode: TLabel;
+    LabelCloseButtonsAutoHideTabWidth: TLabel;
+    LabelCloseButtonsCrossOffset: TLabel;
+    LabelCloseButtonsHeight: TLabel;
+    LabelCloseButtonsHorizontalOffset: TLabel;
+    LabelCloseButtonsVerticalOffset: TLabel;
+    LabelCloseButtonsVisibility: TLabel;
+    LabelCloseButtonsWidth: TLabel;
+    LabelDefaultAnimationPropertiesDefaultMovement: TLabel;
+    LabelDefaultAnimationPropertiesDefaultMovementEaseType: TLabel;
+    LabelDefaultAnimationPropertiesDefaultStyle: TLabel;
+    LabelDefaultAnimationPropertiesDefaultStyleEaseType: TLabel;
+    LabelDefaultAnimationPropertiesUpdateTimer: TLabel;
+    LabelDefaultRenderingMode: TLabel;
+    LabelDeleteTabMovement: TLabel;
+    LabelDeleteTabMovementEaseType: TLabel;
+    LabelDragDropDragAwayDistance: TLabel;
+    LabelDragDropDragCursor: TLabel;
+    LabelDragDropDragPixels: TLabel;
+    LabelDragDropExternalDisplay: TLabel;
+    LabelDragDropImageAlpha: TLabel;
+    LabelDragDropImageResize: TLabel;
+    LabelEventsCurrentStates: TLabel;
+    LabelFeature: TLabel;
+    LabelGlassHeightButton: TLabel;
+    LabelGlassHeightTop: TLabel;
+    LabelMaxTabWidth: TLabel;
+    LabelMinTabWidth: TLabel;
+    LabelModifiedGlowAnimationEaseType: TLabel;
+    LabelModifiedGlowAnimationPeriod: TLabel;
+    LabelModifiedGlowAnimationStyle: TLabel;
+    LabelModifiedGlowAnimationUpdate: TLabel;
+    LabelModifiedGlowHeight: TLabel;
+    LabelModifiedGlowVerticalOffset: TLabel;
+    LabelModifiedGlowWidth: TLabel;
+    LabelMouseGlowHeight: TLabel;
+    LabelMouseGlowHorrizontalOffset: TLabel;
+    LabelMouseGlowVerticalOffset: TLabel;
+    LabelMouseGlowWidth: TLabel;
+    LabelMoveTabMovement: TLabel;
+    LabelMoveTabMovementEaseType: TLabel;
+    LabelNewTabImageIndex: TLabel;
+    LabelNewTabImageOverlayIndex: TLabel;
+    LabelNewTabSpinner: TLabel;
+    LabelNewTabText: TLabel;
+    LabelPinnedWidth: TLabel;
+    LabelScrollingRepeatDelay: TLabel;
+    LabelScrollingScrollEdgeDistance: TLabel;
+    LabelScrollingScrollOffset: TLabel;
+    LabelScrollingScrollOffsetValue: TLabel;
+    LabelScrollingScrollStep: TLabel;
+    LabelShowOptionsAndEventsFor: TLabel;
+    LabelSpinnersAnimationUpdate: TLabel;
+    LabelSpinnersDownloadAnimationStep: TLabel;
+    LabelSpinnersDownloadHeight: TLabel;
+    LabelSpinnersDownloadOffsetX: TLabel;
+    LabelSpinnersDownloadOffsetY: TLabel;
+    LabelSpinnersDownloadSweepAngle: TLabel;
+    LabelSpinnersDownloadWidth: TLabel;
+    LabelTabContainerHeight: TLabel;
+    LabelTabContentMargins: TLabel;
+    LabelTabOffset: TLabel;
+    LabelTabOverlay: TLabel;
+    LabelTextDisplayHorizontalAlignment: TLabel;
+    LabelTextDisplayTrimmingMode: TLabel;
+    LabelTextDisplayVerticalAlignment: TLabel;
+    LabelTextFontAlpha: TLabel;
+    LabelTextFontColor: TLabel;
+    LabelTextFontName: TLabel;
+    LabelTextFontSize: TLabel;
+    LabelUploadAnimationStep: TLabel;
+    LabelUploadHeight: TLabel;
+    LabelUploadOffsetX: TLabel;
+    LabelUploadOffsetY: TLabel;
+    LabelUploadSweepAngle: TLabel;
+    LabelUploadWidth: TLabel;
+    ListBoxTabDragOver: TListBox;
+    OpenDialogLookAndFeel: TOpenDialog;
+    OpenDialogTabOptions: TOpenDialog;
+    PageControlButtons: TPageControl;
+    PageControlMain: TPageControl;
+    PageControlOptions: TPageControl;
+    PageControlTabExtras: TPageControl;
+    PageControlTabSpinners: TPageControl;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    PanelDebug: TPanel;
+    PanelDragDisplay: TPanel;
+    PanelDragDrop: TPanel;
+    PanelEvent: TPanel;
+    PanelEvents: TPanel;
+    PanelEventsLeft: TPanel;
+    PanelIgnorePropertyUpdatedEvents: TPanel;
+    PanelLookAndFeelPath: TPanel;
+    PanelMain: TPanel;
+    PanelMouseGlow: TPanel;
+    PanelOpenNewForm: TPanel;
+    PanelOverlayButtons: TPanel;
+    PanelScroll: TPanel;
+    PanelTop: TPanel;
+    SaveDialogLookAndFeel: TSaveDialog;
+    SaveDialogTabOptions: TSaveDialog;
+    ScrollBarScrollOffset: TScrollBar;
+    ScrollBox1: TScrollBox;
+    TabSheetAddButton: TTabSheet;
+    TabSheetAnimation: TTabSheet;
+    TabSheetBehaviour: TTabSheet;
+    TabSheetButtons: TTabSheet;
+    TabSheetCloseButtons: TTabSheet;
+    TabSheetDebug: TTabSheet;
+    TabSheetDownload: TTabSheet;
+    TabSheetDragAndDrop: TTabSheet;
+    TabSheetEvents: TTabSheet;
+    TabSheetGeneral: TTabSheet;
+    TabSheetInternationalization: TTabSheet;
+    TabSheetLookAndFeel: TTabSheet;
+    TabSheetModifiedGlow: TTabSheet;
+    TabSheetMouseGlow: TTabSheet;
+    TabSheetOptions: TTabSheet;
+    TabSheetScrollButtons: TTabSheet;
+    TabSheetScrolling: TTabSheet;
+    TabSheetSpinners: TTabSheet;
+    TabSheetTabContainer: TTabSheet;
+    TabSheetTabs: TTabSheet;
+    TabSheetText: TTabSheet;
+    TabSheetUpload: TTabSheet;
+    TreeViewLookAndFeelItems: TTreeView;
     procedure FormCreate(Sender: TObject);
-    procedure ChromeTabs32MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure CommonTabPropertyChange(Sender: TObject);
-    procedure OnCommonControlPropertyChange(Sender: TObject);
-    procedure ChromeTabs32DebugLog(Sender: TObject; const Text: string);
-    procedure ChromeTabs32NeedDragImageControl(Sender: TObject; ATab: TChromeTab;
-      var DragControl: TWinControl);
-    procedure ChromeTabs32StateChange(Sender: TObject; PreviousState,
-      CurrentState: TChromeTabs32States);
+    procedure ActionCopyLookAndFeelAsCodeExecute(Sender: TObject);
+    procedure ActionCopyOptionsAsCodeExecute(Sender: TObject);
+    procedure ActionLoadLookAndFeelExecute(Sender: TObject);
+    procedure ActionLoadOptionsExecute(Sender: TObject);
+    procedure ActionSaveLookandFeelExecute(Sender: TObject);
+    procedure ActionSaveOptionsExecute(Sender: TObject);
+    procedure ApplicationEventsDeactivate(Sender: TObject);
+    procedure ApplicationEventsMessage(var Msg: tagMSG; var Handled: Boolean);
+    procedure ButtonDeleteActiveTabClick(Sender: TObject);
+    procedure ButtonHideTabClick(Sender: TObject);
+    procedure ButtonMakeAllTabsVisibleClick(Sender: TObject);
+    procedure ButtonOpenFormClick(Sender: TObject);
+    procedure ButtonScrollActiveTabIntoViewClick(Sender: TObject);
+    procedure cbTabShapesChange(Sender: TObject);
+    procedure CheckBoxEnableEventsClick(Sender: TObject);
     procedure ChromeTabs32ActiveTabChanged(Sender: TObject; ATab: TChromeTab);
     procedure ChromeTabs32ActiveTabChanging(Sender: TObject; AOldTab,
       ANewTab: TChromeTab; var Allow: Boolean);
+    procedure ChromeTabs32AfterDrawItem(Sender: TObject;
+      const TargetCanvas: TCanvas32; ItemRect: TRect;
+      ItemType: TChromeTabItemType; TabIndex: Integer);
+    procedure ChromeTabs32AnimateMovement(Sender: TObject;
+      ChromeTabs32Control: TBaseChromeTabs32Control;
+      var AnimationTimeMS: Cardinal; var EaseType: TChromeTabs32EaseType);
+    procedure ChromeTabs32AnimateStyle(Sender: TObject;
+      ChromeTabs32Control: TBaseChromeTabs32Control; NewDrawState: TDrawState;
+      var AnimationTimeMS: Cardinal; var EaseType: TChromeTabs32EaseType);
     procedure ChromeTabs32BeginTabDrag(Sender: TObject; ATab: TChromeTab;
       var Allow: Boolean);
+    procedure ChromeTabs32ButtonAddClick(Sender: TObject; var Handled: Boolean);
+    procedure ChromeTabs32ButtonCloseTabClick(Sender: TObject;
+      ATab: TChromeTab; var Close: Boolean);
+    procedure ChromeTabs32Change(Sender: TObject; ATab: TChromeTab;
+      TabChangeType: TTabChangeType);
     procedure ChromeTabs32CreateDragForm(Sender: TObject; ATab: TChromeTab;
       var DragForm: TForm);
+    procedure ChromeTabs32DebugLog(Sender: TObject; const Text: string);
     procedure ChromeTabs32EndTabDrag(Sender: TObject;
       Destination: TCustomChromeTabs32; ATab: TChromeTab; var Cancel: Boolean);
     procedure ChromeTabs32Enter(Sender: TObject);
     procedure ChromeTabs32Exit(Sender: TObject);
-    procedure ChromeTabs32MouseEnter(Sender: TObject);
-    procedure ChromeTabs32MouseLeave(Sender: TObject);
+    procedure ChromeTabs32GetControlPolygons(Sender,
+      ChromeTabs32Control: TObject; ItemRect: TRect;
+      ItemType: TChromeTabItemType; Orientation: TTabOrientation;
+      var Polygons: IChromeTabPolygons);
     procedure ChromeTabs32MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure ChromeTabs32MouseEnter(Sender: TObject);
+    procedure ChromeTabs32MouseLeave(Sender: TObject);
+    procedure ChromeTabs32MouseMove(Sender: TObject; Shift: TShiftState;
+      X, Y: Integer);
     procedure ChromeTabs32MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure ChromeTabs32ShowHint(Sender: TObject; HitTestResult: THitTestResult;
-      var HintText: string; var HintTimeout: Integer);
+    procedure ChromeTabs32NeedDragImageControl(Sender: TObject;
+      ATab: TChromeTab; var DragControl: TWinControl);
+    procedure ChromeTabs32ScrollWidthChanged(Sender: TObject);
+    procedure ChromeTabs32SetTabWidth(Sender: TObject;
+      ATabControl: TChromeTabControl; var TabWidth: Integer);
+    procedure ChromeTabs32ShowHint(Sender: TObject;
+      HitTestResult: THitTestResult; var HintText: string;
+      var HintTimeout: Integer);
+    procedure ChromeTabs32StateChange(Sender: TObject; PreviousState,
+      CurrentState: TChromeTabs32States);
+    procedure ChromeTabs32TabClientRectChanged(Sender: TObject);
     procedure ChromeTabs32TabDblClick(Sender: TObject; ATab: TChromeTab);
-    procedure ChromeTabs32Change(Sender: TObject; ATab: TChromeTab;
-      TabChangeType: TTabChangeType);
-    procedure ChromeTabs32ButtonCloseTabClick(Sender: TObject; ATab: TChromeTab;
-      var Close: Boolean);
-    procedure cbTabShapesChange(Sender: TObject);
+    procedure ChromeTabs32TabDragDropped(Sender: TObject;
+      DragTabObject: IDragTabObject; NewTab: TChromeTab);
     procedure ChromeTabs32TabDragOver(Sender: TObject; X, Y: Integer;
       State: TDragState; DragTabObject: IDragTabObject; var Accept: Boolean);
     procedure ChromeTabs32TabDragStart(Sender: TObject; ATab: TChromeTab;
       var Allow: Boolean);
-    procedure OnCommonRadioClick(Sender: TObject);
-    procedure btnMakeAllTabsVisibleClick(Sender: TObject);
-    procedure ChromeTabs32TabDragDropped(Sender: TObject;
-      DragTabObject: IDragTabObject; NewTab: TChromeTab);
-    procedure SpinButton1DownClick(Sender: TObject);
-    procedure SpinButton1UpClick(Sender: TObject);
-    procedure sbScrollOffsetChange(Sender: TObject);
-    procedure ChromeTabs32TabClientRectChanged(Sender: TObject);
-    procedure ChromeTabs32ScrollWidthChanged(Sender: TObject);
-    procedure btnOpenFormClick(Sender: TObject);
-    procedure chkEnableEventsClick(Sender: TObject);
-    procedure cbSelectTabsChange(Sender: TObject);
-    procedure btnHideTabClick(Sender: TObject);
-    procedure tvLookAndFeelItemsChange(Sender: TObject; Node: TTreeNode);
-    procedure actLoadLookAndFeelExecute(Sender: TObject);
-    procedure actSaveLookandFeelExecute(Sender: TObject);
-    procedure actLoadOptionsExecute(Sender: TObject);
-    procedure actSaveOptionsExecute(Sender: TObject);
-    procedure ApplicationEvents1Deactivate(Sender: TObject);
-    procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
-    procedure actCopyOptionsAsCodeExecute(Sender: TObject);
-    procedure actCopyLookAndFeelAsCodeExecute(Sender: TObject);
-    procedure ChromeTabs32TabDragDrop(Sender: TObject; X, Y: Integer; DragTabObject: IDragTabObject; Cancelled: Boolean; var TabDropOptions: TTabDropOptions);
-    procedure Button1Click(Sender: TObject);
-    procedure ChromeTabs32AnimateStyle(Sender: TObject;
-      ChromeTabs32Control: TBaseChromeTabs32Control; NewDrawState: TDrawState;
-      var AnimationTimeMS: Cardinal; var EaseType: TChromeTabs32EaseType);
-    procedure ChromeTabs32AnimateMovement(Sender: TObject;
-      ChromeTabs32Control: TBaseChromeTabs32Control; var AnimationTimeMS: Cardinal;
-      var EaseType: TChromeTabs32EaseType);
-    procedure ChromeTabs32ButtonAddClick(Sender: TObject; var Handled: Boolean);
-    procedure ChromeTabs32SetTabWidth(Sender: TObject;
-      ATabControl: TChromeTabControl; var TabWidth: Integer);
-    procedure ChromeTabs32GetControlPolygons(Sender, ChromeTabs32Control: TObject;
-      ItemRect: TRect; ItemType: TChromeTabItemType;
-      Orientation: TTabOrientation; var Polygons: IChromeTabPolygons);
-    procedure Button2Click(Sender: TObject);
-    procedure ChromeTabs322TabDragDrop(Sender: TObject; X, Y: Integer;
+    procedure ChromeTabsBottomTabDragDrop(Sender: TObject; X, Y: Integer;
       DragTabObject: IDragTabObject; Cancelled: Boolean;
       var TabDropOptions: TTabDropOptions);
-    procedure ChromeTabs32AfterDrawItem(Sender: TObject;
-      const TargetCanvas: TCanvas32; ItemRect: TRect;
-      ItemType: TChromeTabItemType; TabIndex: Integer);
+    procedure ChromeTabsTopTabDragDrop(Sender: TObject; X, Y: Integer;
+      DragTabObject: IDragTabObject; Cancelled: Boolean;
+      var TabDropOptions: TTabDropOptions);
+    procedure ComboBoxSelectTabsChange(Sender: TObject);
+    procedure CommonTabPropertyChange(Sender: TObject);
+    procedure OnCommonControlPropertyChange(Sender: TObject);
+    procedure OnCommonRadioClick(Sender: TObject);
+    procedure ScrollBarScrollOffsetChange(Sender: TObject);
+    procedure SpinButton1DownClick(Sender: TObject);
+    procedure SpinButton1UpClick(Sender: TObject);
+    procedure TreeViewLookAndFeelItemsChange(Sender: TObject; Node: TTreeNode);
   private
     FLastMouseX: Integer;
     FLastMouseY: Integer;
@@ -485,21 +490,27 @@ type
 
     procedure EndColorPicking(Cancelled: Boolean);
     procedure UpdateControls;
-    function AddTab(ChromeTabs32: TChromeTabs32; const Text: String; ImageIndex: Integer): TChromeTab;
+    function AddTab(ChromeTabsTop: TChromeTabs32; const Text: string; ImageIndex: Integer): TChromeTab;
+
     procedure GUIToTabProperties(Tab: TChromeTab);
     procedure TabPropertiesToGUI(Tab: TChromeTab);
-    procedure GUIToChromeTabControlProperties(ChromeTabs32: TChromeTabs32);
+
+    procedure GUIToChromeTabControlProperties(ChromeTabsTop: TChromeTabs32);
     procedure FillEventList;
     procedure IncrementEventListItemCount(Index: Integer);
     procedure UpdateCurrentControl;
     procedure UpdateScrollBar;
     procedure UpdateScrollbarLabel;
+
     procedure HookEvents;
     procedure UnHookEvents;
-    function CreateLog(AParent: TWinControl; const Columns: Array of String; const ColumnWidths: Array of Integer; AutoSizeIndex: Integer = -1): TChromeTabs32Log;
+
+    function CreateLog(AParent: TWinControl; const Columns: array of string;
+      const ColumnWidths: array of Integer; AutoSizeIndex: Integer = -1): TChromeTabs32Log;
     procedure CreateLogs;
-    procedure ChromeTabControlPropertiesToGUI(ChromeTabs32: TChromeTabs32);
-    procedure UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: Integer);
+
+    procedure ChromeTabControlPropertiesToGUI(ChromeTabsTop: TChromeTabs32);
+    procedure UpdateLookAndFeelEditors(ChromeTabsTop: TChromeTabs32; Index: Integer);
     procedure OnFrameSelectColorClick(Sender: TObject);
     procedure RefreshLookAndFeelOptions;
     procedure FixControls;
@@ -515,53 +526,53 @@ var
 implementation
 
 resourcestring
-  StrTabContainer = 'Tab Container';
-  StrBaseline = 'Baseline';
-  StrDefaultFont = 'Default Font';
-  StrModifiedGlow = 'Modified Glow';
-  StrMouseGlow = 'Mouse Glow';
-  StrAddButton = 'Add Button';
-  StrButton = 'Button';
-  StrPlusSymbol = 'Plus Symbol';
-  StrCloseButton = 'Close Button';
-  StrCircle = 'Circle';
-  StrCross = 'Cross';
-  StrScrollButtons = 'Scroll Buttons';
-  StrArrow = 'Arrow';
-  StrBackground = 'Background';
-  StrActive = 'Active';
-  StrNotActive = 'Not Active';
-  StrHot = 'Hot';
-  StrNormal = 'Normal';
-  StrDown = 'Down';
-  StrDisabled = 'Disabled';
-  StrTabBaseline = 'Tab Baseline';
-  StrDefaultTabFont = 'Default Tab Font';
-  StrPleaseSelectACh = ' [Please select a child property]';
-  StrTabIndex = '   Tab Index: ';
-  StrMouseX = 'Mouse X';
-  StrMouseY = 'Mouse Y';
-  StrHitTestArea = 'Hit Test Area';
-  StrHitTestTabIndex = 'Hit Test Tab Index';
-  StrYes = 'Yes';
-  StrNo = 'No';
-  StrTabDrawState = 'Tab Draw State';
-  StrCloseButtonDrawSt = 'Close Button Draw State';
-  StrDragging = 'Dragging';
-  StrTabCaption = '   Tab Caption';
-  StrHorizontalOffset = '   Horizontal Offset';
-  StrVerticalOffset = '   Vertical Offset';
-  StrDropTabIndex = '   Drop Tab Index';
-  StrSourceControl = '   Source Control';
-  StrDockControl = '   Dock Control';
-  StrNone = 'None';
-  StrDragAndDropTabs = 'Drag and Drop tabs on this tab control.';
-  StrSpinners = 'Spinners';
-  StrDownload = 'Download';
-  StrUpload = 'Upload';
+  RStrTabContainer = 'Tab Container';
+  RStrBaseline = 'Baseline';
+  RStrDefaultFont = 'Default Font';
+  RStrModifiedGlow = 'Modified Glow';
+  RStrMouseGlow = 'Mouse Glow';
+  RStrAddButton = 'Add Button';
+  RStrButton = 'Button';
+  RStrPlusSymbol = 'Plus Symbol';
+  RStrCloseButton = 'Close Button';
+  RStrCircle = 'Circle';
+  RStrCross = 'Cross';
+  RStrScrollButtons = 'Scroll Buttons';
+  RStrArrow = 'Arrow';
+  RStrBackground = 'Background';
+  RStrActive = 'Active';
+  RStrNotActive = 'Not Active';
+  RStrHot = 'Hot';
+  RStrNormal = 'Normal';
+  RStrDown = 'Down';
+  RStrDisabled = 'Disabled';
+  RStrTabBaseline = 'Tab Baseline';
+  RStrDefaultTabFont = 'Default Tab Font';
+  RStrPleaseSelectACh = ' [Please select a child property]';
+  RStrTabIndex = '   Tab Index: ';
+  RStrMouseX = 'Mouse X';
+  RStrMouseY = 'Mouse Y';
+  RStrHitTestArea = 'Hit Test Area';
+  RStrHitTestTabIndex = 'Hit Test Tab Index';
+  RStrYes = 'Yes';
+  RStrNo = 'No';
+  RStrTabDrawState = 'Tab Draw State';
+  RStrCloseButtonDrawSt = 'Close Button Draw State';
+  RStrDragging = 'Dragging';
+  RStrTabCaption = '   Tab Caption';
+  RStrHorizontalOffset = '   Horizontal Offset';
+  RStrVerticalOffset = '   Vertical Offset';
+  RStrDropTabIndex = '   Drop Tab Index';
+  RStrSourceControl = '   Source Control';
+  RStrDockControl = '   Dock Control';
+  RStrNone = 'None';
+  RStrDragAndDropTabs = 'Drag and Drop tabs on this tab control.';
+  RStrSpinners = 'Spinners';
+  RStrDownload = 'Download';
+  RStrUpload = 'Upload';
 
 const
-  EventNames: Array[0..18] of String = (
+  EventNames: array [0 .. 18] of string = (
     'OnActiveTabChanging',
     'OnChange',
     'OnActiveTabChanged',
@@ -585,61 +596,61 @@ const
 
 {$R *.dfm}
 
-procedure TfrmMain.actCopyLookAndFeelAsCodeExecute(Sender: TObject);
+procedure TfrmMain.ActionCopyLookAndFeelAsCodeExecute(Sender: TObject);
 begin
   Clipboard.AsText := FCurrentTabs.LookAndFeelToCode;
 end;
 
-procedure TfrmMain.actCopyOptionsAsCodeExecute(Sender: TObject);
+procedure TfrmMain.ActionCopyOptionsAsCodeExecute(Sender: TObject);
 begin
   Clipboard.AsText := FCurrentTabs.OptionsToCode;
 end;
 
-procedure TfrmMain.actLoadLookAndFeelExecute(Sender: TObject);
+procedure TfrmMain.ActionLoadLookAndFeelExecute(Sender: TObject);
 begin
-  if OpenDialog1.Execute then
+  if OpenDialogLookAndFeel.Execute then
   begin
-    ChromeTabs32.LoadLookAndFeel(OpenDialog1.FileName);
+    ChromeTabsTop.LoadLookAndFeel(OpenDialogLookAndFeel.FileName);
 
     RefreshLookAndFeelOptions;
   end;
 end;
 
-procedure TfrmMain.actLoadOptionsExecute(Sender: TObject);
+procedure TfrmMain.ActionLoadOptionsExecute(Sender: TObject);
 begin
-  if OpenDialog2.Execute then
+  if OpenDialogTabOptions.Execute then
   begin
-    FCurrentTabs.LoadOptions(OpenDialog2.FileName);
+    FCurrentTabs.LoadOptions(OpenDialogTabOptions.FileName);
 
     ChromeTabControlPropertiesToGUI(FCurrentTabs);
 
-    ChromeTabs322.Options.Display.Tabs.Orientation := toBottom;
+    ChromeTabsBottom.Options.Display.Tabs.Orientation := toBottom;
   end;
 end;
 
-procedure TfrmMain.actSaveLookandFeelExecute(Sender: TObject);
+procedure TfrmMain.ActionSaveLookandFeelExecute(Sender: TObject);
 begin
-  if SaveDialog1.Execute then
-    ChromeTabs32.SaveLookAndFeel(SaveDialog1.FileName);
+  if SaveDialogLookAndFeel.Execute then
+    ChromeTabsTop.SaveLookAndFeel(SaveDialogLookAndFeel.FileName);
 end;
 
-procedure TfrmMain.actSaveOptionsExecute(Sender: TObject);
+procedure TfrmMain.ActionSaveOptionsExecute(Sender: TObject);
 begin
-  if SaveDialog2.Execute then
-    ChromeTabs32.SaveOptions(SaveDialog2.FileName);
+  if SaveDialogTabOptions.Execute then
+    ChromeTabsTop.SaveOptions(SaveDialogTabOptions.FileName);
 end;
 
-function TfrmMain.AddTab(ChromeTabs32: TChromeTabs32; const Text: String; ImageIndex: Integer): TChromeTab;
+function TfrmMain.AddTab(ChromeTabsTop: TChromeTabs32; const Text: string; ImageIndex: Integer): TChromeTab;
 begin
-  Result := ChromeTabs32.Tabs.Add;
+  Result := ChromeTabsTop.Tabs.Add;
 
   Result.Caption := Text;
   Result.ImageIndex := ImageIndex;
 end;
 
-procedure TfrmMain.ApplicationEvents1Deactivate(Sender: TObject);
+procedure TfrmMain.ApplicationEventsDeactivate(Sender: TObject);
 begin
-  EndColorPicking(FALSE);
+  EndColorPicking(False);
 end;
 
 procedure TfrmMain.EndColorPicking(Cancelled: Boolean);
@@ -658,40 +669,40 @@ begin
   end;
 end;
 
-procedure TfrmMain.ApplicationEvents1Message(var Msg: tagMSG;
+procedure TfrmMain.ApplicationEventsMessage(var Msg: tagMSG;
   var Handled: Boolean);
 begin
   case Msg.message of
-    WM_LButtonDown: EndColorPicking(FALSE);
+    WM_LButtonDown: EndColorPicking(False);
     WM_KEYDOWN:
       if (FCurrentColorPickerFrame <> nil) and (Msg.wParam = 27) then
-        EndColorPicking(TRUE);
+        EndColorPicking(True);
   end;
 end;
 
-procedure TfrmMain.btnMakeAllTabsVisibleClick(Sender: TObject);
+procedure TfrmMain.ButtonMakeAllTabsVisibleClick(Sender: TObject);
 var
   i: Integer;
 begin
   FCurrentTabs.BeginUpdate;
   try
     for i := 0 to pred(FCurrentTabs.Tabs.Count) do
-      FCurrentTabs.Tabs[i].Visible := TRUE;
+      FCurrentTabs.Tabs[i].Visible := True;
   finally
     FCurrentTabs.EndUpdate;
   end;
 end;
 
-procedure TfrmMain.btnOpenFormClick(Sender: TObject);
+procedure TfrmMain.ButtonOpenFormClick(Sender: TObject);
 begin
   TfrmMain.Create(Application).Show;
 end;
 
 procedure TfrmMain.BuildLookAndFeelTree;
 
-  function AddTreeNode(Parent: TTreeNode; const Text: String; ID: Integer): TTreeNode;
+  function AddTreeNode(Parent: TTreeNode; const Text: string; ID: Integer): TTreeNode;
   begin
-    Result := tvLookAndFeelItems.Items.AddChild(Parent, Text);
+    Result := TreeViewLookAndFeelItems.Items.AddChild(Parent, Text);
 
     Result.StateIndex := ID;
   end;
@@ -699,61 +710,61 @@ procedure TfrmMain.BuildLookAndFeelTree;
 var
   TabContainerNode, TabsNode, AddButtonNode, CloseButtonNode, ScrollButtonNode: TTreeNode;
 begin
-  tvLookAndFeelItems.Items.Clear;
+  TreeViewLookAndFeelItems.Items.Clear;
 
-  TabContainerNode := AddTreeNode(nil, StrTabContainer, 0);
+  TabContainerNode := AddTreeNode(nil, RStrTabContainer, 0);
 
   TabsNode := AddTreeNode(TabContainerNode, 'Tabs', 1);
 
-  AddTreeNode(TabsNode, StrBaseline, 11);
-  AddTreeNode(TabsNode, StrDefaultFont, 12);
-  AddTreeNode(TabsNode, StrModifiedGlow, 14);
-  AddTreeNode(TabsNode, StrMouseGlow, 15);
-  AddTreeNode(TabsNode, StrSpinners, 16);
+  AddTreeNode(TabsNode, RStrBaseline, 11);
+  AddTreeNode(TabsNode, RStrDefaultFont, 12);
+  AddTreeNode(TabsNode, RStrModifiedGlow, 14);
+  AddTreeNode(TabsNode, RStrMouseGlow, 15);
+  AddTreeNode(TabsNode, RStrSpinners, 16);
 
-  AddButtonNode := AddTreeNode(TabContainerNode, StrAddButton, 2);
-  AddTreeNode(AddButtonNode, StrButton, 3);
-  AddTreeNode(AddButtonNode, StrPlusSymbol, 4);
+  AddButtonNode := AddTreeNode(TabContainerNode, RStrAddButton, 2);
+  AddTreeNode(AddButtonNode, RStrButton, 3);
+  AddTreeNode(AddButtonNode, RStrPlusSymbol, 4);
 
-  CloseButtonNode := AddTreeNode(TabContainerNode, StrCloseButton, 5);
-  AddTreeNode(CloseButtonNode, StrCircle, 6);
-  AddTreeNode(CloseButtonNode, StrCross, 7);
+  CloseButtonNode := AddTreeNode(TabContainerNode, RStrCloseButton, 5);
+  AddTreeNode(CloseButtonNode, RStrCircle, 6);
+  AddTreeNode(CloseButtonNode, RStrCross, 7);
 
-  CloseButtonNode := AddTreeNode(TabContainerNode, StrCloseButton, 5);
-  AddTreeNode(CloseButtonNode, StrCircle, 6);
-  AddTreeNode(CloseButtonNode, StrCross, 7);
+  CloseButtonNode := AddTreeNode(TabContainerNode, RStrCloseButton, 5);
+  AddTreeNode(CloseButtonNode, RStrCircle, 6);
+  AddTreeNode(CloseButtonNode, RStrCross, 7);
 
-  ScrollButtonNode := AddTreeNode(TabContainerNode, StrScrollButtons, 8);
-  AddTreeNode(ScrollButtonNode, StrButton, 9);
-  AddTreeNode(ScrollButtonNode, StrArrow, 10);
+  ScrollButtonNode := AddTreeNode(TabContainerNode, RStrScrollButtons, 8);
+  AddTreeNode(ScrollButtonNode, RStrButton, 9);
+  AddTreeNode(ScrollButtonNode, RStrArrow, 10);
 
-  tvLookAndFeelItems.FullExpand;
+  TreeViewLookAndFeelItems.FullExpand;
 end;
 
-procedure TfrmMain.Button1Click(Sender: TObject);
+procedure TfrmMain.ButtonScrollActiveTabIntoViewClick(Sender: TObject);
 begin
   if FCurrentTabs.ActiveTab <> nil then
     FCurrentTabs.ScrollIntoView(FCurrentTabs.ActiveTab);
 end;
 
-procedure TfrmMain.Button2Click(Sender: TObject);
+procedure TfrmMain.ButtonDeleteActiveTabClick(Sender: TObject);
 begin
   if FCurrentTabs.ActiveTab <> nil then
-    FCurrentTabs.Tabs.DeleteTab(FCurrentTabs.ActiveTab.Index, FALSE);
+    FCurrentTabs.Tabs.DeleteTab(FCurrentTabs.ActiveTab.Index, False);
 end;
 
-procedure TfrmMain.btnHideTabClick(Sender: TObject);
+procedure TfrmMain.ButtonHideTabClick(Sender: TObject);
 begin
-  if ChromeTabs32.ActiveTab <> nil then
-    ChromeTabs32.ActiveTab.Visible := FALSE;
+  if ChromeTabsTop.ActiveTab <> nil then
+    ChromeTabsTop.ActiveTab.Visible := False;
 end;
 
-procedure TfrmMain.cbSelectTabsChange(Sender: TObject);
+procedure TfrmMain.ComboBoxSelectTabsChange(Sender: TObject);
 begin
-  if cbSelectTabs.ItemIndex = 0 then
-    FCurrentTabs := ChromeTabs32
+  if ComboBoxSelectTabs.ItemIndex = 0 then
+    FCurrentTabs := ChromeTabsTop
   else
-    FCurrentTabs := ChromeTabs322;
+    FCurrentTabs := ChromeTabsBottom;
 
   ChromeTabControlPropertiesToGUI(FCurrentTabs);
 
@@ -765,9 +776,9 @@ begin
   FCurrentTabs.Refresh;
 end;
 
-procedure TfrmMain.chkEnableEventsClick(Sender: TObject);
+procedure TfrmMain.CheckBoxEnableEventsClick(Sender: TObject);
 begin
-  if chkEnableEvents.Checked then
+  if CheckBoxEnableEvents.Checked then
     HookEvents
   else
     UnHookEvents;
@@ -779,7 +790,7 @@ begin
     GUIToTabProperties(FCurrentTabs.ActiveTab);
 end;
 
-function TfrmMain.CreateLog(AParent: TWinControl; const Columns: array of String;
+function TfrmMain.CreateLog(AParent: TWinControl; const Columns: array of string;
   const ColumnWidths: array of Integer; AutoSizeIndex: Integer): TChromeTabs32Log;
 var
   i: Integer;
@@ -798,16 +809,16 @@ end;
 
 procedure TfrmMain.CreateLogs;
 begin
-  FLogMouseMove := CreateLog(gbMouseMove, [''], [0], 0);
-  FLogDragOver := CreateLog(gbDragOver, [''], [0], 0);
-  FLogChange := CreateLog(gbChange, [''], [0], 0);
-  FLogEvents := CreateLog(gbEvents, ['', ''], [150, 50], 0);
-  FLogOtherEvents := CreateLog(gbOtherEvents, [''], [0], 0);
-  FLogDebug := CreateLog(tabDebug, [''], [0], 0);
+  FLogMouseMove := CreateLog(GroupBoxMouseMove, [''], [0], 0);
+  FLogDragOver := CreateLog(GroupBoxDragOver, [''], [0], 0);
+  FLogChange := CreateLog(GroupBoxChange, [''], [0], 0);
+  FLogEvents := CreateLog(GroupBoxEvents, ['', ''], [150, 50], 0);
+  FLogOtherEvents := CreateLog(GroupBoxOtherEvents, [''], [0], 0);
+  FLogDebug := CreateLog(TabSheetDebug, [''], [0], 0);
 
-  FLogDebug.SetAutoScroll(TRUE);
-  FLogOtherEvents.SetAutoScroll(TRUE);
-  FLogChange.SetAutoScroll(TRUE);
+  FLogDebug.SetAutoScroll(True);
+  FLogOtherEvents.SetAutoScroll(True);
+  FLogChange.SetAutoScroll(True);
 end;
 
 procedure TfrmMain.GUIToTabProperties(Tab: TChromeTab);
@@ -816,13 +827,13 @@ begin
   begin
     FCurrentTabs.BeginUpdate;
     try
-      Tab.Caption := edtTabCaption.Text;
-      Tab.ImageIndex := edtImageIndex.Value;
-      Tab.ImageIndexOverlay := edtImageOverlayIndex.Value;
-      Tab.Pinned := chkPinned.Checked;
-      Tab.Modified := chkModified.Checked;
-      Tab.SpinnerState := TChromeTabs32SpinnerState(cbSpinnerState.ItemIndex);
-      Tab.HideCloseButton := chkHideClosebutton.Checked;
+      Tab.Caption := EditTabCaption.Text;
+      Tab.ImageIndex := EditImageIndex.Value;
+      Tab.ImageIndexOverlay := EditImageOverlayIndex.Value;
+      Tab.Pinned := CheckBoxPinned.Checked;
+      Tab.Modified := CheckBoxModified.Checked;
+      Tab.SpinnerState := TChromeTabs32SpinnerState(ComboBoxSpinnerState.ItemIndex);
+      Tab.HideCloseButton := CheckBoxHideClosebutton.Checked;
     finally
       FCurrentTabs.EndUpdate;
     end;
@@ -831,38 +842,38 @@ end;
 
 procedure TfrmMain.TabPropertiesToGUI(Tab: TChromeTab);
 begin
-  FUpdatingProperties := TRUE;
+  FUpdatingProperties := True;
   try
     if Tab <> nil then
     begin
-      edtTabCaption.Text := Tab.Caption;
-      edtImageIndex.Value := Tab.ImageIndex;
-      edtImageOverlayIndex.Value := Tab.ImageIndexOverlay;
-      chkPinned.Checked := Tab.Pinned;
-      chkModified.Checked := Tab.Modified;
-      cbSpinnerState.ItemIndex := Integer(Tab.SpinnerState);
-      chkHideClosebutton.Checked := Tab.HideCloseButton;
+      EditTabCaption.Text := Tab.Caption;
+      EditImageIndex.Value := Tab.ImageIndex;
+      EditImageOverlayIndex.Value := Tab.ImageIndexOverlay;
+      CheckBoxPinned.Checked := Tab.Pinned;
+      CheckBoxModified.Checked := Tab.Modified;
+      ComboBoxSpinnerState.ItemIndex := Integer(Tab.SpinnerState);
+      CheckBoxHideClosebutton.Checked := Tab.HideCloseButton;
     end;
   finally
-    FUpdatingProperties := FALSE;
+    FUpdatingProperties := False;
   end;
 end;
 
-procedure TfrmMain.tvLookAndFeelItemsChange(Sender: TObject; Node: TTreeNode);
+procedure TfrmMain.TreeViewLookAndFeelItemsChange(Sender: TObject; Node: TTreeNode);
 begin
   RefreshLookAndFeelOptions;
 end;
 
 procedure TfrmMain.RefreshLookAndFeelOptions;
 begin
-  if tvLookAndFeelItems.Selected <> nil then
-    UpdateLookAndFeelEditors(FCurrentTabs, tvLookAndFeelItems.Selected.StateIndex);
+  if TreeViewLookAndFeelItems.Selected <> nil then
+    UpdateLookAndFeelEditors(FCurrentTabs, TreeViewLookAndFeelItems.Selected.StateIndex);
 end;
 
 procedure TfrmMain.OnFrameSelectColorClick(Sender: TObject);
 begin
   if FCurrentColorPickerFrame <> nil then
-    FCurrentColorPickerFrame.StopColorPicking(TRUE);
+    FCurrentColorPickerFrame.StopColorPicking(True);
 
   if Sender is TframeChromeTabs32Style then
     FCurrentColorPickerFrame := TframeChromeTabs32Style(Sender);
@@ -872,9 +883,9 @@ begin
   {$ifend}
 end;
 
-procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: Integer);
+procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabsTop: TChromeTabs32; Index: Integer);
 
-  function NewStyleFrame(const Caption: String): TframeChromeTabs32Style;
+  function NewStyleFrame(const Caption: string): TframeChromeTabs32Style;
   var
     GroupBox: TGroupBox;
   begin
@@ -884,19 +895,19 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
     GroupBox.Align := alLeft;
     GroupBox.Caption := Caption;
 
-    Result := TframeChromeTabs32Style.Create(GroupBox, ChromeTabs32);
+    Result := TframeChromeTabs32Style.Create(GroupBox, ChromeTabsTop);
     Result.Parent := GroupBox;
     Result.Align := alClient;
     Result.OnStartColorPicking := OnFrameSelectColorClick;
 
     {$if CompilerVersion >= 18.0}
-      Result.AlignWithMargins := TRUE;
+      Result.AlignWithMargins := True;
     {$ifend}
 
     GroupBox.ClientWidth := Result.Width + 6;
   end;
 
-  procedure AddChromeTabLookAndFeelStyle(const Caption: String; ChromeTabLookAndFeelStyle: TChromeTabs32LookAndFeelStyle);
+  procedure AddChromeTabLookAndFeelStyle(const Caption: string; ChromeTabLookAndFeelStyle: TChromeTabs32LookAndFeelStyle);
   var
     frameChromeTabs32tyle: TframeChromeTabs32Style;
   begin
@@ -905,7 +916,7 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
     frameChromeTabs32tyle.ChromeTabLookAndFeelStyle := ChromeTabLookAndFeelStyle;
   end;
 
-  procedure AddChromeTabLookAndFeelPen(const Caption: String; ChromeTabLookAndFeelPen: TChromeTabs32LookAndFeelPen);
+  procedure AddChromeTabLookAndFeelPen(const Caption: string; ChromeTabLookAndFeelPen: TChromeTabs32LookAndFeelPen);
   var
     frameChromeTabs32tyle: TframeChromeTabs32Style;
   begin
@@ -914,7 +925,7 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
     frameChromeTabs32tyle.ChromeTabLookAndFeelPen := ChromeTabLookAndFeelPen;
   end;
 
-  procedure AddChromeTabLookAndFeelFont(const Caption: String; ChromeTabLookAndFeelFont: TChromeTabs32LookAndFeelBaseFont);
+  procedure AddChromeTabLookAndFeelFont(const Caption: string; ChromeTabLookAndFeelFont: TChromeTabs32LookAndFeelBaseFont);
   var
     frameChromeTabs32tyle: TframeChromeTabs32Style;
   begin
@@ -923,7 +934,7 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
     frameChromeTabs32tyle.ChromeTabFont := ChromeTabLookAndFeelFont;
   end;
 
-  procedure AddChromeTabLookAndFeelStyleProperties(const Caption: String; ChromeTabLookAndFeelStyleProperties: TChromeTabs32LookAndFeelStyleProperties);
+  procedure AddChromeTabLookAndFeelStyleProperties(const Caption: string; ChromeTabLookAndFeelStyleProperties: TChromeTabs32LookAndFeelStyleProperties);
   var
     frameChromeTabs32tyle: TframeChromeTabs32Style;
   begin
@@ -933,7 +944,7 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
     frameChromeTabs32tyle.ChromeTabFont := ChromeTabLookAndFeelStyleProperties.Font;
   end;
 
-  procedure AddChromeTabs32LookAndFeelTabModified(const Caption: String; ChromeTabs32LookAndFeelTabModified: TChromeTabs32LookAndFeelGlow);
+  procedure AddChromeTabs32LookAndFeelTabModified(const Caption: string; ChromeTabs32LookAndFeelTabModified: TChromeTabs32LookAndFeelGlow);
   var
     frameChromeTabs32tyle: TframeChromeTabs32Style;
   begin
@@ -942,13 +953,13 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
     frameChromeTabs32tyle.ChromeTabs32LookAndFeelTabModified := ChromeTabs32LookAndFeelTabModified;
   end;
 
-  function GetLookAndFeelPathString: String;
+  function GetLookAndFeelPathString: string;
   var
     TreeNode: TTreeNode;
   begin
     Result := '';
 
-    TreeNode := tvLookAndFeelItems.Selected;
+    TreeNode := TreeViewLookAndFeelItems.Selected;
 
     while TreeNode <> nil do
     begin
@@ -964,95 +975,95 @@ procedure TfrmMain.UpdateLookAndFeelEditors(ChromeTabs32: TChromeTabs32; Index: 
 var
   i: Integer;
 begin
-  pnlLookAndFeelPath.Caption := GetLookAndFeelPathString;
+  PanelLookAndFeelPath.Caption := GetLookAndFeelPathString;
 
-  ScrollBox1.Visible := FALSE;
+  ScrollBox1.Visible := False;
 
   // Clear the controls
   for i := pred(ScrollBox1.ControlCount) downto 0 do
     ScrollBox1.Controls[i].Free;
 
-  if ChromeTabs32 <> nil then
+  if ChromeTabsTop <> nil then
   begin
     case Index of
       0: begin
-           AddChromeTabLookAndFeelStyle(StrBackground, ChromeTabs32.LookAndFeel.TabsContainer);
+           AddChromeTabLookAndFeelStyle(RStrBackground, ChromeTabsTop.LookAndFeel.TabsContainer);
          end;
 
       1: begin
-           AddChromeTabLookAndFeelStyleProperties(StrActive, ChromeTabs32.LookAndFeel.Tabs.Active);
-           AddChromeTabLookAndFeelStyleProperties(StrNotActive, ChromeTabs32.LookAndFeel.Tabs.NotActive);
-           AddChromeTabLookAndFeelStyleProperties(StrHot, ChromeTabs32.LookAndFeel.Tabs.Hot);
+           AddChromeTabLookAndFeelStyleProperties(RStrActive, ChromeTabsTop.LookAndFeel.Tabs.Active);
+           AddChromeTabLookAndFeelStyleProperties(RStrNotActive, ChromeTabsTop.LookAndFeel.Tabs.NotActive);
+           AddChromeTabLookAndFeelStyleProperties(RStrHot, ChromeTabsTop.LookAndFeel.Tabs.Hot);
          end;
 
       3: begin
-           AddChromeTabLookAndFeelStyle(StrNormal, ChromeTabs32.LookAndFeel.AddButton.Button.Normal);
-           AddChromeTabLookAndFeelStyle(StrDown, ChromeTabs32.LookAndFeel.AddButton.Button.Down);
-           AddChromeTabLookAndFeelStyle(StrHot, ChromeTabs32.LookAndFeel.AddButton.Button.Hot);
+           AddChromeTabLookAndFeelStyle(RStrNormal, ChromeTabsTop.LookAndFeel.AddButton.Button.Normal);
+           AddChromeTabLookAndFeelStyle(RStrDown, ChromeTabsTop.LookAndFeel.AddButton.Button.Down);
+           AddChromeTabLookAndFeelStyle(RStrHot, ChromeTabsTop.LookAndFeel.AddButton.Button.Hot);
          end;
 
       4: begin
-           AddChromeTabLookAndFeelStyle(StrNormal, ChromeTabs32.LookAndFeel.AddButton.PlusSign.Normal);
-           AddChromeTabLookAndFeelStyle(StrDown, ChromeTabs32.LookAndFeel.AddButton.PlusSign.Down);
-           AddChromeTabLookAndFeelStyle(StrHot, ChromeTabs32.LookAndFeel.AddButton.PlusSign.Hot);
+           AddChromeTabLookAndFeelStyle(RStrNormal, ChromeTabsTop.LookAndFeel.AddButton.PlusSign.Normal);
+           AddChromeTabLookAndFeelStyle(RStrDown, ChromeTabsTop.LookAndFeel.AddButton.PlusSign.Down);
+           AddChromeTabLookAndFeelStyle(RStrHot, ChromeTabsTop.LookAndFeel.AddButton.PlusSign.Hot);
          end;
 
       6: begin
-           AddChromeTabLookAndFeelStyle(StrNormal, ChromeTabs32.LookAndFeel.CloseButton.Circle.Normal);
-           AddChromeTabLookAndFeelStyle(StrDown, ChromeTabs32.LookAndFeel.CloseButton.Circle.Down);
-           AddChromeTabLookAndFeelStyle(StrHot, ChromeTabs32.LookAndFeel.CloseButton.Circle.Hot);
+           AddChromeTabLookAndFeelStyle(RStrNormal, ChromeTabsTop.LookAndFeel.CloseButton.Circle.Normal);
+           AddChromeTabLookAndFeelStyle(RStrDown, ChromeTabsTop.LookAndFeel.CloseButton.Circle.Down);
+           AddChromeTabLookAndFeelStyle(RStrHot, ChromeTabsTop.LookAndFeel.CloseButton.Circle.Hot);
          end;
 
       7: begin
-           AddChromeTabLookAndFeelPen(StrNormal, ChromeTabs32.LookAndFeel.CloseButton.Cross.Normal);
-           AddChromeTabLookAndFeelPen(StrDown, ChromeTabs32.LookAndFeel.CloseButton.Cross.Down);
-           AddChromeTabLookAndFeelPen(StrHot, ChromeTabs32.LookAndFeel.CloseButton.Cross.Hot);
+           AddChromeTabLookAndFeelPen(RStrNormal, ChromeTabsTop.LookAndFeel.CloseButton.Cross.Normal);
+           AddChromeTabLookAndFeelPen(RStrDown, ChromeTabsTop.LookAndFeel.CloseButton.Cross.Down);
+           AddChromeTabLookAndFeelPen(RStrHot, ChromeTabsTop.LookAndFeel.CloseButton.Cross.Hot);
          end;
 
       9: begin
-           AddChromeTabLookAndFeelStyle(StrNormal, ChromeTabs32.LookAndFeel.ScrollButtons.Button.Normal);
-           AddChromeTabLookAndFeelStyle(StrDown, ChromeTabs32.LookAndFeel.ScrollButtons.Button.Down);
-           AddChromeTabLookAndFeelStyle(StrHot, ChromeTabs32.LookAndFeel.ScrollButtons.Button.Hot);
-           AddChromeTabLookAndFeelStyle(StrDisabled, ChromeTabs32.LookAndFeel.ScrollButtons.Button.Disabled);
+           AddChromeTabLookAndFeelStyle(RStrNormal, ChromeTabsTop.LookAndFeel.ScrollButtons.Button.Normal);
+           AddChromeTabLookAndFeelStyle(RStrDown, ChromeTabsTop.LookAndFeel.ScrollButtons.Button.Down);
+           AddChromeTabLookAndFeelStyle(RStrHot, ChromeTabsTop.LookAndFeel.ScrollButtons.Button.Hot);
+           AddChromeTabLookAndFeelStyle(RStrDisabled, ChromeTabsTop.LookAndFeel.ScrollButtons.Button.Disabled);
          end;
 
       10: begin
-           AddChromeTabLookAndFeelStyle(StrNormal, ChromeTabs32.LookAndFeel.ScrollButtons.Arrow.Normal);
-           AddChromeTabLookAndFeelStyle(StrDown, ChromeTabs32.LookAndFeel.ScrollButtons.Arrow.Down);
-           AddChromeTabLookAndFeelStyle(StrHot, ChromeTabs32.LookAndFeel.ScrollButtons.Arrow.Hot);
-           AddChromeTabLookAndFeelStyle(StrDisabled, ChromeTabs32.LookAndFeel.ScrollButtons.Arrow.Disabled);
+           AddChromeTabLookAndFeelStyle(RStrNormal, ChromeTabsTop.LookAndFeel.ScrollButtons.Arrow.Normal);
+           AddChromeTabLookAndFeelStyle(RStrDown, ChromeTabsTop.LookAndFeel.ScrollButtons.Arrow.Down);
+           AddChromeTabLookAndFeelStyle(RStrHot, ChromeTabsTop.LookAndFeel.ScrollButtons.Arrow.Hot);
+           AddChromeTabLookAndFeelStyle(RStrDisabled, ChromeTabsTop.LookAndFeel.ScrollButtons.Arrow.Disabled);
          end;
 
       11: begin // Tabs Baseline
-            AddChromeTabLookAndFeelPen(StrTabBaseline, ChromeTabs32.LookAndFeel.Tabs.BaseLine);
+            AddChromeTabLookAndFeelPen(RStrTabBaseline, ChromeTabsTop.LookAndFeel.Tabs.BaseLine);
           end;
 
       12: begin // Default Font
-            AddChromeTabLookAndFeelFont(StrDefaultTabFont, ChromeTabs32.LookAndFeel.Tabs.DefaultFont);
+            AddChromeTabLookAndFeelFont(RStrDefaultTabFont, ChromeTabsTop.LookAndFeel.Tabs.DefaultFont);
           end;
 
       14: begin // Modified Glow
-            AddChromeTabs32LookAndFeelTabModified(StrModifiedGlow, ChromeTabs32.LookAndFeel.Tabs.Modified);
+            AddChromeTabs32LookAndFeelTabModified(RStrModifiedGlow, ChromeTabsTop.LookAndFeel.Tabs.Modified);
           end;
 
       15: begin // Mouse Glow
-            AddChromeTabs32LookAndFeelTabModified(StrMouseGlow, ChromeTabs32.LookAndFeel.Tabs.MouseGlow);
+            AddChromeTabs32LookAndFeelTabModified(RStrMouseGlow, ChromeTabsTop.LookAndFeel.Tabs.MouseGlow);
           end;
 
       16: begin // Spinners
-            AddChromeTabLookAndFeelPen(StrUpload, ChromeTabs32.LookAndFeel.Tabs.Spinners.Upload);
-            AddChromeTabLookAndFeelPen(StrDownload, ChromeTabs32.LookAndFeel.Tabs.Spinners.Download);
+            AddChromeTabLookAndFeelPen(RStrUpload, ChromeTabsTop.LookAndFeel.Tabs.Spinners.Upload);
+            AddChromeTabLookAndFeelPen(RStrDownload, ChromeTabsTop.LookAndFeel.Tabs.Spinners.Download);
           end;
 
       else
       begin
-        pnlLookAndFeelPath.Caption := pnlLookAndFeelPath.Caption + StrPleaseSelectACh;
+        PanelLookAndFeelPath.Caption := PanelLookAndFeelPath.Caption + RStrPleaseSelectACh;
 
         Exit;
       end;
     end;
 
-    ScrollBox1.Visible := TRUE;
+    ScrollBox1.Visible := True;
     ScrollBox1.Width := ScrollBox1.Width + 1;
   end;
 end;
@@ -1080,28 +1091,28 @@ begin
   CreateLogs;
 
   {$IFNDEF USE_GLASS_FORM}
-  chkDisplayTopTabsInTitleBar.Enabled := FALSE;
-  chkDisplayTopTabsInTitleBar.Checked := FALSE;
+  CheckBoxDisplayTopTabsInTitleBar.Enabled := False;
+  CheckBoxDisplayTopTabsInTitleBar.Checked := False;
   {$ENDIF}
 
-  FUpdatingProperties := TRUE;
+  FUpdatingProperties := True;
   try
-    pcMain.ActivePageIndex := 0;
-    pcOptions.ActivePageIndex := 0;
-    pcButtons.ActivePageIndex := 0;
-    pcTabExtras.ActivePageIndex := 0;
-    pcTabSpinners.ActivePageIndex := 0;
+    PageControlMain.ActivePageIndex := 0;
+    PageControlOptions.ActivePageIndex := 0;
+    PageControlButtons.ActivePageIndex := 0;
+    PageControlTabExtras.ActivePageIndex := 0;
+    PageControlTabSpinners.ActivePageIndex := 0;
 
-    cbFontName.Items.Assign(Screen.Fonts);
+    ComboBoxFontName.Items.Assign(Screen.Fonts);
 
     UpdateCurrentControl;
 
-    edtDragImageResize.Text := FloatToStr(0.5);
+    EditDragImageResize.Text := FloatToStr(0.5);
 
-    edtGlassHeightTop.Value := FCurrentTabs.Height;
+    EditGlassHeightTop.Value := FCurrentTabs.Height;
 
-    edtGlassHeightBottom.MaxValue := ChromeTabs322.Height + 1;
-    edtGlassHeightBottom.Value := edtGlassHeightBottom.MaxValue;
+    EditGlassHeightBottom.MaxValue := ChromeTabsBottom.Height + 1;
+    EditGlassHeightBottom.Value := EditGlassHeightBottom.MaxValue;
 
     ChromeTabControlPropertiesToGUI(FCurrentTabs);
     TabPropertiesToGUI(FCurrentTabs.ActiveTab);
@@ -1112,39 +1123,39 @@ begin
 
     UpdateControls;
 
-    tvLookAndFeelItems.Items[0].Selected := TRUE;
+    TreeViewLookAndFeelItems.Items[0].Selected := True;
   finally
-    FUpdatingProperties := FALSE;
+    FUpdatingProperties := False;
   end;
 
   ChromeTabControlPropertiesToGUI(FCurrentTabs);
 
   {$IFDEF USE_GLASS_FORM}
-  Self.ChromeTabs32 := ChromeTabs32;
+  Self.ChromeTabsTop := ChromeTabsTop;
   {$ENDIF}
 
-  ChromeTabs32.Tabs[0].Active := True;
+  ChromeTabsTop.Tabs[0].Active := True;
 end;
 
 procedure TfrmMain.FixControls;
 begin
   {$if CompilerVersion >= 18.0}
-    btnOpenForm.Align := alRight;
-    btnOpenForm.AlignWithMargins := TRUE;
+    ButtonOpenForm.Align := alRight;
+    ButtonOpenForm.AlignWithMargins := True;
 
-    btnLoadOptions.Align := alLeft;
-    btnLoadOptions.AlignWithMargins := TRUE;
-    btnSaveOptions.Align := alLeft;
-    btnSaveOptions.AlignWithMargins := TRUE;
-    btnCopyOptions.Align := alLeft;
-    btnCopyOptions.AlignWithMargins := TRUE;
+    ButtonLoadOptions.Align := alLeft;
+    ButtonLoadOptions.AlignWithMargins := True;
+    ButtonSaveOptions.Align := alLeft;
+    ButtonSaveOptions.AlignWithMargins := True;
+    ButtonCopyOptions.Align := alLeft;
+    ButtonCopyOptions.AlignWithMargins := True;
 
-    btnLoadLookAndFeel.Align := alLeft;
-    btnLoadLookAndFeel.AlignWithMargins := TRUE;
-    btnSaveLookAndFeel.Align := alLeft;
-    btnSaveLookAndFeel.AlignWithMargins := TRUE;
-    btnCopyLookAndFeel.Align := alLeft;
-    btnCopyLookAndFeel.AlignWithMargins := TRUE;
+    ButtonLoadLookAndFeel.Align := alLeft;
+    ButtonLoadLookAndFeel.AlignWithMargins := True;
+    ButtonSaveLookAndFeel.Align := alLeft;
+    ButtonSaveLookAndFeel.AlignWithMargins := True;
+    ButtonCopyLookAndFeel.Align := alLeft;
+    ButtonCopyLookAndFeel.AlignWithMargins := True;
   {$ifend}
 end;
 
@@ -1162,11 +1173,11 @@ begin
   UpdateControls;
 end;
 
-procedure TfrmMain.sbScrollOffsetChange(Sender: TObject);
+procedure TfrmMain.ScrollBarScrollOffsetChange(Sender: TObject);
 begin
   if not FUpdatingScrollbar then
   begin
-    FCurrentTabs.ScrollOffset := sbScrollOffset.Position;
+    FCurrentTabs.ScrollOffset := ScrollBarScrollOffset.Position;
 
     UpdateScrollbarLabel;
   end;
@@ -1177,10 +1188,10 @@ begin
   if FCurrentTabs <> nil then
     UnHookEvents;
 
-  if cbSelectTabs.ItemIndex = 1 then
-    FCurrentTabs := ChromeTabs322
+  if ComboBoxSelectTabs.ItemIndex = 1 then
+    FCurrentTabs := ChromeTabsBottom
   else
-    FCurrentTabs := ChromeTabs32;
+    FCurrentTabs := ChromeTabsTop;
 
   FillEventList;
 end;
@@ -1201,7 +1212,7 @@ begin
   FCurrentTabs.OnScrollWidthChanged := ChromeTabs32ScrollWidthChanged;
   FCurrentTabs.OnStateChange := ChromeTabs32StateChange;
   FCurrentTabs.OnTabDblClick := ChromeTabs32TabDblClick;
-  FCurrentTabs.OnTabDragDrop := ChromeTabs32TabDragDrop;
+  FCurrentTabs.OnTabDragDrop := ChromeTabsTopTabDragDrop;
   FCurrentTabs.OnTabDragDropped := ChromeTabs32TabDragDropped;
   FCurrentTabs.OnTabDragOver := ChromeTabs32TabDragOver;
   FCurrentTabs.OnTabDragStart := ChromeTabs32TabDragStart;
@@ -1237,336 +1248,336 @@ begin
   FCurrentTabs.OnAnimateMovement := nil;
 end;
 
-procedure TfrmMain.ChromeTabControlPropertiesToGUI(ChromeTabs32: TChromeTabs32);
+procedure TfrmMain.ChromeTabControlPropertiesToGUI(ChromeTabsTop: TChromeTabs32);
 begin
-  if (ChromeTabs32 <> nil) and (not FUpdatingProperties) then
+  if (ChromeTabsTop <> nil) and (not FUpdatingProperties) then
   try
-    FUpdatingProperties := TRUE;
+    FUpdatingProperties := True;
 
-    chkScrollOverlayButtons.Checked := ChromeTabs32.Options.Display.TabContainer.OverlayButtons;
+    CheckBoxScrollOverlayButtons.Checked := ChromeTabsTop.Options.Display.TabContainer.OverlayButtons;
 
-    cbCloseButtonVisibility.ItemIndex := Integer(ChromeTabs32.Options.Display.CloseButton.Visibility);
-    chkCloseButtonAutoHide.Checked := ChromeTabs32.Options.Display.CloseButton.AutoHide;
-    edtCloseButtonAutoHideWidth.Value := ChromeTabs32.Options.Display.CloseButton.AutoHideWidth;
-    edtCloseButtonVerticalOffset.Value := ChromeTabs32.Options.Display.CloseButton.Offsets.Vertical;
-    edtCloseButtonHorzOffset.Value := ChromeTabs32.Options.Display.CloseButton.Offsets.Horizontal;
-    edtCloseButtonHeight.Value := ChromeTabs32.Options.Display.CloseButton.Height;
-    edtCloseButtonWidth.Value := ChromeTabs32.Options.Display.CloseButton.Width;
-    edtCrossOffset.Value := ChromeTabs32.Options.Display.CloseButton.CrossRadialOffset;
+    ComboBoxCloseButtonVisibility.ItemIndex := Integer(ChromeTabsTop.Options.Display.CloseButton.Visibility);
+    CheckBoxCloseButtonAutoHide.Checked := ChromeTabsTop.Options.Display.CloseButton.AutoHide;
+    EditCloseButtonAutoHideWidth.Value := ChromeTabsTop.Options.Display.CloseButton.AutoHideWidth;
+    EditCloseButtonVerticalOffset.Value := ChromeTabsTop.Options.Display.CloseButton.Offsets.Vertical;
+    EditCloseButtonHorzOffset.Value := ChromeTabsTop.Options.Display.CloseButton.Offsets.Horizontal;
+    EditCloseButtonHeight.Value := ChromeTabsTop.Options.Display.CloseButton.Height;
+    EditCloseButtonWidth.Value := ChromeTabsTop.Options.Display.CloseButton.Width;
+    EditCrossOffset.Value := ChromeTabsTop.Options.Display.CloseButton.CrossRadialOffset;
 
-    cbAddButtonVisibility.ItemIndex := Integer(ChromeTabs32.Options.Display.AddButton.Visibility);
-    edtAddButtonVerticalOffset.Value := ChromeTabs32.Options.Display.AddButton.Offsets.Vertical;
-    edtAddButtonHorzOffset.Value := ChromeTabs32.Options.Display.AddButton.Offsets.Horizontal;
-    edtAddButtonFloatingHorzOffset.Value := ChromeTabs32.Options.Display.AddButton.HorizontalOffsetFloating;
-    edtAddButtonHeight.Value := ChromeTabs32.Options.Display.AddButton.Height;
-    edtAddButtonWidth.Value := ChromeTabs32.Options.Display.AddButton.Width;
+    ComboBoxAddButtonVisibility.ItemIndex := Integer(ChromeTabsTop.Options.Display.AddButton.Visibility);
+    EditAddButtonVerticalOffset.Value := ChromeTabsTop.Options.Display.AddButton.Offsets.Vertical;
+    EditAddButtonHorzOffset.Value := ChromeTabsTop.Options.Display.AddButton.Offsets.Horizontal;
+    EditAddButtonFloatingHorzOffset.Value := ChromeTabsTop.Options.Display.AddButton.HorizontalOffsetFloating;
+    EditAddButtonHeight.Value := ChromeTabsTop.Options.Display.AddButton.Height;
+    EditAddButtonWidth.Value := ChromeTabsTop.Options.Display.AddButton.Width;
 
-    chkShowPlus.Checked := ChromeTabs32.Options.Display.AddButton.ShowPlusSign;
+    CheckBoxShowPlus.Checked := ChromeTabsTop.Options.Display.AddButton.ShowPlusSign;
 
-    edtLeftScrollButtonHeight.Value := ChromeTabs32.Options.Display.ScrollButtonLeft.Height;
-    edtLeftScrollButtonWidth.Value := ChromeTabs32.Options.Display.ScrollButtonLeft.Width;
-    edtLeftScrollButtonsVerticalOffset.Value := ChromeTabs32.Options.Display.ScrollButtonLeft.Offsets.Vertical;
-    edtLeftScrollButtonsHorzOffset.Value := ChromeTabs32.Options.Display.ScrollButtonLeft.Offsets.Horizontal;
+    EditLeftScrollButtonHeight.Value := ChromeTabsTop.Options.Display.ScrollButtonLeft.Height;
+    EditLeftScrollButtonWidth.Value := ChromeTabsTop.Options.Display.ScrollButtonLeft.Width;
+    EditLeftScrollButtonsVerticalOffset.Value := ChromeTabsTop.Options.Display.ScrollButtonLeft.Offsets.Vertical;
+    EditLeftScrollButtonsHorzOffset.Value := ChromeTabsTop.Options.Display.ScrollButtonLeft.Offsets.Horizontal;
 
-    edtRightScrollButtonHeight.Value := ChromeTabs32.Options.Display.ScrollButtonRight.Height;
-    edtRightScrollButtonWidth.Value := ChromeTabs32.Options.Display.ScrollButtonRight.Width;
-    edtRightScrollButtonVerticalOffset.Value := ChromeTabs32.Options.Display.ScrollButtonRight.Offsets.Vertical;
-    edtRightScrollButtonHorzOffset.Value := ChromeTabs32.Options.Display.ScrollButtonRight.Offsets.Horizontal;
+    EditRightScrollButtonHeight.Value := ChromeTabsTop.Options.Display.ScrollButtonRight.Height;
+    EditRightScrollButtonWidth.Value := ChromeTabsTop.Options.Display.ScrollButtonRight.Width;
+    EditRightScrollButtonVerticalOffset.Value := ChromeTabsTop.Options.Display.ScrollButtonRight.Offsets.Vertical;
+    EditRightScrollButtonHorzOffset.Value := ChromeTabsTop.Options.Display.ScrollButtonRight.Offsets.Horizontal;
 
-    chkTransparentBackground.Checked := ChromeTabs32.Options.Display.TabContainer.TransparentBackground;
-    edtContainerOffsetLeft.Value := ChromeTabs32.Options.Display.TabContainer.PaddingLeft;
-    edtContainerOffsetRight.Value := ChromeTabs32.Options.Display.TabContainer.PaddingRight;
+    CheckBoxTransparentBackground.Checked := ChromeTabsTop.Options.Display.TabContainer.TransparentBackground;
+    EditContainerOffsetLeft.Value := ChromeTabsTop.Options.Display.TabContainer.PaddingLeft;
+    EditContainerOffsetRight.Value := ChromeTabsTop.Options.Display.TabContainer.PaddingRight;
 
-    cbModifiedGlowStyle.ItemIndex := Integer(ChromeTabs32.Options.Display.TabModifiedGlow.Style);
-    edtModifiedGlowVerticalOffset.Value := ChromeTabs32.Options.Display.TabModifiedGlow.VerticalOffset;
-    edtModifiedGlowHeight.Value := ChromeTabs32.Options.Display.TabModifiedGlow.Height;
-    edtModifiedGlowWidth.Value := ChromeTabs32.Options.Display.TabModifiedGlow.Width;
-    edtModifiedGlowAnimationPeriod.Value := ChromeTabs32.Options.Display.TabModifiedGlow.AnimationPeriodMS;
-    edtModifiedGlowAnimationUpdate.Value := ChromeTabs32.Options.Display.TabModifiedGlow.AnimationUpdateMS;
-    cbModifiedGlowEaseType.ItemIndex := Integer(ChromeTabs32.Options.Display.TabModifiedGlow.EaseType);
+    ComboBoxModifiedGlowStyle.ItemIndex := Integer(ChromeTabsTop.Options.Display.TabModifiedGlow.Style);
+    EditModifiedGlowVerticalOffset.Value := ChromeTabsTop.Options.Display.TabModifiedGlow.VerticalOffset;
+    EditModifiedGlowHeight.Value := ChromeTabsTop.Options.Display.TabModifiedGlow.Height;
+    EditModifiedGlowWidth.Value := ChromeTabsTop.Options.Display.TabModifiedGlow.Width;
+    EditModifiedGlowAnimationPeriod.Value := ChromeTabsTop.Options.Display.TabModifiedGlow.AnimationPeriodMS;
+    EditModifiedGlowAnimationUpdate.Value := ChromeTabsTop.Options.Display.TabModifiedGlow.AnimationUpdateMS;
+    ComboBoxModifiedGlowEaseType.ItemIndex := Integer(ChromeTabsTop.Options.Display.TabModifiedGlow.EaseType);
 
-    chkMouseGlowVisible.Checked := ChromeTabs32.Options.Display.TabMouseGlow.Visible;
-    edtMouseGlowVerticalOffset.Value := ChromeTabs32.Options.Display.TabMouseGlow.Offsets.Vertical;
-    edtMouseGlowHeight.Value := ChromeTabs32.Options.Display.TabMouseGlow.Height;
-    edtMouseGlowWidth.Value := ChromeTabs32.Options.Display.TabMouseGlow.Width;
-    edtMouseGlowHorzOffset.Value := ChromeTabs32.Options.Display.TabMouseGlow.Offsets.Horizontal;
+    CheckBoxMouseGlowVisible.Checked := ChromeTabsTop.Options.Display.TabMouseGlow.Visible;
+    EditMouseGlowVerticalOffset.Value := ChromeTabsTop.Options.Display.TabMouseGlow.Offsets.Vertical;
+    EditMouseGlowHeight.Value := ChromeTabsTop.Options.Display.TabMouseGlow.Height;
+    EditMouseGlowWidth.Value := ChromeTabsTop.Options.Display.TabMouseGlow.Width;
+    EditMouseGlowHorzOffset.Value := ChromeTabsTop.Options.Display.TabMouseGlow.Offsets.Horizontal;
 
-    edtTabContentMarginLeft.Value := ChromeTabs32.Options.Display.Tabs.ContentOffsetLeft;
-    edtTabContentMarginRight.Value := ChromeTabs32.Options.Display.Tabs.ContentOffsetRight;
-    cbBidiMode.ItemIndex := Integer(ChromeTabs32.BiDiMode);
+    EditTabContentMarginLeft.Value := ChromeTabsTop.Options.Display.Tabs.ContentOffsetLeft;
+    EditTabContentMarginRight.Value := ChromeTabsTop.Options.Display.Tabs.ContentOffsetRight;
+    ComboBoxBidiMode.ItemIndex := Integer(ChromeTabsTop.BiDiMode);
 
-    edtPinnedWidth.Value := ChromeTabs32.Options.Display.Tabs.PinnedWidth;
-    edtMaxTabWidth.Value := ChromeTabs32.Options.Display.Tabs.MaxWidth;
-    edtMinTabWidth.Value := ChromeTabs32.Options.Display.Tabs.MinWidth;
-    edtTabHeight.Value := ChromeTabs32.Height;
-    edtTabOffsetTop.Value := ChromeTabs32.Options.Display.Tabs.OffsetTop;
-    edtTabOffsetLeft.Value := ChromeTabs32.Options.Display.Tabs.OffsetLeft;
-    edtTabOffsetBottom.Value := ChromeTabs32.Options.Display.Tabs.OffsetBottom;
-    edtTabOffsetRight.Value := ChromeTabs32.Options.Display.Tabs.OffsetRight;
-    chkTabWordWrap.Checked := ChromeTabs32.Options.Display.Tabs.WordWrap;
-    cbTextAlignment.ItemIndex := Integer(ChromeTabs32.Options.Display.Tabs.TextAlignmentHorizontal);
-    cbTextVerticalAlignment.ItemIndex := Integer(ChromeTabs32.Options.Display.Tabs.TextAlignmentVertical);
-    cbTextTrimming.ItemIndex := Integer(ChromeTabs32.Options.Display.Tabs.TextTrimType);
-    chkSetTabWidthsFromCaptions.Checked := ChromeTabs32.Options.Display.Tabs.TabWidthFromContent;
-    chkSeeThroughTabs.Checked := ChromeTabs32.Options.Display.Tabs.SeeThroughTabs;
-    edtTabOverlap.Value := ChromeTabs32.Options.Display.Tabs.TabOverlap;
-    chkShowTextOnPinnedTabs.Checked := ChromeTabs32.Options.Display.Tabs.ShowPinnedTabText;
+    EditPinnedWidth.Value := ChromeTabsTop.Options.Display.Tabs.PinnedWidth;
+    EditMaxTabWidth.Value := ChromeTabsTop.Options.Display.Tabs.MaxWidth;
+    EditMinTabWidth.Value := ChromeTabsTop.Options.Display.Tabs.MinWidth;
+    EditTabHeight.Value := ChromeTabsTop.Height;
+    EditTabOffsetTop.Value := ChromeTabsTop.Options.Display.Tabs.OffsetTop;
+    EditTabOffsetLeft.Value := ChromeTabsTop.Options.Display.Tabs.OffsetLeft;
+    EditTabOffsetBottom.Value := ChromeTabsTop.Options.Display.Tabs.OffsetBottom;
+    EditTabOffsetRight.Value := ChromeTabsTop.Options.Display.Tabs.OffsetRight;
+    CheckBoxTabWordWrap.Checked := ChromeTabsTop.Options.Display.Tabs.WordWrap;
+    ComboBoxTextAlignment.ItemIndex := Integer(ChromeTabsTop.Options.Display.Tabs.TextAlignmentHorizontal);
+    ComboBoxTextVerticalAlignment.ItemIndex := Integer(ChromeTabsTop.Options.Display.Tabs.TextAlignmentVertical);
+    ComboBoxTextTrimming.ItemIndex := Integer(ChromeTabsTop.Options.Display.Tabs.TextTrimType);
+    CheckBoxSetTabWidthsFromCaptions.Checked := ChromeTabsTop.Options.Display.Tabs.TabWidthFromContent;
+    CheckBoxSeeThroughTabs.Checked := ChromeTabsTop.Options.Display.Tabs.SeeThroughTabs;
+    EditTabOverlap.Value := ChromeTabsTop.Options.Display.Tabs.TabOverlap;
+    CheckBoxShowTextOnPinnedTabs.Checked := ChromeTabsTop.Options.Display.Tabs.ShowPinnedTabText;
 
-    cbFontName.Text := ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Name;
-    edtFontSize.Value := ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Size;
-    edtFontColor.Selected := ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Color;
+    ComboBoxFontName.Text := ChromeTabsTop.LookAndFeel.Tabs.DefaultFont.Name;
+    EditFontSize.Value := ChromeTabsTop.LookAndFeel.Tabs.DefaultFont.Size;
+    EditFontColor.Selected := ChromeTabsTop.LookAndFeel.Tabs.DefaultFont.Color;
 
-    chkBackgroundDoubleClickMaxmise.Checked := ChromeTabs32.Options.Behaviour.BackgroundDblClickMaximiseRestoreForm;
-    chkDraggingBackgoundMovesForm.Checked := ChromeTabs32.Options.Behaviour.BackgroundDragMovesForm;
-    chkSmartResize.Checked := ChromeTabs32.Options.Behaviour.TabSmartDeleteResizing;
-    edtCloseButtonMouseLeaveDelay.Value := ChromeTabs32.Options.Behaviour.TabSmartDeleteResizeCancelDelay;
-    chkRightClickSelect.Checked := ChromeTabs32.Options.Behaviour.TabRightClickSelect;
+    CheckBoxBackgroundDoubleClickMaximise.Checked := ChromeTabsTop.Options.Behaviour.BackgroundDblClickMaximiseRestoreForm;
+    CheckBoxDraggingBackgoundMovesForm.Checked := ChromeTabsTop.Options.Behaviour.BackgroundDragMovesForm;
+    CheckBoxSmartResize.Checked := ChromeTabsTop.Options.Behaviour.TabSmartDeleteResizing;
+    EditCloseButtonMouseLeaveDelay.Value := ChromeTabsTop.Options.Behaviour.TabSmartDeleteResizeCancelDelay;
+    CheckBoxRightClickSelect.Checked := ChromeTabsTop.Options.Behaviour.TabRightClickSelect;
 
-    edtAnimationStepsMovement.Value := ChromeTabs32.Options.Animation.DefaultMovementAnimationTimeMS;
-    edtAnimationStepsStyle.Value := ChromeTabs32.Options.Animation.DefaultStyleAnimationTimeMS;
-    edtAnimationUpdate.Value := ChromeTabs32.Options.Animation.AnimationTimerInterval;
-    cbMovementEaseType.ItemIndex := Integer(ChromeTabs32.Options.Animation.DefaultMovementEaseType);
-    cbStyleEaseType.ItemIndex := Integer(ChromeTabs32.Options.Animation.DefaultStyleEaseType);
+    EditAnimationStepsMovement.Value := ChromeTabsTop.Options.Animation.DefaultMovementAnimationTimeMS;
+    EditAnimationStepsStyle.Value := ChromeTabsTop.Options.Animation.DefaultStyleAnimationTimeMS;
+    EditAnimationUpdate.Value := ChromeTabsTop.Options.Animation.AnimationTimerInterval;
+    ComboBoxMovementEaseType.ItemIndex := Integer(ChromeTabsTop.Options.Animation.DefaultMovementEaseType);
+    ComboBoxStyleEaseType.ItemIndex := Integer(ChromeTabsTop.Options.Animation.DefaultStyleEaseType);
 
-    chkAddTabDefaults.Checked := (ChromeTabs32.Options.Animation.MovementAnimations.TabAdd.UseDefaultEaseType) or (ChromeTabs32.Options.Animation.MovementAnimations.TabAdd.UseDefaultAnimationTime);
-    edtAddTabTime.Value := ChromeTabs32.Options.Animation.MovementAnimations.TabAdd.AnimationTimeMS;
-    cbAddTabEase.ItemIndex := Integer(ChromeTabs32.Options.Animation.MovementAnimations.TabAdd.EaseType);
+    CheckBoxAddTabDefaults.Checked := (ChromeTabsTop.Options.Animation.MovementAnimations.TabAdd.UseDefaultEaseType) or (ChromeTabsTop.Options.Animation.MovementAnimations.TabAdd.UseDefaultAnimationTime);
+    EditAddTabTime.Value := ChromeTabsTop.Options.Animation.MovementAnimations.TabAdd.AnimationTimeMS;
+    ComboBoxAddTabEase.ItemIndex := Integer(ChromeTabsTop.Options.Animation.MovementAnimations.TabAdd.EaseType);
 
-    chkDeleteTabDefaults.Checked := (ChromeTabs32.Options.Animation.MovementAnimations.TabDelete.UseDefaultEaseType) or (ChromeTabs32.Options.Animation.MovementAnimations.TabDelete.UseDefaultAnimationTime);
-    edtDeleteTabTime.Value := ChromeTabs32.Options.Animation.MovementAnimations.TabDelete.AnimationTimeMS;
-    cbDeleteTabEase.ItemIndex := Integer(ChromeTabs32.Options.Animation.MovementAnimations.TabDelete.EaseType);
+    CheckBoxDeleteTabDefaults.Checked := (ChromeTabsTop.Options.Animation.MovementAnimations.TabDelete.UseDefaultEaseType) or (ChromeTabsTop.Options.Animation.MovementAnimations.TabDelete.UseDefaultAnimationTime);
+    EditDeleteTabTime.Value := ChromeTabsTop.Options.Animation.MovementAnimations.TabDelete.AnimationTimeMS;
+    ComboBoxDeleteTabEase.ItemIndex := Integer(ChromeTabsTop.Options.Animation.MovementAnimations.TabDelete.EaseType);
 
-    chkMoveTabDefaults.Checked := (ChromeTabs32.Options.Animation.MovementAnimations.TabMove.UseDefaultEaseType) or (ChromeTabs32.Options.Animation.MovementAnimations.TabMove.UseDefaultAnimationTime);
-    edtMoveTabTime.Value := ChromeTabs32.Options.Animation.MovementAnimations.TabMove.AnimationTimeMS;
-    cbMoveTabEase.ItemIndex := Integer(ChromeTabs32.Options.Animation.MovementAnimations.TabMove.EaseType);
+    CheckBoxMoveTabDefaults.Checked := (ChromeTabsTop.Options.Animation.MovementAnimations.TabMove.UseDefaultEaseType) or (ChromeTabsTop.Options.Animation.MovementAnimations.TabMove.UseDefaultAnimationTime);
+    EditMoveTabTime.Value := ChromeTabsTop.Options.Animation.MovementAnimations.TabMove.AnimationTimeMS;
+    ComboBoxMoveTabEase.ItemIndex := Integer(ChromeTabsTop.Options.Animation.MovementAnimations.TabMove.EaseType);
 
-    chkScrolling.Checked := ChromeTabs32.Options.Scrolling.Enabled;
-    cbScrollButtons.ItemIndex := Integer(ChromeTabs32.Options.Scrolling.ScrollButtons);
-    edtScrollSteps.Value := ChromeTabs32.Options.Scrolling.ScrollStep;
-    edtScrollRepeatDelay.Value := ChromeTabs32.Options.Scrolling.ScrollRepeatDelay;
-    chkAutoHideScrollButtons.Checked := ChromeTabs32.Options.Scrolling.AutoHideButtons;
-    chkScrollWhileDragging.Checked := ChromeTabs32.Options.Scrolling.DragScroll;
-    edtDragScrollEdge.Value := ChromeTabs32.Options.Scrolling.DragScrollOffset;
-    chkMouseWheelScrolling.Checked := ChromeTabs32.Options.Scrolling.MouseWheelScroll;
+    CheckBoxScrolling.Checked := ChromeTabsTop.Options.Scrolling.Enabled;
+    ComboBoxScrollButtons.ItemIndex := Integer(ChromeTabsTop.Options.Scrolling.ScrollButtons);
+    EditScrollSteps.Value := ChromeTabsTop.Options.Scrolling.ScrollStep;
+    EditScrollRepeatDelay.Value := ChromeTabsTop.Options.Scrolling.ScrollRepeatDelay;
+    CheckBoxAutoHideScrollButtons.Checked := ChromeTabsTop.Options.Scrolling.AutoHideButtons;
+    CheckBoxScrollWhileDragging.Checked := ChromeTabsTop.Options.Scrolling.DragScroll;
+    EditDragScrollEdge.Value := ChromeTabsTop.Options.Scrolling.DragScrollOffset;
+    CheckBoxMouseWheelScrolling.Checked := ChromeTabsTop.Options.Scrolling.MouseWheelScroll;
 
-    cbDragType.ItemIndex := Integer(ChromeTabs32.Options.DragDrop.DragType);
-    edtDragImageAapha.Value := ChromeTabs32.Options.DragDrop.DragOutsideImageAlpha;
-    edtDragAwayDistance.Value := ChromeTabs32.Options.DragDrop.DragOutsideDistancePixels;
-    edtDragStartPixels.Value := ChromeTabs32.Options.DragDrop.DragStartPixels;
-    edtDragImageResize.Text := FloatToStr(ChromeTabs32.Options.DragDrop.DragControlImageResizeFactor);
-    chkContrainDraggedTab.Checked := ChromeTabs32.Options.DragDrop.ContrainDraggedTabWithinContainer;
-    cbExternalDragDisplay.ItemIndex := Integer(ChromeTabs32.Options.DragDrop.DragDisplay);
+    ComboBoxDragType.ItemIndex := Integer(ChromeTabsTop.Options.DragDrop.DragType);
+    EditDragImageAapha.Value := ChromeTabsTop.Options.DragDrop.DragOutsideImageAlpha;
+    EditDragAwayDistance.Value := ChromeTabsTop.Options.DragDrop.DragOutsideDistancePixels;
+    EditDragStartPixels.Value := ChromeTabsTop.Options.DragDrop.DragStartPixels;
+    EditDragImageResize.Text := FloatToStr(ChromeTabsTop.Options.DragDrop.DragControlImageResizeFactor);
+    CheckBoxContrainDraggedTab.Checked := ChromeTabsTop.Options.DragDrop.ContrainDraggedTabWithinContainer;
+    ComboBoxExternalDragDisplay.ItemIndex := Integer(ChromeTabsTop.Options.DragDrop.DragDisplay);
 
-    edtSpinnerAnimationUpdate.Value := ChromeTabs32.Options.Display.TabSpinners.AnimationUpdateMS;
-    chkHideImagesWhenSpinnerActive.Checked := ChromeTabs32.Options.Display.TabSpinners.HideImagesWhenSpinnerVisible;
+    EditSpinnerAnimationUpdate.Value := ChromeTabsTop.Options.Display.TabSpinners.AnimationUpdateMS;
+    CheckBoxHideImagesWhenSpinnerActive.Checked := ChromeTabsTop.Options.Display.TabSpinners.HideImagesWhenSpinnerVisible;
 
-    chkSpinnerUploadReverseDirection.Checked := ChromeTabs32.Options.Display.TabSpinners.Upload.ReverseDirection;
-    edtSpinnerUploadAnimationStep.Value := ChromeTabs32.Options.Display.TabSpinners.Upload.RenderedAnimationStep;
-    edtSpinnerUploadSweepAngle.Value := ChromeTabs32.Options.Display.TabSpinners.Upload.SweepAngle;
+    CheckBoxSpinnerUploadReverseDirection.Checked := ChromeTabsTop.Options.Display.TabSpinners.Upload.ReverseDirection;
+    EditSpinnerUploadAnimationStep.Value := ChromeTabsTop.Options.Display.TabSpinners.Upload.RenderedAnimationStep;
+    EditSpinnerUploadSweepAngle.Value := ChromeTabsTop.Options.Display.TabSpinners.Upload.SweepAngle;
 
-    edtSpinnerUploadWidth.Value := ChromeTabs32.Options.Display.TabSpinners.Upload.Position.Width;
-    edtSpinnerUploadHeight.Value := ChromeTabs32.Options.Display.TabSpinners.Upload.Position.Height;
-    edtSpinnerUploadOffsetX.Value := ChromeTabs32.Options.Display.TabSpinners.Upload.Position.Offsets.Horizontal;
-    edtSpinnerUploadOffsetY.Value := ChromeTabs32.Options.Display.TabSpinners.Upload.Position.Offsets.Vertical;
+    EditSpinnerUploadWidth.Value := ChromeTabsTop.Options.Display.TabSpinners.Upload.Position.Width;
+    EditSpinnerUploadHeight.Value := ChromeTabsTop.Options.Display.TabSpinners.Upload.Position.Height;
+    EditSpinnerUploadOffsetX.Value := ChromeTabsTop.Options.Display.TabSpinners.Upload.Position.Offsets.Horizontal;
+    EditSpinnerUploadOffsetY.Value := ChromeTabsTop.Options.Display.TabSpinners.Upload.Position.Offsets.Vertical;
 
-    chkSpinnerDownloadReverseDirection.Checked := ChromeTabs32.Options.Display.TabSpinners.Download.ReverseDirection;
-    edtSpinnerDownloadAnimationStep.Value := ChromeTabs32.Options.Display.TabSpinners.Download.RenderedAnimationStep;
-    edtSpinnerDownloadSweepAngle.Value := ChromeTabs32.Options.Display.TabSpinners.Download.SweepAngle;
+    CheckBoxSpinnerDownloadReverseDirection.Checked := ChromeTabsTop.Options.Display.TabSpinners.Download.ReverseDirection;
+    EditSpinnerDownloadAnimationStep.Value := ChromeTabsTop.Options.Display.TabSpinners.Download.RenderedAnimationStep;
+    EditSpinnerDownloadSweepAngle.Value := ChromeTabsTop.Options.Display.TabSpinners.Download.SweepAngle;
 
-    edtSpinnerDownloadWidth.Value := ChromeTabs32.Options.Display.TabSpinners.Download.Position.Width;
-    edtSpinnerDownloadHeight.Value := ChromeTabs32.Options.Display.TabSpinners.Download.Position.Height;
-    edtSpinnerDownloadOffsetX.Value := ChromeTabs32.Options.Display.TabSpinners.Download.Position.Offsets.Horizontal;
-    edtSpinnerDownloadOffsetY.Value := ChromeTabs32.Options.Display.TabSpinners.Download.Position.Offsets.Vertical;
+    EditSpinnerDownloadWidth.Value := ChromeTabsTop.Options.Display.TabSpinners.Download.Position.Width;
+    EditSpinnerDownloadHeight.Value := ChromeTabsTop.Options.Display.TabSpinners.Download.Position.Height;
+    EditSpinnerDownloadOffsetX.Value := ChromeTabsTop.Options.Display.TabSpinners.Download.Position.Offsets.Horizontal;
+    EditSpinnerDownloadOffsetY.Value := ChromeTabsTop.Options.Display.TabSpinners.Download.Position.Offsets.Vertical;
 
-    if ChromeTabs32.Options.DragDrop.DragCursor = crDrag then
-      cbDragCursor.ItemIndex := 1
+    if ChromeTabsTop.Options.DragDrop.DragCursor = crDrag then
+      ComboBoxDragCursor.ItemIndex := 1
     else
-      cbDragCursor.ItemIndex := 0;
+      ComboBoxDragCursor.ItemIndex := 0;
   finally
-    FUpdatingProperties := FALSE;
+    FUpdatingProperties := False;
   end;
 end;
 
-procedure TfrmMain.GUIToChromeTabControlProperties(ChromeTabs32: TChromeTabs32);
+procedure TfrmMain.GUIToChromeTabControlProperties(ChromeTabsTop: TChromeTabs32);
 begin
-  if (ChromeTabs32 <> nil) and (not FUpdatingProperties) then
+  if (ChromeTabsTop <> nil) and (not FUpdatingProperties) then
   begin
-    ChromeTabs32.BeginUpdate;
+    ChromeTabsTop.BeginUpdate;
     try
-      ChromeTabs32.Options.Display.TabContainer.OverlayButtons := chkScrollOverlayButtons.Checked;
+      ChromeTabsTop.Options.Display.TabContainer.OverlayButtons := CheckBoxScrollOverlayButtons.Checked;
 
-      ChromeTabs32.Options.Display.CloseButton.Visibility := TCloseButtonVisiblity(cbCloseButtonVisibility.ItemIndex);
-      ChromeTabs32.Options.Display.CloseButton.AutoHide := chkCloseButtonAutoHide.Checked;
-      ChromeTabs32.Options.Display.CloseButton.AutoHideWidth := edtCloseButtonAutoHideWidth.Value;
-      ChromeTabs32.Options.Display.CloseButton.Offsets.Vertical := edtCloseButtonVerticalOffset.Value;
-      ChromeTabs32.Options.Display.CloseButton.Offsets.Horizontal := edtCloseButtonHorzOffset.Value;
-      ChromeTabs32.Options.Display.CloseButton.Height := edtCloseButtonHeight.Value;
-      ChromeTabs32.Options.Display.CloseButton.Width := edtCloseButtonWidth.Value;
-      ChromeTabs32.Options.Display.CloseButton.CrossRadialOffset := edtCrossOffset.Value;
+      ChromeTabsTop.Options.Display.CloseButton.Visibility := TCloseButtonVisiblity(ComboBoxCloseButtonVisibility.ItemIndex);
+      ChromeTabsTop.Options.Display.CloseButton.AutoHide := CheckBoxCloseButtonAutoHide.Checked;
+      ChromeTabsTop.Options.Display.CloseButton.AutoHideWidth := EditCloseButtonAutoHideWidth.Value;
+      ChromeTabsTop.Options.Display.CloseButton.Offsets.Vertical := EditCloseButtonVerticalOffset.Value;
+      ChromeTabsTop.Options.Display.CloseButton.Offsets.Horizontal := EditCloseButtonHorzOffset.Value;
+      ChromeTabsTop.Options.Display.CloseButton.Height := EditCloseButtonHeight.Value;
+      ChromeTabsTop.Options.Display.CloseButton.Width := EditCloseButtonWidth.Value;
+      ChromeTabsTop.Options.Display.CloseButton.CrossRadialOffset := EditCrossOffset.Value;
 
-      ChromeTabs32.Options.Display.AddButton.Visibility := TAddButtonVisibility(cbAddButtonVisibility.ItemIndex);
-      ChromeTabs32.Options.Display.AddButton.Offsets.Vertical := edtAddButtonVerticalOffset.Value;
-      ChromeTabs32.Options.Display.AddButton.Offsets.Horizontal := edtAddButtonHorzOffset.Value;
-      ChromeTabs32.Options.Display.AddButton.HorizontalOffsetFloating := edtAddButtonFloatingHorzOffset.Value;
-      ChromeTabs32.Options.Display.AddButton.Height := edtAddButtonHeight.Value;
-      ChromeTabs32.Options.Display.AddButton.Width := edtAddButtonWidth.Value;
+      ChromeTabsTop.Options.Display.AddButton.Visibility := TAddButtonVisibility(ComboBoxAddButtonVisibility.ItemIndex);
+      ChromeTabsTop.Options.Display.AddButton.Offsets.Vertical := EditAddButtonVerticalOffset.Value;
+      ChromeTabsTop.Options.Display.AddButton.Offsets.Horizontal := EditAddButtonHorzOffset.Value;
+      ChromeTabsTop.Options.Display.AddButton.HorizontalOffsetFloating := EditAddButtonFloatingHorzOffset.Value;
+      ChromeTabsTop.Options.Display.AddButton.Height := EditAddButtonHeight.Value;
+      ChromeTabsTop.Options.Display.AddButton.Width := EditAddButtonWidth.Value;
 
-      ChromeTabs32.Options.Display.AddButton.ShowPlusSign:= chkShowPlus.Checked;
+      ChromeTabsTop.Options.Display.AddButton.ShowPlusSign:= CheckBoxShowPlus.Checked;
 
-      ChromeTabs32.Options.Display.ScrollButtonLeft.Height := edtLeftScrollButtonHeight.Value;
-      ChromeTabs32.Options.Display.ScrollButtonLeft.Width := edtLeftScrollButtonWidth.Value;
-      ChromeTabs32.Options.Display.ScrollButtonLeft.Offsets.Vertical := edtLeftScrollButtonsVerticalOffset.Value;
-      ChromeTabs32.Options.Display.ScrollButtonLeft.Offsets.Horizontal := edtLeftScrollButtonsHorzOffset.Value;
+      ChromeTabsTop.Options.Display.ScrollButtonLeft.Height := EditLeftScrollButtonHeight.Value;
+      ChromeTabsTop.Options.Display.ScrollButtonLeft.Width := EditLeftScrollButtonWidth.Value;
+      ChromeTabsTop.Options.Display.ScrollButtonLeft.Offsets.Vertical := EditLeftScrollButtonsVerticalOffset.Value;
+      ChromeTabsTop.Options.Display.ScrollButtonLeft.Offsets.Horizontal := EditLeftScrollButtonsHorzOffset.Value;
 
-      ChromeTabs32.Options.Display.ScrollButtonRight.Height := edtRightScrollButtonHeight.Value;
-      ChromeTabs32.Options.Display.ScrollButtonRight.Width := edtRightScrollButtonWidth.Value;
-      ChromeTabs32.Options.Display.ScrollButtonRight.Offsets.Vertical := edtRightScrollButtonVerticalOffset.Value;
-      ChromeTabs32.Options.Display.ScrollButtonRight.Offsets.Horizontal := edtRightScrollButtonHorzOffset.Value;
+      ChromeTabsTop.Options.Display.ScrollButtonRight.Height := EditRightScrollButtonHeight.Value;
+      ChromeTabsTop.Options.Display.ScrollButtonRight.Width := EditRightScrollButtonWidth.Value;
+      ChromeTabsTop.Options.Display.ScrollButtonRight.Offsets.Vertical := EditRightScrollButtonVerticalOffset.Value;
+      ChromeTabsTop.Options.Display.ScrollButtonRight.Offsets.Horizontal := EditRightScrollButtonHorzOffset.Value;
 
-      ChromeTabs32.Options.Display.TabContainer.TransparentBackground := chkTransparentBackground.Checked;
-      ChromeTabs32.Options.Display.TabContainer.PaddingLeft := edtContainerOffsetLeft.Value;
-      ChromeTabs32.Options.Display.TabContainer.PaddingRight := edtContainerOffsetRight.Value;
+      ChromeTabsTop.Options.Display.TabContainer.TransparentBackground := CheckBoxTransparentBackground.Checked;
+      ChromeTabsTop.Options.Display.TabContainer.PaddingLeft := EditContainerOffsetLeft.Value;
+      ChromeTabsTop.Options.Display.TabContainer.PaddingRight := EditContainerOffsetRight.Value;
 
-      ChromeTabs32.Options.Display.TabModifiedGlow.Style := TChromeTabModifiedStyle(cbModifiedGlowStyle.ItemIndex);
-      ChromeTabs32.Options.Display.TabModifiedGlow.VerticalOffset := edtModifiedGlowVerticalOffset.Value;
-      ChromeTabs32.Options.Display.TabModifiedGlow.Height := edtModifiedGlowHeight.Value;
-      ChromeTabs32.Options.Display.TabModifiedGlow.Width := edtModifiedGlowWidth.Value;
-      ChromeTabs32.Options.Display.TabModifiedGlow.AnimationPeriodMS := edtModifiedGlowAnimationPeriod.Value;
-      ChromeTabs32.Options.Display.TabModifiedGlow.AnimationUpdateMS := edtModifiedGlowAnimationUpdate.Value;
-      ChromeTabs32.Options.Display.TabModifiedGlow.EaseType := TChromeTabs32EaseType(cbModifiedGlowEaseType.ItemIndex);
+      ChromeTabsTop.Options.Display.TabModifiedGlow.Style := TChromeTabModifiedStyle(ComboBoxModifiedGlowStyle.ItemIndex);
+      ChromeTabsTop.Options.Display.TabModifiedGlow.VerticalOffset := EditModifiedGlowVerticalOffset.Value;
+      ChromeTabsTop.Options.Display.TabModifiedGlow.Height := EditModifiedGlowHeight.Value;
+      ChromeTabsTop.Options.Display.TabModifiedGlow.Width := EditModifiedGlowWidth.Value;
+      ChromeTabsTop.Options.Display.TabModifiedGlow.AnimationPeriodMS := EditModifiedGlowAnimationPeriod.Value;
+      ChromeTabsTop.Options.Display.TabModifiedGlow.AnimationUpdateMS := EditModifiedGlowAnimationUpdate.Value;
+      ChromeTabsTop.Options.Display.TabModifiedGlow.EaseType := TChromeTabs32EaseType(ComboBoxModifiedGlowEaseType.ItemIndex);
 
-      ChromeTabs32.Options.Display.TabMouseGlow.Visible := chkMouseGlowVisible.Checked;
-      ChromeTabs32.Options.Display.TabMouseGlow.Offsets.Vertical := edtMouseGlowVerticalOffset.Value;
-      ChromeTabs32.Options.Display.TabMouseGlow.Height := edtMouseGlowHeight.Value;
-      ChromeTabs32.Options.Display.TabMouseGlow.Width := edtMouseGlowWidth.Value;
-      ChromeTabs32.Options.Display.TabMouseGlow.Offsets.Horizontal := edtMouseGlowHorzOffset.Value;
+      ChromeTabsTop.Options.Display.TabMouseGlow.Visible := CheckBoxMouseGlowVisible.Checked;
+      ChromeTabsTop.Options.Display.TabMouseGlow.Offsets.Vertical := EditMouseGlowVerticalOffset.Value;
+      ChromeTabsTop.Options.Display.TabMouseGlow.Height := EditMouseGlowHeight.Value;
+      ChromeTabsTop.Options.Display.TabMouseGlow.Width := EditMouseGlowWidth.Value;
+      ChromeTabsTop.Options.Display.TabMouseGlow.Offsets.Horizontal := EditMouseGlowHorzOffset.Value;
 
-      ChromeTabs32.Options.Display.Tabs.ContentOffsetLeft := edtTabContentMarginLeft.Value;
-      ChromeTabs32.Options.Display.Tabs.ContentOffsetRight := edtTabContentMarginRight.Value;
+      ChromeTabsTop.Options.Display.Tabs.ContentOffsetLeft := EditTabContentMarginLeft.Value;
+      ChromeTabsTop.Options.Display.Tabs.ContentOffsetRight := EditTabContentMarginRight.Value;
 
-      ChromeTabs32.Options.Display.Tabs.PinnedWidth := edtPinnedWidth.Value;
-      ChromeTabs32.Options.Display.Tabs.MaxWidth := edtMaxTabWidth.Value;
-      ChromeTabs32.Options.Display.Tabs.MinWidth := edtMinTabWidth.Value;
-      ChromeTabs32.Height := edtTabHeight.Value;
-      ChromeTabs32.Options.Display.Tabs.OffsetTop := edtTabOffsetTop.Value;
-      ChromeTabs32.Options.Display.Tabs.OffsetLeft := edtTabOffsetLeft.Value;
-      ChromeTabs32.Options.Display.Tabs.OffsetBottom := edtTabOffsetBottom.Value;
-      ChromeTabs32.Options.Display.Tabs.OffsetRight := edtTabOffsetRight.Value;
-      ChromeTabs32.Options.Display.Tabs.WordWrap := chkTabWordWrap.Checked;
-      ChromeTabs32.Options.Display.Tabs.TextAlignmentHorizontal := TAlignment(cbTextAlignment.ItemIndex);
-      ChromeTabs32.Options.Display.Tabs.TextAlignmentVertical := TVerticalAlignment(cbTextVerticalAlignment.ItemIndex);
-      ChromeTabs32.Options.Display.Tabs.TextTrimType := TTextTrimType(cbTextTrimming.ItemIndex);
-      ChromeTabs32.Options.Display.Tabs.TabOverlap := edtTabOverlap.Value;
-      ChromeTabs32.Options.Display.Tabs.SeeThroughTabs := chkSeeThroughTabs.Checked;
-      ChromeTabs32.Options.Display.Tabs.TabWidthFromContent := chkSetTabWidthsFromCaptions.Checked;
-      ChromeTabs32.Options.Display.Tabs.ShowPinnedTabText := chkShowTextOnPinnedTabs.Checked;
+      ChromeTabsTop.Options.Display.Tabs.PinnedWidth := EditPinnedWidth.Value;
+      ChromeTabsTop.Options.Display.Tabs.MaxWidth := EditMaxTabWidth.Value;
+      ChromeTabsTop.Options.Display.Tabs.MinWidth := EditMinTabWidth.Value;
+      ChromeTabsTop.Height := EditTabHeight.Value;
+      ChromeTabsTop.Options.Display.Tabs.OffsetTop := EditTabOffsetTop.Value;
+      ChromeTabsTop.Options.Display.Tabs.OffsetLeft := EditTabOffsetLeft.Value;
+      ChromeTabsTop.Options.Display.Tabs.OffsetBottom := EditTabOffsetBottom.Value;
+      ChromeTabsTop.Options.Display.Tabs.OffsetRight := EditTabOffsetRight.Value;
+      ChromeTabsTop.Options.Display.Tabs.WordWrap := CheckBoxTabWordWrap.Checked;
+      ChromeTabsTop.Options.Display.Tabs.TextAlignmentHorizontal := TAlignment(ComboBoxTextAlignment.ItemIndex);
+      ChromeTabsTop.Options.Display.Tabs.TextAlignmentVertical := TVerticalAlignment(ComboBoxTextVerticalAlignment.ItemIndex);
+      ChromeTabsTop.Options.Display.Tabs.TextTrimType := TTextTrimType(ComboBoxTextTrimming.ItemIndex);
+      ChromeTabsTop.Options.Display.Tabs.TabOverlap := EditTabOverlap.Value;
+      ChromeTabsTop.Options.Display.Tabs.SeeThroughTabs := CheckBoxSeeThroughTabs.Checked;
+      ChromeTabsTop.Options.Display.Tabs.TabWidthFromContent := CheckBoxSetTabWidthsFromCaptions.Checked;
+      ChromeTabsTop.Options.Display.Tabs.ShowPinnedTabText := CheckBoxShowTextOnPinnedTabs.Checked;
 
-      ChromeTabs32.BiDiMode := TBiDiMode(cbBidiMode.ItemIndex);
+      ChromeTabsTop.BiDiMode := TBiDiMode(ComboBoxBidiMode.ItemIndex);
 
-      ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Name := cbFontName.Text;
-      ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Size := edtFontSize.Value;
-      ChromeTabs32.LookAndFeel.Tabs.DefaultFont.Color := edtFontColor.Selected;
+      ChromeTabsTop.LookAndFeel.Tabs.DefaultFont.Name := ComboBoxFontName.Text;
+      ChromeTabsTop.LookAndFeel.Tabs.DefaultFont.Size := EditFontSize.Value;
+      ChromeTabsTop.LookAndFeel.Tabs.DefaultFont.Color := EditFontColor.Selected;
 
-      ChromeTabs32.Options.Behaviour.BackgroundDblClickMaximiseRestoreForm := chkBackgroundDoubleClickMaxmise.Checked;
-      ChromeTabs32.Options.Behaviour.BackgroundDragMovesForm := chkDraggingBackgoundMovesForm.Checked;
-      ChromeTabs32.Options.Behaviour.TabSmartDeleteResizing := chkSmartResize.Checked;
-      ChromeTabs32.Options.Behaviour.TabSmartDeleteResizeCancelDelay := edtCloseButtonMouseLeaveDelay.Value;
-      ChromeTabs32.Options.Behaviour.TabRightClickSelect := chkRightClickSelect.Checked;
+      ChromeTabsTop.Options.Behaviour.BackgroundDblClickMaximiseRestoreForm := CheckBoxBackgroundDoubleClickMaximise.Checked;
+      ChromeTabsTop.Options.Behaviour.BackgroundDragMovesForm := CheckBoxDraggingBackgoundMovesForm.Checked;
+      ChromeTabsTop.Options.Behaviour.TabSmartDeleteResizing := CheckBoxSmartResize.Checked;
+      ChromeTabsTop.Options.Behaviour.TabSmartDeleteResizeCancelDelay := EditCloseButtonMouseLeaveDelay.Value;
+      ChromeTabsTop.Options.Behaviour.TabRightClickSelect := CheckBoxRightClickSelect.Checked;
 
-      ChromeTabs32.Options.Animation.DefaultMovementAnimationTimeMS := edtAnimationStepsMovement.Value;
-      ChromeTabs32.Options.Animation.DefaultStyleAnimationTimeMS := edtAnimationStepsStyle.Value;
-      ChromeTabs32.Options.Animation.AnimationTimerInterval := edtAnimationUpdate.Value;
-      ChromeTabs32.Options.Animation.DefaultMovementEaseType := TChromeTabs32EaseType(cbMovementEaseType.ItemIndex);
-      ChromeTabs32.Options.Animation.DefaultStyleEaseType := TChromeTabs32EaseType(cbStyleEaseType.ItemIndex);
+      ChromeTabsTop.Options.Animation.DefaultMovementAnimationTimeMS := EditAnimationStepsMovement.Value;
+      ChromeTabsTop.Options.Animation.DefaultStyleAnimationTimeMS := EditAnimationStepsStyle.Value;
+      ChromeTabsTop.Options.Animation.AnimationTimerInterval := EditAnimationUpdate.Value;
+      ChromeTabsTop.Options.Animation.DefaultMovementEaseType := TChromeTabs32EaseType(ComboBoxMovementEaseType.ItemIndex);
+      ChromeTabsTop.Options.Animation.DefaultStyleEaseType := TChromeTabs32EaseType(ComboBoxStyleEaseType.ItemIndex);
 
-      ChromeTabs32.Options.Animation.MovementAnimations.TabAdd.UseDefaultEaseType := chkAddTabDefaults.Checked;
-      ChromeTabs32.Options.Animation.MovementAnimations.TabAdd.UseDefaultAnimationTime := chkAddTabDefaults.Checked;
-      ChromeTabs32.Options.Animation.MovementAnimations.TabAdd.AnimationTimeMS := edtAddTabTime.Value;
-      ChromeTabs32.Options.Animation.MovementAnimations.TabAdd.EaseType := TChromeTabs32EaseType(cbAddTabEase.ItemIndex);
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabAdd.UseDefaultEaseType := CheckBoxAddTabDefaults.Checked;
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabAdd.UseDefaultAnimationTime := CheckBoxAddTabDefaults.Checked;
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabAdd.AnimationTimeMS := EditAddTabTime.Value;
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabAdd.EaseType := TChromeTabs32EaseType(ComboBoxAddTabEase.ItemIndex);
 
-      ChromeTabs32.Options.Animation.MovementAnimations.TabDelete.UseDefaultEaseType := chkDeleteTabDefaults.Checked;
-      ChromeTabs32.Options.Animation.MovementAnimations.TabDelete.UseDefaultAnimationTime := chkDeleteTabDefaults.Checked;
-      ChromeTabs32.Options.Animation.MovementAnimations.TabDelete.AnimationTimeMS := edtDeleteTabTime.Value;
-      ChromeTabs32.Options.Animation.MovementAnimations.TabDelete.EaseType := TChromeTabs32EaseType(cbDeleteTabEase.ItemIndex);
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabDelete.UseDefaultEaseType := CheckBoxDeleteTabDefaults.Checked;
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabDelete.UseDefaultAnimationTime := CheckBoxDeleteTabDefaults.Checked;
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabDelete.AnimationTimeMS := EditDeleteTabTime.Value;
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabDelete.EaseType := TChromeTabs32EaseType(ComboBoxDeleteTabEase.ItemIndex);
 
-      ChromeTabs32.Options.Animation.MovementAnimations.TabMove.UseDefaultEaseType := chkMoveTabDefaults.Checked;
-      ChromeTabs32.Options.Animation.MovementAnimations.TabMove.UseDefaultAnimationTime := chkMoveTabDefaults.Checked;
-      ChromeTabs32.Options.Animation.MovementAnimations.TabMove.AnimationTimeMS := edtMoveTabTime.Value;
-      ChromeTabs32.Options.Animation.MovementAnimations.TabMove.EaseType := TChromeTabs32EaseType(cbMoveTabEase.ItemIndex);
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabMove.UseDefaultEaseType := CheckBoxMoveTabDefaults.Checked;
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabMove.UseDefaultAnimationTime := CheckBoxMoveTabDefaults.Checked;
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabMove.AnimationTimeMS := EditMoveTabTime.Value;
+      ChromeTabsTop.Options.Animation.MovementAnimations.TabMove.EaseType := TChromeTabs32EaseType(ComboBoxMoveTabEase.ItemIndex);
 
-      ChromeTabs32.Options.Scrolling.Enabled := chkScrolling.Checked;
-      ChromeTabs32.Options.Scrolling.ScrollButtons := TChromeTabs32crollButtons(cbScrollButtons.ItemIndex);
-      ChromeTabs32.Options.Scrolling.ScrollStep := edtScrollSteps.Value;
-      ChromeTabs32.Options.Scrolling.ScrollRepeatDelay := edtScrollRepeatDelay.Value;
-      ChromeTabs32.Options.Scrolling.AutoHideButtons := chkAutoHideScrollButtons.Checked;
-      ChromeTabs32.Options.Scrolling.DragScroll := chkScrollWhileDragging.Checked;
-      ChromeTabs32.Options.Scrolling.DragScrollOffset := edtDragScrollEdge.Value;
-      ChromeTabs32.Options.Scrolling.MouseWheelScroll := chkMouseWheelScrolling.Checked;
+      ChromeTabsTop.Options.Scrolling.Enabled := CheckBoxScrolling.Checked;
+      ChromeTabsTop.Options.Scrolling.ScrollButtons := TChromeTabs32crollButtons(ComboBoxScrollButtons.ItemIndex);
+      ChromeTabsTop.Options.Scrolling.ScrollStep := EditScrollSteps.Value;
+      ChromeTabsTop.Options.Scrolling.ScrollRepeatDelay := EditScrollRepeatDelay.Value;
+      ChromeTabsTop.Options.Scrolling.AutoHideButtons := CheckBoxAutoHideScrollButtons.Checked;
+      ChromeTabsTop.Options.Scrolling.DragScroll := CheckBoxScrollWhileDragging.Checked;
+      ChromeTabsTop.Options.Scrolling.DragScrollOffset := EditDragScrollEdge.Value;
+      ChromeTabsTop.Options.Scrolling.MouseWheelScroll := CheckBoxMouseWheelScrolling.Checked;
 
-      ChromeTabs32.Options.DragDrop.DragType := TChromeTabDragType(cbDragType.ItemIndex);
-      ChromeTabs32.Options.DragDrop.DragOutsideImageAlpha := edtDragImageAapha.Value;
-      ChromeTabs32.Options.DragDrop.DragOutsideDistancePixels := edtDragAwayDistance.Value;
-      ChromeTabs32.Options.DragDrop.DragStartPixels := edtDragStartPixels.Value;
-      ChromeTabs32.Options.DragDrop.DragControlImageResizeFactor := StrToFloatDef(edtDragImageResize.Text, 0.5);
-      ChromeTabs32.Options.DragDrop.DragDisplay := TChromeTabDragDisplay(cbExternalDragDisplay.ItemIndex);
-      ChromeTabs32.Options.DragDrop.ContrainDraggedTabWithinContainer := chkContrainDraggedTab.Checked;
+      ChromeTabsTop.Options.DragDrop.DragType := TChromeTabDragType(ComboBoxDragType.ItemIndex);
+      ChromeTabsTop.Options.DragDrop.DragOutsideImageAlpha := EditDragImageAapha.Value;
+      ChromeTabsTop.Options.DragDrop.DragOutsideDistancePixels := EditDragAwayDistance.Value;
+      ChromeTabsTop.Options.DragDrop.DragStartPixels := EditDragStartPixels.Value;
+      ChromeTabsTop.Options.DragDrop.DragControlImageResizeFactor := StrToFloatDef(EditDragImageResize.Text, 0.5);
+      ChromeTabsTop.Options.DragDrop.DragDisplay := TChromeTabDragDisplay(ComboBoxExternalDragDisplay.ItemIndex);
+      ChromeTabsTop.Options.DragDrop.ContrainDraggedTabWithinContainer := CheckBoxContrainDraggedTab.Checked;
 
-      ChromeTabs32.Options.Display.TabSpinners.AnimationUpdateMS := edtSpinnerAnimationUpdate.Value;
-      ChromeTabs32.Options.Display.TabSpinners.HideImagesWhenSpinnerVisible := chkHideImagesWhenSpinnerActive.Checked;
+      ChromeTabsTop.Options.Display.TabSpinners.AnimationUpdateMS := EditSpinnerAnimationUpdate.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.HideImagesWhenSpinnerVisible := CheckBoxHideImagesWhenSpinnerActive.Checked;
 
-      ChromeTabs32.Options.Display.TabSpinners.Upload.ReverseDirection := chkSpinnerUploadReverseDirection.Checked;
-      ChromeTabs32.Options.Display.TabSpinners.Upload.RenderedAnimationStep := edtSpinnerUploadAnimationStep.Value;
-      ChromeTabs32.Options.Display.TabSpinners.Upload.SweepAngle := edtSpinnerUploadSweepAngle.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Upload.ReverseDirection := CheckBoxSpinnerUploadReverseDirection.Checked;
+      ChromeTabsTop.Options.Display.TabSpinners.Upload.RenderedAnimationStep := EditSpinnerUploadAnimationStep.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Upload.SweepAngle := EditSpinnerUploadSweepAngle.Value;
 
-      ChromeTabs32.Options.Display.TabSpinners.Upload.Position.Width := edtSpinnerUploadWidth.Value;
-      ChromeTabs32.Options.Display.TabSpinners.Upload.Position.Height := edtSpinnerUploadHeight.Value;
-      ChromeTabs32.Options.Display.TabSpinners.Upload.Position.Offsets.Horizontal := edtSpinnerUploadOffsetX.Value;
-      ChromeTabs32.Options.Display.TabSpinners.Upload.Position.Offsets.Vertical := edtSpinnerUploadOffsetY.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Upload.Position.Width := EditSpinnerUploadWidth.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Upload.Position.Height := EditSpinnerUploadHeight.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Upload.Position.Offsets.Horizontal := EditSpinnerUploadOffsetX.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Upload.Position.Offsets.Vertical := EditSpinnerUploadOffsetY.Value;
 
-      ChromeTabs32.Options.Display.TabSpinners.Download.ReverseDirection := chkSpinnerDownloadReverseDirection.Checked;
-      ChromeTabs32.Options.Display.TabSpinners.Download.RenderedAnimationStep := edtSpinnerDownloadAnimationStep.Value;
-      ChromeTabs32.Options.Display.TabSpinners.Download.SweepAngle := edtSpinnerDownloadSweepAngle.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Download.ReverseDirection := CheckBoxSpinnerDownloadReverseDirection.Checked;
+      ChromeTabsTop.Options.Display.TabSpinners.Download.RenderedAnimationStep := EditSpinnerDownloadAnimationStep.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Download.SweepAngle := EditSpinnerDownloadSweepAngle.Value;
 
-      ChromeTabs32.Options.Display.TabSpinners.Download.Position.Width := edtSpinnerDownloadWidth.Value;
-      ChromeTabs32.Options.Display.TabSpinners.Download.Position.Height := edtSpinnerDownloadHeight.Value;
-      ChromeTabs32.Options.Display.TabSpinners.Download.Position.Offsets.Horizontal := edtSpinnerDownloadOffsetX.Value;
-      ChromeTabs32.Options.Display.TabSpinners.Download.Position.Offsets.Vertical := edtSpinnerDownloadOffsetY.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Download.Position.Width := EditSpinnerDownloadWidth.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Download.Position.Height := EditSpinnerDownloadHeight.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Download.Position.Offsets.Horizontal := EditSpinnerDownloadOffsetX.Value;
+      ChromeTabsTop.Options.Display.TabSpinners.Download.Position.Offsets.Vertical := EditSpinnerDownloadOffsetY.Value;
 
-      if cbDragCursor.ItemIndex = 0 then
-        ChromeTabs32.Options.DragDrop.DragCursor := crDefault
+      if ComboBoxDragCursor.ItemIndex = 0 then
+        ChromeTabsTop.Options.DragDrop.DragCursor := crDefault
       else
-        ChromeTabs32.Options.DragDrop.DragCursor := crDrag;
+        ChromeTabsTop.Options.DragDrop.DragCursor := crDrag;
 
       {$IFDEF USE_GLASS_FORM}
-      if chkDisplayTopTabsInTitleBar.Checked then
-        Self.ChromeTabs32 := ChromeTabs32
+      if CheckBoxDisplayTopTabsInTitleBar.Checked then
+        Self.ChromeTabsTop := ChromeTabsTop
       else
       begin
-        Self.ChromeTabs32 := nil;
+        Self.ChromeTabsTop := nil;
 
-        ChromeTabs32.Align := alTop;
-        ChromeTabs32.Top := 0;
+        ChromeTabsTop.Align := alTop;
+        ChromeTabsTop.Top := 0;
       end;
       {$ENDIF}
 
-      ChromeTabs32.Options.Behaviour.DebugMode := chkDebugLog.Checked;
+      ChromeTabsTop.Options.Behaviour.DebugMode := CheckBoxDebugLog.Checked;
     finally
-      FUpdatingProperties := FALSE;
+      FUpdatingProperties := False;
 
-      ChromeTabs32.EndUpdate;
+      ChromeTabsTop.EndUpdate;
     end;
   end;
 
-  pnlTop.Color := ChromeTabs32.LookAndFeel.Tabs.Active.Style.StopColor;
+  PanelTop.Color := ChromeTabsTop.LookAndFeel.Tabs.Active.Style.StopColor;
 
   {$IFDEF USE_GLASS_FORM}
-  if not chkDisplayTopTabsInTitleBar.Checked then
+  if not CheckBoxDisplayTopTabsInTitleBar.Checked then
   begin
-    GlassFrame.Enabled := chkUseGlass.Checked;
-    GlassFrame.Top := edtGlassHeightTop.Value;
+    GlassFrame.Enabled := CheckBoxUseGlass.Checked;
+    GlassFrame.Top := EditGlassHeightTop.Value;
   end;
 
-  GlassFrame.Bottom := edtGlassHeightBottom.Value;
+  GlassFrame.Bottom := EditGlassHeightBottom.Value;
   {$ENDIF}
 end;
 
@@ -1594,14 +1605,15 @@ procedure TfrmMain.ChromeTabs32ActiveTabChanging(Sender: TObject; AOldTab,
   ANewTab: TChromeTab; var Allow: Boolean);
 begin
   if (AOldTab <> nil) and (ANewTab <> nil) then
-    FLogOtherEvents.Log('OnActiveTabChanging [OldTabIndex = %d, NewTabIndex = %d]', [AOldTab.Index, ANewTab.Index]);
+    FLogOtherEvents.Log('OnActiveTabChanging [OldTabIndex = %d, NewTabIndex = %d]', [
+      AOldTab.Index, ANewTab.Index]);
 end;
 
 procedure TfrmMain.ChromeTabs32AfterDrawItem(Sender: TObject;
   const TargetCanvas: TCanvas32; ItemRect: TRect; ItemType: TChromeTabItemType;
   TabIndex: Integer);
 begin
-  if (cbSelectTabs.ItemIndex = 0) and (chkEnableEvents.Checked) then
+  if (ComboBoxSelectTabs.ItemIndex = 0) and (CheckBoxEnableEvents.Checked) then
   begin
     IncrementEventListItemCount(8);
 
@@ -1614,20 +1626,22 @@ procedure TfrmMain.ChromeTabs32AnimateMovement(Sender: TObject;
   ChromeTabs32Control: TBaseChromeTabs32Control; var AnimationTimeMS: Cardinal;
   var EaseType: TChromeTabs32EaseType);
 begin
-  FLogOtherEvents.Log('OnAnimateMovement [Control = %s, AnimationTimeMS = %d, EaseType = %s]', [ChromeTabs32ControlTypeDescriptions[ChromeTabs32Control.ControlType],
-                                                                                                AnimationTimeMS,
-                                                                                                ChromeTabs32EaseTypeDestriptions[EaseType]]);
+  FLogOtherEvents.Log('OnAnimateMovement [Control = %s, AnimationTimeMS = %d, EaseType = %s]', [
+    ChromeTabs32ControlTypeDescriptions[ChromeTabs32Control.ControlType],
+    AnimationTimeMS,
+    ChromeTabs32EaseTypeDestriptions[EaseType]]);
 end;
 
 procedure TfrmMain.ChromeTabs32AnimateStyle(Sender: TObject;
   ChromeTabs32Control: TBaseChromeTabs32Control; NewDrawState: TDrawState;
   var AnimationTimeMS: Cardinal; var EaseType: TChromeTabs32EaseType);
 begin
-  FLogOtherEvents.Log('OnAnimateStyle [Control = %s, OldState = %s, NewState = %s , AnimationTimeMS = %d, EaseType = %s]', [ChromeTabs32ControlTypeDescriptions[ChromeTabs32Control.ControlType],
-                                                                                                 TabDrawStateDescriptions[ChromeTabs32Control.DrawState],
-                                                                                                 TabDrawStateDescriptions[NewDrawState],
-                                                                                                 AnimationTimeMS,
-                                                                                                 ChromeTabs32EaseTypeDestriptions[EaseType]]);
+  FLogOtherEvents.Log('OnAnimateStyle [Control = %s, OldState = %s, NewState = %s , AnimationTimeMS = %d, EaseType = %s]', [
+    ChromeTabs32ControlTypeDescriptions[ChromeTabs32Control.ControlType],
+    TabDrawStateDescriptions[ChromeTabs32Control.DrawState],
+    TabDrawStateDescriptions[NewDrawState],
+    AnimationTimeMS,
+    ChromeTabs32EaseTypeDestriptions[EaseType]]);
 end;
 
 procedure TfrmMain.ChromeTabs32BeginTabDrag(Sender: TObject; ATab: TChromeTab;
@@ -1639,12 +1653,12 @@ end;
 procedure TfrmMain.ChromeTabs32ButtonAddClick(Sender: TObject;
   var Handled: Boolean);
 begin
-  if chkEnableEvents.Checked then
+  if CheckBoxEnableEvents.Checked then
     FLogOtherEvents.Log('OnButtonAddClick', []);
 
-  GUIToTabProperties(AddTab(TChromeTabs32(Sender), edtTabCaption.Text, edtImageIndex.Value));
+  GUIToTabProperties(AddTab(TChromeTabs32(Sender), EditTabCaption.Text, EditImageIndex.Value));
 
-  Handled := TRUE;
+  Handled := True;
 end;
 
 procedure TfrmMain.ChromeTabs32ButtonCloseTabClick(Sender: TObject;
@@ -1656,7 +1670,7 @@ end;
 procedure TfrmMain.ChromeTabs32Change(Sender: TObject; ATab: TChromeTab;
   TabChangeType: TTabChangeType);
 var
-  Text: String;
+  Text: string;
 begin
   if (not (csLoading in ComponentState)) and
      (Sender = FCurrentTabs) then
@@ -1665,14 +1679,14 @@ begin
        (FCurrentTabs <> nil) then
       GUIToTabProperties(ATab);
 
-    if (chkEnableEvents.Checked) and
-       ((not chkIgnorePropertyUpdated.Checked) or
+    if (CheckBoxEnableEvents.Checked) and
+       ((not CheckBoxIgnorePropertyUpdated.Checked) or
         (TabChangeType <> tcPropertyUpdated)) then
     begin
       Text := TabChangeTypeDescriptions[TabChangeType];
 
       if ATab <> nil then
-        Text := Text + StrTabIndex + IntToStr(ATab.Index);
+        Text := Text + RStrTabIndex + IntToStr(ATab.Index);
 
       FLogChange.Log(Text, []);
     end;
@@ -1683,27 +1697,27 @@ procedure TfrmMain.UpdateScrollBar;
 begin
   if FCurrentTabs <> nil then
   begin
-    FUpdatingScrollbar := TRUE;
+    FUpdatingScrollbar := True;
     try
-      sbScrollOffset.Min := 0;
+      ScrollBarScrollOffset.Min := 0;
 
       if FCurrentTabs.MaxScrollOffset > 0 then
-        sbScrollOffset.Max := FCurrentTabs.MaxScrollOffset
+        ScrollBarScrollOffset.Max := FCurrentTabs.MaxScrollOffset
       else
-        sbScrollOffset.Max := 1;
+        ScrollBarScrollOffset.Max := 1;
 
-      sbScrollOffset.Position := FCurrentTabs.ScrollOffset;
+      ScrollBarScrollOffset.Position := FCurrentTabs.ScrollOffset;
 
       UpdateScrollbarLabel;
     finally
-      FUpdatingScrollbar := FALSE;
+      FUpdatingScrollbar := False;
     end;
   end;
 end;
 
 procedure TfrmMain.UpdateScrollbarLabel;
 begin
-  lblScrollOffset.Caption := IntToStr(FCurrentTabs.ScrollOffset) + ' / ' + IntToStr(FCurrentTabs.MaxScrollOffset);
+  LabelScrollingScrollOffsetValue.Caption := IntToStr(FCurrentTabs.ScrollOffset) + ' / ' + IntToStr(FCurrentTabs.MaxScrollOffset);
 end;
 
 procedure TfrmMain.ChromeTabs32CreateDragForm(Sender: TObject; ATab: TChromeTab;
@@ -1714,7 +1728,7 @@ end;
 
 procedure TfrmMain.ChromeTabs32DebugLog(Sender: TObject; const Text: string);
 begin
-  if (Sender = FCurrentTabs) and (chkDebugLog.Checked) then
+  if (Sender = FCurrentTabs) and (CheckBoxDebugLog.Checked) then
     FLogDebug.Log(Text, []);
 end;
 
@@ -1742,7 +1756,7 @@ var
   TabTop: Integer;
 begin
   // A very basic demo of how to alter the shape of the tabs
-  if (chkCustomTabShapes <> nil) and (chkCustomTabShapes.Checked) then
+  if (CheckBoxCustomTabShapes <> nil) and (CheckBoxCustomTabShapes.Checked) then
   begin
     if (ItemType = itTab) and
        (ChromeTabs32Control is TBaseChromeTabs32Control) then
@@ -1811,17 +1825,17 @@ begin
     try
       FLogMouseMove.Clear;
 
-      AddLine(StrMouseX, X);
-      AddLine(StrMouseY, Y);
-      AddLine(StrHitTestArea, HitTestDescriptions[HitTestResult.HitTestArea]);
-      AddLine(StrHitTestTabIndex, HitTestResult.TabIndex);
+      AddLine(RStrMouseX, X);
+      AddLine(RStrMouseY, Y);
+      AddLine(RStrHitTestArea, HitTestDescriptions[HitTestResult.HitTestArea]);
+      AddLine(RStrHitTestTabIndex, HitTestResult.TabIndex);
 
       TabControl := Tabs.TabControls[HitTestResult.TabIndex];
 
       if Assigned(TabControl) then
       begin
-        AddLine(StrTabDrawState, TabDrawStateDescriptions[TabControl.DrawState]);
-        AddLine(StrCloseButtonDrawSt, TabDrawStateDescriptions[TabControl.CloseButtonState]);
+        AddLine(RStrTabDrawState, TabDrawStateDescriptions[TabControl.DrawState]);
+        AddLine(RStrCloseButtonDrawSt, TabDrawStateDescriptions[TabControl.CloseButtonState]);
       end;
     finally
       FLogMouseMove.EndUpdate;
@@ -1838,10 +1852,10 @@ end;
 procedure TfrmMain.ChromeTabs32NeedDragImageControl(Sender: TObject;
   ATab: TChromeTab; var DragControl: TWinControl);
 begin
-  if chkEnableEvents.Checked then
+  if CheckBoxEnableEvents.Checked then
     FLogOtherEvents.Log('OnNeedDragImageControl [TabIndex = %d]', [ATab.Index]);
 
-  DragControl := pcMain;
+  DragControl := PageControlMain;
 end;
 
 procedure TfrmMain.ChromeTabs32ScrollWidthChanged(Sender: TObject);
@@ -1869,9 +1883,9 @@ procedure TfrmMain.ChromeTabs32StateChange(Sender: TObject; PreviousState,
   CurrentState: TChromeTabs32States);
 begin
   if CurrentState = [] then
-    edtStates.Text := 'None'
+    EditStates.Text := 'None'
   else
-    edtStates.Text := ChromeTabs32StatesToString(CurrentState);
+    EditStates.Text := ChromeTabs32StatesToString(CurrentState);
 end;
 
 procedure TfrmMain.ChromeTabs32TabClientRectChanged(Sender: TObject);
@@ -1884,13 +1898,13 @@ begin
   FLogOtherEvents.Log('OnTabDblClick [TabIndex = %d]', [ATab.Index]);
 end;
 
-procedure TfrmMain.ChromeTabs32TabDragDrop(Sender: TObject; X, Y: Integer;
+procedure TfrmMain.ChromeTabsTopTabDragDrop(Sender: TObject; X, Y: Integer;
   DragTabObject: IDragTabObject; Cancelled: Boolean;
   var TabDropOptions: TTabDropOptions);
 begin
   FLogOtherEvents.Log('OnTabDragDrop ', []);
 
-  lbTabDragOver.Clear;
+  ListBoxTabDragOver.Clear;
 
   ProcessDroppedTab(Sender, X, Y, DragTabObject, Cancelled, TabDropOptions);
 end;
@@ -1956,19 +1970,19 @@ begin
 
     if Tabs.ActiveDragTabObject <> nil then
     begin
-      AddLine(StrDragging, StrActive);
-      AddLine(StrTabCaption, Tabs.ActiveDragTabObject.DragTab.Caption);
-      AddLine(StrTabIndex, Tabs.ActiveDragTabObject.DragTab.Index);
-      AddLine(StrHorizontalOffset, Tabs.ActiveDragTabObject.DragCursorOffset.X);
-      AddLine(StrVerticalOffset, Tabs.ActiveDragTabObject.DragCursorOffset.Y);
-      AddLine(StrDropTabIndex, Tabs.ActiveDragTabObject.DropTabIndex);
+      AddLine(RStrDragging, RStrActive);
+      AddLine(RStrTabCaption, Tabs.ActiveDragTabObject.DragTab.Caption);
+      AddLine(RStrTabIndex, Tabs.ActiveDragTabObject.DragTab.Index);
+      AddLine(RStrHorizontalOffset, Tabs.ActiveDragTabObject.DragCursorOffset.X);
+      AddLine(RStrVerticalOffset, Tabs.ActiveDragTabObject.DragCursorOffset.Y);
+      AddLine(RStrDropTabIndex, Tabs.ActiveDragTabObject.DropTabIndex);
 
-      AddLine(StrSourceControl, Tabs.ActiveDragTabObject.SourceControl.GetControl.Name);
+      AddLine(RStrSourceControl, Tabs.ActiveDragTabObject.SourceControl.GetControl.Name);
 
       if Tabs.ActiveDragTabObject.DockControl = nil then
-        AddLine(StrDockControl, StrNone)
+        AddLine(RStrDockControl, RStrNone)
       else
-        AddLine(StrDockControl, Tabs.ActiveDragTabObject.DockControl.GetControl.Name);
+        AddLine(RStrDockControl, Tabs.ActiveDragTabObject.DockControl.GetControl.Name);
     end;
   finally
     FLogDragOver.EndUpdate;
@@ -1980,10 +1994,10 @@ procedure TfrmMain.ChromeTabs32TabDragStart(Sender: TObject; ATab: TChromeTab;
 begin
   FLogOtherEvents.Log('OnTabDragStart [TabIndex = %d]', [ATab.Index]);
 
-  Allow := TRUE;
+  Allow := True;
 end;
 
-procedure TfrmMain.ChromeTabs322TabDragDrop(Sender: TObject; X, Y: Integer;
+procedure TfrmMain.ChromeTabsBottomTabDragDrop(Sender: TObject; X, Y: Integer;
   DragTabObject: IDragTabObject; Cancelled: Boolean;
   var TabDropOptions: TTabDropOptions);
 begin
@@ -1992,25 +2006,25 @@ end;
 
 procedure TfrmMain.UpdateControls;
 begin
-  edtGlassHeightTop.Enabled := chkUseGlass.Checked;
-  edtGlassHeightBottom.Enabled := chkUseGlass.Checked;
+  EditGlassHeightTop.Enabled := CheckBoxUseGlass.Checked;
+  EditGlassHeightBottom.Enabled := CheckBoxUseGlass.Checked;
 
-  EnableControlAndChildren(pnlScroll, chkScrolling.Checked);
-  EnableControlAndChildren(pnlDragDrop, cbDragType.ItemIndex > 0);
-  EnableControlAndChildren(pnlMouseGlow, chkMouseGlowVisible.Checked);
+  EnableControlAndChildren(PanelScroll, CheckBoxScrolling.Checked);
+  EnableControlAndChildren(PanelDragDrop, ComboBoxDragType.ItemIndex > 0);
+  EnableControlAndChildren(PanelMouseGlow, CheckBoxMouseGlowVisible.Checked);
 
-  edtCloseButtonMouseLeaveDelay.Enabled := chkSmartResize.Checked;
+  EditCloseButtonMouseLeaveDelay.Enabled := CheckBoxSmartResize.Checked;
 
-  edtDragScrollEdge.Enabled := chkScrolling.Checked and chkScrollWhileDragging.Checked;
+  EditDragScrollEdge.Enabled := CheckBoxScrolling.Checked and CheckBoxScrollWhileDragging.Checked;
 
-  edtAddTabTime.Enabled := not chkAddTabDefaults.Checked;
-  cbAddTabEase.Enabled := not chkAddTabDefaults.Checked;
+  EditAddTabTime.Enabled := not CheckBoxAddTabDefaults.Checked;
+  ComboBoxAddTabEase.Enabled := not CheckBoxAddTabDefaults.Checked;
 
-  edtDeleteTabTime.Enabled := not chkDeleteTabDefaults.Checked;
-  cbDeleteTabEase.Enabled := not chkDeleteTabDefaults.Checked;
+  EditDeleteTabTime.Enabled := not CheckBoxDeleteTabDefaults.Checked;
+  ComboBoxDeleteTabEase.Enabled := not CheckBoxDeleteTabDefaults.Checked;
 
-  edtMoveTabTime.Enabled := not chkMoveTabDefaults.Checked;
-  cbMoveTabEase.Enabled := not chkMoveTabDefaults.Checked;
+  EditMoveTabTime.Enabled := not CheckBoxMoveTabDefaults.Checked;
+  ComboBoxMoveTabEase.Enabled := not CheckBoxMoveTabDefaults.Checked;
 end;
 
 end.
